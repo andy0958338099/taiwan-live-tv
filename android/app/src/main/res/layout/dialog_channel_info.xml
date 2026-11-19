@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 頻道資訊對話框內容 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="28dp">
+
+    <TextView
+        android:id="@+id/infoName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/tv_text_primary"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        tools:text="台視" />
+
+    <TextView
+        android:id="@+id/infoDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/tv_text_secondary"
+        android:textSize="@dimen/text_info"
+        tools:text="台灣電視公司" />
+
+    <TextView
+        android:id="@+id/infoSource"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:textColor="@color/tv_text_primary"
+        android:textSize="@dimen/text_info"
+        tools:text="來源：台視 TTV 官方網站" />
+
+    <TextView
+        android:id="@+id/infoAuthorization"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/tv_text_primary"
+        android:textSize="@dimen/text_info"
+        tools:text="授權狀態：官方公開" />
+
+    <TextView
+        android:id="@+id/infoWebsite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/tv_accent"
+        android:textSize="@dimen/text_info"
+        android:focusable="true"
+        android:focusableInTouchMode="false"
+        android:clickable="true"
+        tools:text="https://www.ttv.com.tw/" />
+
+    <TextView
+        android:id="@+id/btnFavoriteToggle"
+        style="@style/ChannelTab"
+        android:layout_marginTop="22dp"
+        android:text="@string/action_add_favorite" />
+
+</LinearLayout>

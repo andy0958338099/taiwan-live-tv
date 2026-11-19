@@ -1,0 +1,136 @@
+/* ============================================================
+   播放器元件樣式（CSS Modules）
+   ============================================================ */
+
+.playerShell {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.playerVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  background: #000;
+}
+
+.playerOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.playerOverlayError {
+  background: rgba(0, 0, 0, 0.88);
+}
+
+.playerOverlayTitle {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--danger);
+}
+
+.playerOverlayText {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  max-width: 560px;
+}
+
+.playerOverlayHint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  max-width: 620px;
+  line-height: 1.6;
+}
+
+.playBadge {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding-left: 4px;
+  border-radius: 50%;
+  background: rgba(61, 139, 255, 0.9);
+  color: #fff;
+  font-size: 1.6rem;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--warning);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.retryBtn {
+  padding: 10px 24px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.retryBtn:hover {
+  background: #5199ff;
+}
+
+/* 觸控可點擊的元素在鍵盤操作時也要有清楚的焦點 */
+.playerOverlay:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -4px;
+}
+
+@media (max-width: 640px) {
+  .playerOverlay {
+    padding: 14px;
+    gap: 8px;
+  }
+
+  .playerOverlayText {
+    font-size: 0.85rem;
+  }
+
+  .playerOverlayHint {
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .playBadge {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+
+  .spinner {
+    width: 28px;
+    height: 28px;
+  }
+}

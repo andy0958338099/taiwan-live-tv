@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+.next/
+out/
+npm-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Android / Gradle
+.gradle/
+local.properties
+*.iml
+.idea/
+android/app/build/
+android/build/
+android/captures/
+android/.kotlin/
+*.apk
+*.aab
+*.keystore
+!debug.keystore
+
+# Generated channel data (由 scripts/sync-channels.mjs 產生，不進版控)
+web/public/channels.json
+web/src/generated/
+android/app/src/main/assets/channels.json
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+/logs

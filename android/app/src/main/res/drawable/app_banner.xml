@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android TV Launcher 橫幅：必須為 320x180 (xhdpi) 的 16:9 圖片
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path
+        android:fillColor="#0B0B0F"
+        android:pathData="M0,0h320v180h-320z" />
+    <!-- 左側電視圖示 -->
+    <path
+        android:fillColor="#3D8BFF"
+        android:pathData="M50,62h84a8,8 0,0 1,8 8v48a8,8 0,0 1,-8 8h-84a8,8 0,0 1,-8 -8v-48a8,8 0,0 1,8 -8z" />
+    <path
+        android:fillColor="#0B0B0F"
+        android:pathData="M52,72h80v36h-80z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M82,80l24,10l-24,10z" />
+    <path
+        android:fillColor="#3D8BFF"
+        android:pathData="M74,62l-8,-10l5,-3l8,10zM110,62l8,-10l-5,-3l-8,10zM80,118h26v6h-26z" />
+    <!-- 右側標題 -->
+    <path
+        android:fillColor="#F5F5F7"
+        android:pathData="M168,60h116v12h-116zM168,84h92v12h-92zM168,108h104v12h-104z" />
+    <path
+        android:fillColor="#3D8BFF"
+        android:pathData="M168,134h52v8h-52z" />
+</vector>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 分頁 / 按鈕樣式：可聚焦、支援遙控器 -->
+    <style name="ChannelTab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">false</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@color/tv_text_secondary</item>
+        <item name="android:textSize">@dimen/text_channel_meta</item>
+        <item name="android:paddingStart">18dp</item>
+        <item name="android:paddingEnd">18dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:background">@drawable/bg_tab</item>
+        <item name="android:layout_marginEnd">8dp</item>
+        <item name="android:maxLines">1</item>
+    </style>
+</resources>

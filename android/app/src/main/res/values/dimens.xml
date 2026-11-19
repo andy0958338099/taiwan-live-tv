@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+      電視版面基準尺寸。1920x1080 螢幕的 dp 寬度約為 960dp（television dpi），
+      因此以下數值以 960dp 寬為基準設計。
+    -->
+    <!-- 版面安全邊距：避免電視 Overscan 裁切內容 -->
+    <dimen name="safe_margin_horizontal">48dp</dimen>
+    <dimen name="safe_margin_vertical">36dp</dimen>
+    <dimen name="safe_margin_horizontal_compact">24dp</dimen>
+    <dimen name="safe_margin_vertical_compact">18dp</dimen>
+
+    <!-- 頻道列卡片 -->
+    <dimen name="channel_card_width">220dp</dimen>
+    <dimen name="channel_card_height">124dp</dimen>
+    <dimen name="channel_card_spacing">12dp</dimen>
+
+    <!-- 文字 -->
+    <dimen name="text_channel_name">18sp</dimen>
+    <dimen name="text_channel_meta">13sp</dimen>
+    <dimen name="text_title">28sp</dimen>
+    <dimen name="text_status">16sp</dimen>
+    <dimen name="text_info">15sp</dimen>
+
+    <!-- 焦點框 -->
+    <dimen name="focus_stroke_width">3dp</dimen>
+    <dimen name="focus_scale">1.06</dimen>
+
+</resources>

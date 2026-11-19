@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 單一頻道卡片 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardRoot"
+    style="@style/ChannelCard"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <ImageView
+        android:id="@+id/cardLogo"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        android:contentDescription="@string/tab_channels" />
+
+    <TextView
+        android:id="@+id/cardPlaceholder"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/tv_text_muted"
+        android:textSize="26sp"
+        android:maxLines="1"
+        tools:text="測" />
+
+    <TextView
+        android:id="@+id/cardName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/tv_text_primary"
+        android:textSize="@dimen/text_channel_name"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="測試頻道 A" />
+
+    <TextView
+        android:id="@+id/cardCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/tv_text_muted"
+        android:textSize="@dimen/text_channel_meta"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="綜合台" />
+
+</LinearLayout>

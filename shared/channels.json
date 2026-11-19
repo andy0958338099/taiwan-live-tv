@@ -1,0 +1,143 @@
+{
+  "schema_version": "1.0.0",
+  "updated_at": "2026-11-19T12:04:35.992Z",
+  "categories": [
+    {
+      "id": "news",
+      "name": "新聞台",
+      "name_en": "News",
+      "order": 1,
+      "icon": "news"
+    },
+    {
+      "id": "general",
+      "name": "綜合台",
+      "name_en": "General",
+      "order": 2,
+      "icon": "tv"
+    },
+    {
+      "id": "entertainment",
+      "name": "娛樂台",
+      "name_en": "Entertainment",
+      "order": 3,
+      "icon": "star"
+    },
+    {
+      "id": "finance",
+      "name": "財經台",
+      "name_en": "Finance",
+      "order": 4,
+      "icon": "chart"
+    },
+    {
+      "id": "public",
+      "name": "公共電視",
+      "name_en": "Public",
+      "order": 5,
+      "icon": "public"
+    },
+    {
+      "id": "life",
+      "name": "生活資訊",
+      "name_en": "Life & Info",
+      "order": 6,
+      "icon": "info"
+    },
+    {
+      "id": "education",
+      "name": "教育文化",
+      "name_en": "Education",
+      "order": 7,
+      "icon": "school"
+    },
+    {
+      "id": "local",
+      "name": "地方及其他頻道",
+      "name_en": "Local & Others",
+      "order": 8,
+      "icon": "place"
+    }
+  ],
+  "channels": [
+    {
+      "channel_id": "test-mux-bigbuckbunny",
+      "channel_name": "測試頻道 A（Mux 官方測試串流）",
+      "name_en": "Test Channel A (Mux official test stream)",
+      "category": "general",
+      "channel_number": 901,
+      "logo": null,
+      "stream_url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
+      "stream_type": "hls",
+      "source_name": "Mux 官方公開測試串流",
+      "source_website": "https://github.com/robwalch/awesome-mux-videos",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:00:00Z",
+      "description": "Mux 官方公開測試用 HLS 串流，供 Media3 / HLS.js 播放管線驗證使用，非台灣頻道。",
+      "tags": [
+        "test",
+        "測試",
+        "mux",
+        "hls"
+      ],
+      "region": null,
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "僅供 MVP 驗證，非實際台灣頻道。"
+    },
+    {
+      "channel_id": "test-unified-tearsofsteel",
+      "channel_name": "測試頻道 B（Unified Streaming 官方測試串流）",
+      "name_en": "Test Channel B (Unified Streaming official test stream)",
+      "category": "general",
+      "channel_number": 902,
+      "logo": null,
+      "stream_url": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
+      "stream_type": "hls",
+      "source_name": "Unified Streaming 官方公開測試串流",
+      "source_website": "https://www.unified-streaming.com/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:00:00Z",
+      "description": "Unified Streaming 官方公開 HLS 測試串流，供多碼率與錯誤處理驗證使用，非台灣頻道。",
+      "tags": [
+        "test",
+        "測試",
+        "unified",
+        "hls",
+        "multibitrate"
+      ],
+      "region": null,
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "僅供 MVP 驗證，非實際台灣頻道。"
+    },
+    {
+      "channel_id": "test-apple-bipbop",
+      "channel_name": "測試頻道 C（Apple 官方測試串流）",
+      "name_en": "Test Channel C (Apple official test stream)",
+      "category": "general",
+      "channel_number": 903,
+      "logo": null,
+      "stream_url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/gear0/prog_index.m3u8",
+      "stream_type": "hls",
+      "source_name": "Apple 官方公開測試串流",
+      "source_website": "https://developer.apple.com/streaming/examples/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:00:00Z",
+      "description": "Apple Developer 官方公開 HLS 測試串流，含字幕與多組 Gear 變體，供快速切換與錯誤重試驗證使用，非台灣頻道。",
+      "tags": [
+        "test",
+        "測試",
+        "apple",
+        "hls"
+      ],
+      "region": null,
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "僅供 MVP 驗證，非實際台灣頻道。"
+    }
+  ]
+}

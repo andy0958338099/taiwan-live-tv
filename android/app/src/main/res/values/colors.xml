@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="tv_background">#FF0B0B0F</color>
+    <color name="tv_surface">#FF1A1A22</color>
+    <color name="tv_surface_raised">#FF25252F</color>
+
+    <color name="tv_text_primary">#FFF5F5F7</color>
+    <color name="tv_text_secondary">#FFA8A8B3</color>
+    <color name="tv_text_muted">#FF6E6E7A</color>
+
+    <color name="tv_accent">#FF3D8BFF</color>
+    <color name="tv_accent_dim">#FF1E4C99</color>
+    <color name="tv_focus_stroke">#FFFFFFFF</color>
+
+    <color name="tv_status_playing">#FF4CAF50</color>
+    <color name="tv_status_buffering">#FFFFC107</color>
+    <color name="tv_status_error">#FFF44336</color>
+
+    <color name="tv_scrim">#CC000000</color>
+    <color name="tv_overlay_panel">#F01A1A22</color>
+</resources>

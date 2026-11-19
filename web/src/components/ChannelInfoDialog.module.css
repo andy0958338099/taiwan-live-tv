@@ -1,0 +1,157 @@
+/* ============================================================
+   頻道資訊對話框
+   ============================================================ */
+
+.dialogBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  z-index: 100;
+  backdrop-filter: blur(3px);
+}
+
+.dialog {
+  width: min(560px, 100%);
+  max-height: min(85vh, 720px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+}
+
+.dialogHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.dialogTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.dialogClose {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.dialogClose:hover {
+  background: #33333f;
+  color: var(--text-primary);
+}
+
+.dialogBody {
+  padding: 18px 20px;
+  overflow-y: auto;
+}
+
+.dialogList {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 10px 20px;
+  margin: 0;
+  font-size: 0.87rem;
+}
+
+.dialogList dt {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.dialogList dd {
+  margin: 0;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+
+.authBadge {
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.auth-authorized,
+.auth-public_official,
+.auth-user_provided {
+  background: rgba(76, 175, 80, 0.16);
+  color: #81c784;
+}
+
+.auth-pending_review {
+  background: rgba(255, 193, 7, 0.16);
+  color: #ffd54f;
+}
+
+.auth-restricted,
+.auth-unknown {
+  background: rgba(244, 67, 54, 0.16);
+  color: #ef9a9a;
+}
+
+.dialogFooter {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.dialogNote {
+  margin: 0;
+  flex: 1 1 260px;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.6;
+}
+
+.dialogActionBtn {
+  flex: 0 0 auto;
+  padding: 9px 22px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dialogActionBtn:hover {
+  background: #5199ff;
+}
+
+@media (max-width: 640px) {
+  .dialogList {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .dialogList dd {
+    margin-bottom: 10px;
+  }
+}

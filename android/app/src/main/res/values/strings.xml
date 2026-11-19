@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">台灣電視直播</string>
+
+    <!-- 主畫面 -->
+    <string name="title_tv_live">台灣電視直播</string>
+    <string name="action_search">搜尋頻道</string>
+    <string name="action_favorites">我的最愛</string>
+    <string name="action_recent">最近觀看</string>
+    <string name="action_all_channels">全部頻道</string>
+    <string name="action_settings">設定</string>
+    <string name="action_retry">重新連線</string>
+
+    <!-- 播放狀態 -->
+    <string name="state_buffering">連線中…</string>
+    <string name="state_playing">播放中</string>
+    <string name="state_error">播放失敗</string>
+    <string name="state_offline">網路連線中斷</string>
+    <string name="state_no_channel">請選擇一個頻道開始觀看</string>
+
+    <!-- 頻道列 -->
+    <string name="tab_channels">頻道</string>
+    <string name="tab_favorites">最愛</string>
+    <string name="tab_recent">最近</string>
+    <string name="empty_favorites">尚未收藏任何頻道</string>
+    <string name="empty_recent">尚無觀看紀錄</string>
+    <string name="empty_search">找不到符合「%1$s」的頻道</string>
+
+    <!-- 搜尋 -->
+    <string name="search_hint">輸入頻道名稱或關鍵字</string>
+    <string name="search_result_count">找到 %1$d 個頻道</string>
+
+    <!-- 頻道資訊面板 -->
+    <string name="info_source">來源：%1$s</string>
+    <string name="info_authorization">授權狀態：%1$s</string>
+    <string name="info_website">官方網站</string>
+    <string name="action_add_favorite">加入收藏</string>
+    <string name="action_remove_favorite">取消收藏</string>
+
+    <!-- 授權狀態顯示 -->
+    <string name="auth_authorized">已授權</string>
+    <string name="auth_public_official">官方公開</string>
+    <string name="auth_user_provided">使用者提供</string>
+    <string name="auth_pending_review">待確認</string>
+    <string name="auth_restricted">受限</string>
+    <string name="auth_unknown">未知</string>
+
+    <!-- 通用 -->
+    <string name="btn_ok">確定</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_close">關閉</string>
+    <string name="loading">載入中…</string>
+</resources>
