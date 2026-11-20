@@ -415,7 +415,87 @@ TVBS 也從失敗轉為成功（1920×1080，播放 56 秒）。
    該頻道實際可播的是備援來源。
    `scripts/verify-channel-sources.mjs` 專門找出這類情況。
 
-## 7. 頻道選擇抽屜（可隱藏式）
+## 自動巡檢排程
+
+### 排程內容
+
+每 30 分鐘執行一輪「巡檢 → 上網參考 → 實作一項改進 → 驗證 → 部署」。
+
+排程 job（透過 Hermes cron 管理）會做：
+
+1. **巡檢現況**（先量測，不憑印象）
+   - `scripts/verify-channel-sources.mjs` — deep probe 全頻道
+   - `scripts/test-playback-local.mjs --base https://taiwan-live-tv.netlify.app` — 真實播放驗證
+   - 線上代理 Cache-Control 檢查（manifest `no-store` / segment `public,max-age=300`）
+   - `scripts/run-all-checks.mjs` — 型別、建置、資料一致性
+
+2. **上網參考** — hls.js GitHub issues / CHANGELOG、Media3 ExoPlayer 已知問題、
+   Netlify Functions 的 timeout、串流回應、CDN 快取限制
+
+3. **實作一項最有價值的改進**（每次只做一項，且必須能驗證）
+   優先序：a. 更多頻道可播 → b. 修掉實測失敗 → c. 播放體驗 → d. 效能穩定性
+
+4. **驗證 → commit → push → 部署 → 線上驗證 → 寫入本文件**
+
+### 已知陷阱（排程代理必須知道）
+
+- ⚠️ **Netlify CDN 會快取舊 deploy 的 function 回應**。
+  驗證線上 Cache-Control 時要帶 `-H "x-nextjs-data: 1"` 才會直達 function，
+  否則看到的是舊快取條目（`age:` header 會很大）。
+- ⚠️ **上游有時效性**。昨天能播的來源今天可能 404，
+  每次巡檢都要重新 deep probe，不能沿用舊的驗證結果。
+- ⚠️ **不可用 manifest 大小判定失效**。70 個可播頻道中 62 個 manifest 僅 72–80 bytes。
+- ⚠️ **清理需二次確認**，避免偶發逾時誤刪仍可播放的來源。
+- ⚠️ hls.js 1.7.4 已是最新穩定版（1.7.5 仍是 canary）。
+
+## 台灣來源補充（2026-11-21）
+
+### 來源出處
+
+- `limajj2021/taiwan-iptv` — GitHub 上的台灣 IPTV 清單（`playlist_static.m3u`）
+- `iptv-org/iptv` — `streams/tw.m3u`（國際性 IPTV 頻道索引的台灣段落）
+- `pingponn/jackiptv` — 純文字清單（**全部失效**，見下）
+
+### 探測結果
+
+`scripts/probe-taiwan-sources.mjs` 做 deep probe：
+manifest 可讀 + 非 VOD + segment 位元組驗證（0x47 MPEG-TS 或 fMP4 `ftyp`）。
+
+**通過的來源（全部是廣播商自己的 CDN，且都有 CORS）：**
+
+| 頻道 | 網址 | 耗時 |
+| --- | --- | --- |
+| 東森財經新聞台 | `https://iptv.ebc.edu.kh/iptv/channel/1.m3u8` | 87ms |
+| TVBS Asia | `http://38.64.72.148/hls/modn/list/4005/playlist.m3u8` | 155ms |
+| Hakka TV 客家電視台 | `https://h5cul1yar48um3t.wcetv.com/hls/hakkatv.m3u8` | 174ms |
+| Taiwan Plus TV | `https://bcovlive-a.akamaihd.net/.../playlist.m3u8` | 939ms |
+| Beautiful Life TV | `https://5ddce30eb4b55.streamlock.net/bltvhd/bltv1/playlist.m3u8` | 45ms |
+| CGNTV Chinese | `https://d3e05csss9c272.cloudfront.net/.../CGNWebLiveCN.m3u8` | 277ms |
+| 唯心電視 | `https://mobile.ccdntech.com/transcoder/_definst_/vod164_Live/live/chunklist_w1177047531.m3u8` | 151ms |
+| Supreme Master TV | `https://lbs-us1.suprememastertv.com/720p.m3u8` | 205ms |
+| GOOD TV CH1 綜合台 | `https://live.streamingfast.net/osmflivech1.m3u8` | 73ms |
+| GOOD TV CH2 真理台 | `https://live.streamingfast.net/osmflivech2.m3u8` | 55ms |
+
+**失效的來源與原因：**
+
+| 來源 | 原因 |
+| --- | --- |
+| 華視新聞資訊 | HTTP 522（Cloudflare 逾時） |
+| 民視台灣台 | HTTP 404 |
+| Taiwan Indigenous TV | 位元組格式不符（0x5）——不是 MPEG-TS |
+| 大立電視台 | segment HTTP 404 |
+| 大愛2 | HTTP 404 |
+| GOOD TV CH3/5/6/7/9/12/14/15 | child manifest HTTP 404 |
+| `pingponn/jackiptv` 全部 38 個 | `ECONNREFUSED 106.107.242.201:50007` —— 主機已停 |
+
+> ⚠️ **授權分級**：上述通過的來源都是**廣播商自己的 CDN**
+> （ebc.edu.kh = 東森、wcetv.com = 華視、akamaihd = TaiwanPlus、
+> streamingfast.net = GOOD TV、streamlock.net = 廣電）。→ `public_official`
+>
+> `pingponn/jackiptv` 那類第三方轉載主機 → 只能 `user_provided`，
+> 且技術可達 ≠ 有權散布，需謹慎處理。
+
+## 頻道選擇抽屜（可隱藏式）
 
 ### 設計意圖
 
