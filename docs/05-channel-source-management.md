@@ -308,10 +308,72 @@ segment  → 只讀第一個 chunk 判斷不是 manifest → 直接把上游 Rea
 | `scripts/probe-cdn-paths.mjs` | 深度探測 `cdn.qd.je/163189/*` 全部路徑 → `shared/cdn-paths.json` |
 | `scripts/apply-verified-sources.mjs` | 套用探測結果：移除失效、更新網址、補上漏掉的頻道 |
 | `scripts/verify-channel-sources.mjs` | 驗證每個頻道的主來源**與備援**，並量測 segment 下載耗時 → `shared/source-verification.json` |
+| `scripts/cleanup-channels.mjs` | 依驗證結果清理：二次確認後移除失效、升級可用備援 |
+| `scripts/restore-channel.mjs` | 從 git 歷史還原誤刪的頻道 |
+| `scripts/enrich-channel-logos.mjs` | 補齊台標，並**驗證每個 logo 網址真的取得得到圖片** |
 | `scripts/probe-live-sources.mjs` | 深度探測直播聚合源（抖音／斗魚／B站／虎牙等） |
 | `scripts/import-china-channels.mjs` | 中國頻道匯入（含直播性與 VOD 檢查） |
+| `scripts/test-playback-local.mjs` | 用系統 Chrome + CDP 實際點擊播放驗證 |
 
-### 10.4 排查時容易踩到的兩個陷阱
+### 10.4 定期維護流程
+
+```bash
+cd /Users/andy/workspace/taiwan-live-tv
+
+# 1. 驗證所有頻道（並行，約 15–25 分鐘）
+node scripts/verify-channel-sources.mjs
+
+# 2. 依結果清理（移除失效、升級可用備援）
+node scripts/cleanup-channels.mjs
+
+# 3. 補齊台標
+node scripts/enrich-channel-logos.mjs
+
+# 4. 驗證 + 同步 + 建置
+node scripts/run-all-checks.mjs
+
+# 5. 實際播放驗證（系統 Chrome）
+node scripts/test-playback-local.mjs --base http://localhost:3211 --wait 90
+```
+
+### 10.5 清理時的三道安全閘
+
+清理會刪掉使用者看得到的頻道，因此設了三道閘：
+
+**閘一：embed 頻道不參與。**
+官方 embed 頻道（華視、中天、鏡新聞、中視、東森、三立、客家、大愛、
+寰宇、公視）的 `stream_url` 是空字串 —— 它們以官方 iframe 播放器播放，
+用 `stream_url` 驗證必然得到「主來源 無」。
+若照樣判成失效就會誤刪 10 個頻道。
+它們的可用性改由 `test-playback-local.mjs` 在瀏覽器裡實測。
+
+**閘二：二次確認才移除。**
+驗證當下上游可能偶發壅塞（segment 逾時），一次失敗不足以判定頻道死亡。
+實測廣東體育台在清理時被誤殺，事後重測 3 次來源全部正常。
+所以「看起來失效」的頻道會再驗一次，**兩次都失敗才移除**。
+二次確認發生例外時 → 保守保留（寧可留著，也不要誤殺）。
+
+**閘三：轉址入口不算好主來源。**
+`cdn.qd.je/163189/gdty` 回 HTTP 200 但只有 **80 bytes**（是 child manifest
+的轉址入口），而 `2.fast.hidns.vip/163189/gdty` 有 4918 bytes（真正的串流清單）。
+用轉址入口當主來源會多繞一層，且該層的 child 可能已失效。
+因此記錄 manifest 長度，小於 500 bytes 就改用備援。
+
+### 10.6 常見的失效來源型態
+
+實測整理（來自 5 份清單）：
+
+| 型態 | 例子 | 狀況 |
+|---|---|---|
+| PHP 轉址端點 | `http://101.35.240.114:88/live.php?id=湖南卫视` | 中文 ID 一律 404；英文 ID 也不通 |
+| 網頁播放器 | `https://yshipin.pages.dev/play/hnws` | 回空內容，不是串流 |
+| 整批失效的 host | `smt.1678520.xyz` | 10 條路徑全 502，試遍 15 個替代 host prefix 都無替代 |
+| 僅單一路徑失效 | `cdn.qd.je/163189/wlxj` | 同一 host 的其他路徑仍可用 |
+
+實務上**所有頻道都應該準備至少 2–3 個備援來源**，
+因為這類來源的失效是常態而非例外。
+
+### 10.7 排查時容易踩到的兩個陷阱
 
 **陷阱一：segment 過期看起來像代理壞掉。**
 央視來源的 segment 只活約 10 秒。測試腳本若「先抓 manifest、
