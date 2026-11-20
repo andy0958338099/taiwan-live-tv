@@ -1,0 +1,64 @@
+# Netlify 部署設定 — 台灣電視直播平台
+#
+# ⚠️ 陷阱提醒（來自另一個專案的踩坑紀錄）：
+#
+# 1) **不要設定 [functions] directory**
+#    Netlify 預設是「BASE_DIRECTORY/netlify/functions」，
+#    而 base = "web" → 預設 = web/netlify/functions ✅
+#    先前寫成 directory = "web/netlify/functions" 會被相對 base 再加一層
+#    → web/web/netlify/functions ❌（所有 function 404）
+#
+# 2) **不要用 [functions."xxx"] 設定 timeout / memory**
+#    合法欄位只有 deno_import_map / external_node_modules / ignored_node_modules /
+#    included_files / memory / node_bundler / region / schedule / vcpu
+#    timeout 不在其中；memory 需要 credit-based 付費方案。
+#
+# 3) **config.path 會取代預設網址**
+#    設了它，/.netlify/functions/<檔名> 就不存在。
+#
+# 4) **Next.js App Router 的 API route 需要 runtime = 'nodejs'**
+#    web/src/app/api/proxy/route.ts 已宣告 `export const runtime = 'nodejs'`，
+#    Netlify 的 Next.js runtime 會自動處理。
+
+[build]
+  base = "web"
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
+  NODE_VERSION = "22"
+
+# Next.js App Router 需要這個 plugin 來產生 serverless functions。
+# 若 Netlify 帳號已啟用 Next.js runtime（Runtime → Next.js）則可省略。
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# ─────────────────────────────────────────────────────────────
+# Headers
+# ─────────────────────────────────────────────────────────────
+
+# 頻道資料：短快取 + 允許跨網域（APK 也讀同一份）
+[[headers]]
+  for = "/channels.json"
+  [headers.values]
+    Cache-Control = "public, max-age=60, stale-while-revalidate=300"
+    Access-Control-Allow-Origin = "*"
+
+# 靜態資源長快取
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# 代理端點：不可快取（直播內容即時性）
+[[headers]]
+  for = "/api/proxy"
+  [headers.values]
+    Cache-Control = "no-store"
+
+# 隱私權政策頁面不可快取
+[[headers]]
+  for = "/privacy"
+  [headers.values]
+    Cache-Control = "no-store"

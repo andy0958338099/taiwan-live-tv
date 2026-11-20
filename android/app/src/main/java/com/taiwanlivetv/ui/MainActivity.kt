@@ -21,6 +21,7 @@ import com.taiwanlivetv.data.ChannelCatalog
 import com.taiwanlivetv.data.ChannelPreferences
 import com.taiwanlivetv.data.ChannelRepository
 import com.taiwanlivetv.databinding.ActivityMainBinding
+import com.taiwanlivetv.player.EmbedPlayerController
 import com.taiwanlivetv.player.NetworkMonitor
 import com.taiwanlivetv.player.PlaybackState
 import com.taiwanlivetv.player.TvPlayerController
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var prefs: ChannelPreferences
     private lateinit var playerController: TvPlayerController
+    private lateinit var embedController: EmbedPlayerController
     private lateinit var networkMonitor: NetworkMonitor
 
     private lateinit var channelAdapter: ChannelAdapter
@@ -71,6 +73,7 @@ class MainActivity : AppCompatActivity() {
 
         prefs = ChannelPreferences(this)
         playerController = TvPlayerController(this)
+        embedController = EmbedPlayerController(this)
         networkMonitor = NetworkMonitor(this)
 
         setupPlayer()
@@ -100,7 +103,12 @@ class MainActivity : AppCompatActivity() {
         networkMonitor.start()
         networkMonitor.onNetworkAvailable = {
             // 網路恢復：若當前是錯誤狀態，自動重試
-            if (playerController.player?.playerError != null) {
+            val channel = currentChannel
+            if (channel != null && channel.isEmbedOnly) {
+                if (binding.errorPanel.visibility == View.VISIBLE) {
+                    embedController.reload(binding.embedWebView)
+                }
+            } else if (playerController.player?.playerError != null) {
                 playerController.reconnect()
             }
         }
@@ -117,6 +125,7 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         playerController.release()
+        embedController.release(binding.embedWebView)
     }
 
     // ===== 設定 =====
@@ -126,6 +135,10 @@ class MainActivity : AppCompatActivity() {
         binding.playerView.player = playerController.player
 
         playerController.onStateChanged = { state -> renderPlaybackState(state) }
+
+        // 官方嵌入播放器（WebView）
+        embedController.configure(binding.embedWebView)
+        embedController.onStateChanged = { state -> renderPlaybackState(state) }
     }
 
     private fun setupRecyclerViews() {
@@ -166,7 +179,13 @@ class MainActivity : AppCompatActivity() {
     private fun setupRetryButton() {
         binding.btnRetry.setOnClickListener {
             binding.errorPanel.visibility = View.GONE
-            playerController.reconnect()
+            // 依目前播放模式決定重連對象
+            val channel = currentChannel
+            if (channel != null && channel.isEmbedOnly) {
+                embedController.reload(binding.embedWebView)
+            } else {
+                playerController.reconnect()
+            }
         }
     }
 
@@ -254,7 +273,27 @@ class MainActivity : AppCompatActivity() {
         binding.errorPanel.visibility = View.GONE
         prefs.lastChannelId = channel.channelId
         prefs.recordWatched(channel.channelId)
-        playerController.play(channel)
+
+        // 兩種播放模式互斥切換：
+        //   - embed 頻道 → WebView 載入官方播放器（官方頁面本身即以 iframe 內嵌）
+        //   - 其他頻道   → ExoPlayer 直接播放 HLS
+        if (channel.isEmbedOnly) {
+            showEmbedSurface(true)
+            embedController.play(binding.embedWebView, channel)
+        } else {
+            showEmbedSurface(false)
+            playerController.play(channel)
+        }
+    }
+
+    /**
+     * 切換播放器顯示。
+     *
+     * ExoPlayer 與 WebView 必須互斥 —— 同時顯示會造成畫面重疊與音效打架。
+     */
+    private fun showEmbedSurface(showEmbed: Boolean) {
+        binding.embedWebView.visibility = if (showEmbed) View.VISIBLE else View.GONE
+        binding.playerView.visibility = if (showEmbed) View.GONE else View.VISIBLE
     }
 
     private fun renderPlaybackState(state: PlaybackState) {
@@ -266,7 +305,12 @@ class MainActivity : AppCompatActivity() {
             is PlaybackState.Buffering -> {
                 binding.loadingIndicator.visibility = View.VISIBLE
                 binding.errorPanel.visibility = View.GONE
-                updateStatus(getString(R.string.state_buffering), STATUS_BUFFERING)
+                val label = if (state.sourceIndex > 1 && state.totalSources > 1) {
+                    "${getString(R.string.state_buffering)}（來源 ${state.sourceIndex}/${state.totalSources}）"
+                } else {
+                    getString(R.string.state_buffering)
+                }
+                updateStatus(label, STATUS_BUFFERING)
             }
             is PlaybackState.Playing -> {
                 binding.loadingIndicator.visibility = View.GONE

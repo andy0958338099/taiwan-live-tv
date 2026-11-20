@@ -166,6 +166,15 @@ export default function Home() {
           onRetry={player.retry}
           onUserGesture={player.resumeFromUserGesture}
           channelName={selected?.channel_name ?? ''}
+          activeSourceIndex={player.activeSourceIndex}
+          totalSources={player.totalSources}
+          embedUrl={player.embedUrl}
+          channelId={selected?.channel_id ?? null}
+          iframeKey={player.iframeKey}
+          onIframeMount={player.setIframeEl}
+          onVideoMount={player.setVideoEl}
+          muted={player.muted}
+          onToggleMute={player.toggleMute}
         />
 
         {selected && (

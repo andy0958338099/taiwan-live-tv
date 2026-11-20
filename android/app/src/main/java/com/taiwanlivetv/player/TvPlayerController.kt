@@ -18,8 +18,12 @@ sealed class PlaybackState {
     /** 尚未開始 */
     data object Idle : PlaybackState()
 
-    /** 連線中／緩衝中 */
-    data class Buffering(val channelName: String) : PlaybackState()
+    /** 連線中／緩衝中。sourceIndex/totalSources 顯示目前使用第幾個來源 */
+    data class Buffering(
+        val channelName: String,
+        val sourceIndex: Int = 1,
+        val totalSources: Int = 1,
+    ) : PlaybackState()
 
     /** 播放中 */
     data class Playing(val channelName: String) : PlaybackState()
@@ -46,6 +50,8 @@ class TvPlayerController(private val context: Context) {
     private val handler = Handler(Looper.getMainLooper())
     private var retryCount = 0
     private var pendingChannel: Channel? = null
+    private var pendingUrls: List<String> = emptyList()
+    private var pendingIndex: Int = 0
 
     var player: ExoPlayer? = null
         private set
@@ -84,14 +90,41 @@ class TvPlayerController(private val context: Context) {
         override fun onPlayerError(error: PlaybackException) {
             val channel = pendingChannel ?: return
             val message = describeError(error)
-            Log.e(TAG, "播放失敗 [$channel]: $message", error)
+            Log.e(TAG, "播放失敗 [$channel] 來源${pendingIndex + 1}/${pendingUrls.size}: $message", error)
 
             if (shouldAutoRetry(error) && retryCount < MAX_AUTO_RETRIES) {
                 scheduleRetry(channel)
             } else {
-                emit(PlaybackState.Error(channel.channelName, message, error))
+                // 重試次數用盡或不可重試 → 改用下一個備援來源
+                failOverToNextSource(channel, message)
             }
         }
+    }
+
+    /**
+     * 切換到下一個備援來源。
+     *
+     * IPTV 清單的來源時常失效，自動切換到備援來源是必備功能。
+     * 所有來源都失敗後才會顯示錯誤訊息。
+     */
+    private fun failOverToNextSource(channel: Channel, reason: String) {
+        val urls = pendingUrls.ifEmpty { candidateUrls(channel) }
+        val nextIndex = pendingIndex + 1
+
+        if (nextIndex < urls.size) {
+            Log.i(TAG, "改用備援來源 ${nextIndex + 1}/${urls.size}: ${urls[nextIndex]}")
+            retryCount = 0
+            playWithUrl(channel, urls, nextIndex)
+            return
+        }
+
+        Log.e(TAG, "所有來源皆失敗 [$channel]: $reason")
+        emit(
+            PlaybackState.Error(
+                channel.channelName,
+                "$reason。已嘗試 ${urls.size} 個來源（含備援）皆無法播放。",
+            )
+        )
     }
 
     /** 建立播放器（Activity onCreate 呼叫） */
@@ -114,35 +147,70 @@ class TvPlayerController(private val context: Context) {
                 repeatMode = Player.REPEAT_MODE_OFF
                 // 直播不需另外設定 seek：ExoPlayer 預設會把 seek 限制在 live window 內，
                 // 超出範圍的 seek 會自動 clamp，不需要（也無法）設成 TIME_UNSET。
+                //
+                // 音量：ExoPlayer 預設就是全音量（volume = 1f），不需要額外設定。
+                // 這裡明確寫出來是為了讓意圖清楚 —— 電視直播本來就應該有聲音。
+                volume = 1f
             }
     }
 
-    /** 播放指定頻道 */
+    /** 播放指定頻道（自動嘗試備援來源） */
     fun play(channel: Channel) {
+        val urls = candidateUrls(channel)
+        if (urls.isEmpty()) {
+            emit(PlaybackState.Error(channel.channelName, "此頻道沒有可用的串流網址"))
+            return
+        }
+        playWithUrl(channel, urls, 0)
+    }
+
+    /**
+     * 取得該頻道的所有候選來源：主來源 + 備援來源。
+     *
+     * IPTV 清單的來源時常失效，備援來源是必備功能而非選配。
+     */
+    private fun candidateUrls(channel: Channel): List<String> {
+        val urls = mutableListOf<String>()
+        if (channel.streamUrl.isNotBlank()) urls.add(channel.streamUrl)
+        channel.backupUrls.forEach { backup ->
+            if (backup.isNotBlank() && !urls.contains(backup)) urls.add(backup)
+        }
+        return urls
+    }
+
+    /** 以指定 URL 播放，並在失敗時自動改用下一個來源 */
+    private fun playWithUrl(channel: Channel, urls: List<String>, index: Int) {
         val p = player ?: run {
             initialize()
             player ?: return
         }
         pendingChannel = channel
+        pendingUrls = urls
+        pendingIndex = index
         retryCount = 0
 
+        val url = urls[index]
+        Log.i(TAG, "播放 [$channel] 來源 ${index + 1}/${urls.size}: $url")
+
         val mediaItem = MediaItem.Builder()
-            .setUri(Uri.parse(channel.streamUrl))
+            .setUri(Uri.parse(url))
             .setMediaId(channel.channelId)
-            .setMimeType(if (channel.streamType == "dash") MimeTypes_DASH else MimeTypes_HLS)
+            .setMimeType(if (channel.streamType == "dash") MIME_DASH else MIME_HLS)
             .build()
 
         p.setMediaItem(mediaItem)
         p.prepare()
         p.playWhenReady = true
-        emit(PlaybackState.Buffering(channel.channelName))
+        emit(PlaybackState.Buffering(channel.channelName, index + 1, urls.size))
     }
 
-    /** 使用者主動重新連線 */
+    /** 使用者主動重新連線（從第一個來源重新開始） */
     fun reconnect() {
         val channel = pendingChannel ?: return
+        val urls = pendingUrls.ifEmpty { candidateUrls(channel) }
+        if (urls.isEmpty()) return
         retryCount = 0
-        play(channel)
+        playWithUrl(channel, urls, 0)
     }
 
     /** 釋放播放器 */
@@ -161,12 +229,15 @@ class TvPlayerController(private val context: Context) {
         retryCount++
         val delayMs = RETRY_BASE_DELAY_MS * (1L shl (retryCount - 1)).coerceAtMost(MAX_RETRY_DELAY_MS)
         Log.i(TAG, "第 $retryCount 次重試 [$channel]，延遲 ${delayMs}ms")
-        emit(PlaybackState.Buffering(channel.channelName))
+        emit(PlaybackState.Buffering(channel.channelName, pendingIndex + 1, pendingUrls.size))
 
         handler.postDelayed({
             val p = player ?: return@postDelayed
             if (p.playbackState == Player.STATE_IDLE || p.playbackState == Player.STATE_ENDED) {
-                play(channel)
+                val urls = pendingUrls.ifEmpty { candidateUrls(channel) }
+                if (urls.isNotEmpty()) {
+                    playWithUrl(channel, urls, pendingIndex)
+                }
             } else {
                 p.prepare()
                 p.playWhenReady = true
@@ -221,7 +292,7 @@ class TvPlayerController(private val context: Context) {
         private const val RETRY_BASE_DELAY_MS = 1_500L
         private const val MAX_RETRY_DELAY_MS = 8_000L
 
-        const val MimeTypes_HLS = "application/x-mpegURL"
-        const val MimeTypes_DASH = "application/dash+xml"
+        const val MIME_HLS = "application/x-mpegURL"
+        const val MIME_DASH = "application/dash+xml"
     }
 }

@@ -104,6 +104,19 @@
             app:show_buffering="when_playing"
             android:background="@color/tv_background" />
 
+        <!--
+          官方嵌入播放器（授權狀態 A 的來源）。
+          與 PlayerView 互斥顯示：embed 頻道用 WebView，其餘用 ExoPlayer。
+        -->
+        <WebView
+            android:id="@+id/embedWebView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/tv_background"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:visibility="gone" />
+
         <!-- 載入指示 -->
         <ProgressBar
             android:id="@+id/loadingIndicator"

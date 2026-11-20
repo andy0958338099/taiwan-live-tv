@@ -33,9 +33,21 @@ data class Channel(
     val corsEnabled: Boolean,
     val httpReferrer: String?,
     val notes: String?,
+    /** 備援來源網址（同頻道的其他可用來源）。IPTV 來源時常失效，這是必備欄位。 */
+    val backupUrls: List<String> = emptyList(),
+    /**
+     * 官方嵌入播放器網址。
+     *
+     * 當此欄位有值時，改以 WebView 嵌入官方播放器（而非 ExoPlayer 直接播放 HLS）。
+     * 對應授權狀態 A：官方頁面本身即以 iframe 內嵌該播放器，等同官方默許嵌入。
+     */
+    val embedUrl: String? = null,
 ) {
-    /** 是否有可播放的串流網址 */
-    val isPlayable: Boolean get() = streamUrl.isNotBlank()
+    /** 是否有可播放的串流網址（直接播放或官方嵌入皆算） */
+    val isPlayable: Boolean get() = streamUrl.isNotBlank() || !embedUrl.isNullOrBlank()
+
+    /** 此頻道是否需以 WebView 嵌入官方播放器播放 */
+    val isEmbedOnly: Boolean get() = streamUrl.isBlank() && !embedUrl.isNullOrBlank()
 
     /** 顯示用的完整名稱 */
     val displayName: String get() = channelName
@@ -187,7 +199,22 @@ object ChannelRepository {
             corsEnabled = optBoolean("cors_enabled", true),
             httpReferrer = optStringOrNull("http_referrer"),
             notes = optStringOrNull("notes"),
+            backupUrls = parseBackupUrls(this),
+            embedUrl = optStringOrNull("embed_url"),
         )
+    }
+
+    /**
+     * 解析 playlist_source.backup_urls。
+     *
+     * 這是匯入型頻道的欄位；人工維護的頻道沒有此欄位。
+     */
+    private fun parseBackupUrls(o: JSONObject): List<String> {
+        val ps = o.optJSONObject("playlist_source") ?: return emptyList()
+        val arr = ps.optJSONArray("backup_urls") ?: return emptyList()
+        return (0 until arr.length()).mapNotNull { i ->
+            arr.optJSONObject(i)?.optStringOrNull("url")?.takeIf { it.isNotBlank() }
+        }.filter { it.startsWith("http://") || it.startsWith("https://") }
     }
 
     private fun JSONObject.optStringOrNull(key: String): String? {

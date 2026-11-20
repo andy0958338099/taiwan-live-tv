@@ -75,6 +75,7 @@ const keyFields = (list) =>
     list.map((c) => ({
       id: c.channel_id,
       url: c.stream_url,
+      embed: c.embed_url ?? null,
       type: c.stream_type,
       auth: c.authorization_status,
       src: c.source_name,
@@ -100,8 +101,29 @@ check(
 const missingSource = android.channels.filter((c) => !c.source_name || !c.source_website);
 check('每個已發佈頻道都有來源名稱與官方網址', missingSource.length === 0);
 
-const invalidUrl = android.channels.filter((c) => !/^https?:\/\//.test(c.stream_url || ''));
-check('每個已發佈頻道的 stream_url 都是 http(s)', invalidUrl.length === 0);
+/**
+ * 播放網址檢查。
+ *
+ * 兩種合法的播放方式：
+ *   - `stream_url`：直接播放的串流網址（http/https）
+ *   - `embed_url`：官方嵌入播放器網址（http/https）
+ *     授權狀態 A（public_official）的來源以 iframe 嵌入官方播放器，
+ *     stream_url 會是空字串。
+ *
+ * 兩者至少要有一個，且都必須是 http(s)。
+ */
+const invalidUrl = android.channels.filter((c) => {
+  const stream = c.stream_url || '';
+  const embed = c.embed_url || '';
+  if (!stream && !embed) return true;
+  if (stream && !/^https?:\/\//.test(stream)) return true;
+  if (embed && !/^https?:\/\//.test(embed)) return true;
+  return false;
+});
+check(
+  '每個已發佈頻道都有 http(s) 的播放網址（stream_url 或 embed_url）',
+  invalidUrl.length === 0,
+);
 
 console.log('\n[4] 資料結構');
 check(

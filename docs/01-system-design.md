@@ -299,22 +299,69 @@ Chromium 會被誤導進原生路徑並永久卡在載入中。
 - **Android ExoPlayer 不受 CORS 限制** —— 播放器在原生層，直接對來源發出請求
 - **瀏覽器 HLS.js 受 CORS 限制** —— 來源必須回傳 `Access-Control-Allow-Origin`
 
-實測三個官方測試串流皆回傳 `Access-Control-Allow-Origin: *`，但一般電視台
-的直播來源多半不會。
+實測 28 個頻道：**18 個支援 CORS，10 個不支援**（來自 `cdn.qd.je` 與
+`61.221.215.25:8800` 等轉載主機）。
 
-### 方案選項
+### 已實作的方案：Next.js 代理路由
 
-| 方案 | 說明 | 評估 |
-|---|---|---|
-| A. 只上 CORS 友善的來源 | 篩選 `cors_enabled: true` 的頻道 | ✅ 零成本、無頻寬負擔。**預設採用** |
-| B. Next.js route handler 代理 | 伺服器轉送 manifest 與 segment | ⚠️ 伺服器承載全部頻寬；必須只代理授權頻道 |
-| C. CDN 邊緣代理 | Cloudflare Workers 等 | 成本較低但需額外帳號 |
+`web/src/app/api/proxy/route.ts` —— 單一端點同時處理 manifest 與 segment。
 
-**預設策略**：採 A。只有在 `cors_enabled: false` **且** `authorization_status`
-為允許值的頻道，才啟用 B 方案代理，並記錄使用量以便日後切換 C。
+```
+GET /api/proxy?url=<URL-encoded 目標網址>
+```
 
-**無論選哪個方案，都不解決授權問題** —— 代理只是解決技術障礙，
-不能把「不允許重新發佈」的來源變成可以發佈。
+**manifest 改寫**：代理取得 manifest 後，會把裡面的 segment／子 manifest 網址
+全部改寫成代理網址，否則瀏覽器還是會直接去來源拿 segment 而失敗。
+
+```m3u8
+# 原始（來源不支援 CORS，瀏覽器會擋）
+#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=6000000
+https://8.fast.hidns.vip/163189/lhjd
+
+# 代理改寫後
+#EXTM3U
+#EXT-X-STREAM-INF:BANDWIDTH=6000000
+/api/proxy?url=https%3A%2F%2F8.fast.hidns.vip%2F163189%2Flhjd
+```
+
+### 安全設計
+
+代理是對外開放的端點，必須防止被當成任意網址的開放代理。四道防線：
+
+| 防線 | 說明 |
+|---|---|
+| **1. 入口白名單** | 目標網址必須是已授權頻道的 `stream_url` 或備援來源，否則 403 |
+| **2. 子資源動態發現** | master manifest 會指向其他主機的子清單，這些無法事先列舉。採用「只能從已授權 manifest 中發現」的動態白名單 |
+| **3. SSRF 防護** | 所有請求解析 DNS 並檢查目標 IP，阻擋 `127.0.0.0/8`、`10.0.0.0/8`、`172.16/12`、`192.168/16`、`169.254/16`、`::1`、`fc00::/7` 與雲端 metadata 位址 |
+| **4. 協定限制** | 只允許 `http:` / `https:` |
+
+實測結果：
+
+```
+未授權網址       https://example.com/evil.m3u8        → 403
+未授權網址       https://www.google.com/               → 403
+SSRF 迴圈位址    http://127.0.0.1:3210/channels.json  → 403
+SSRF metadata    http://169.254.169.254/latest/...    → 403
+SSRF 私有網段    http://192.168.31.8:3210/            → 403
+SSRF IPv6 迴圈   http://[::1]:3210/                   → 403
+缺少 url 參數                                          → 400
+```
+
+### 頻寬成本
+
+代理會讓伺服器承載這些頻道的全部流量。10 個 CORS✗ 頻道在有觀眾時才會產生流量，
+且這些多為備援節點，單頻道流量不大。
+
+**啟用範圍**：只有 `cors_enabled: false` 的頻道會走代理；
+`cors_enabled: true` 的頻道仍直接連來源，不經伺服器。
+
+### 部署注意
+
+代理需要 **Node.js runtime**（用 `node:dns/promises` 做 SSRF 檢查），
+因此網站不能是純靜態輸出，必須保留 serverless／Node 環境。
+
+Netlify 免費方案支援 Next.js 的動態路由，無需額外費用。
 
 ## 6. 頻道授權與來源管理
 

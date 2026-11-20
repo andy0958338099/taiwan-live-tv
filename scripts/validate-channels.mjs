@@ -26,7 +26,7 @@ const ALL_STATUSES = [
   'restricted',
   'unknown',
 ];
-const VALID_STREAM_TYPES = ['hls', 'dash', 'mp4', 'progressive'];
+const VALID_STREAM_TYPES = ['hls', 'dash', 'mp4', 'progressive', 'embed'];
 const VALID_CATEGORIES = [
   'news',
   'general',
@@ -89,10 +89,14 @@ for (const [i, ch] of (data.channels || []).entries()) {
     err(`category "${ch.category}" 不存在於 categories 定義`);
   }
 
-  if (!ch.stream_url) {
-    err('缺少 stream_url');
-  } else if (!/^https?:\/\//.test(ch.stream_url)) {
+  if (!ch.stream_url && !ch.embed_url) {
+    err('缺少 stream_url（若為官方嵌入播放器來源，須改填 embed_url）');
+  } else if (ch.stream_url && !/^https?:\/\//.test(ch.stream_url)) {
     err(`stream_url 必須以 http:// 或 https:// 開頭（目前: ${ch.stream_url.slice(0, 40)}）`);
+  }
+
+  if (ch.embed_url && !/^https?:\/\//.test(ch.embed_url)) {
+    err('embed_url 必須以 http:// 或 https:// 開頭');
   }
 
   if (!VALID_STREAM_TYPES.includes(ch.stream_type)) {

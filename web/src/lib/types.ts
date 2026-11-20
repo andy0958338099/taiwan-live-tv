@@ -22,6 +22,26 @@ export const ALLOWED_AUTHORIZATION: readonly AuthorizationStatus[] = [
   'user_provided',
 ];
 
+export interface BackupSource {
+  url: string;
+  source?: string;
+  cors?: boolean;
+}
+
+/**
+ * 匯入型頻道的來源鏈資訊（由 scripts/import-playlists.mjs 產生）。
+ *
+ * backup_urls 是同一頻道的其他可用來源。IPTV 清單的來源時常失效，
+ * 播放器會在主來源失敗時自動改用備援來源。
+ */
+export interface PlaylistSource {
+  provider: string;
+  provider_label: string;
+  provider_url: string;
+  raw_channel_name: string;
+  backup_urls: BackupSource[];
+}
+
 export interface Channel {
   channel_id: string;
   channel_name: string;
@@ -42,6 +62,14 @@ export interface Channel {
   cors_enabled?: boolean;
   http_referrer?: string | null;
   notes?: string | null;
+  playlist_source?: PlaylistSource;
+  /**
+   * 官方嵌入播放器網址。
+   *
+   * 若此欄位有值，前端改以 iframe 嵌入官方播放器而非直接播放 HLS。
+   * 這是授權狀態 A（官方明確允許嵌入）的來源所使用的播放方式。
+   */
+  embed_url?: string | null;
 }
 
 export interface Category {
@@ -64,12 +92,19 @@ export interface ChannelCatalog {
  *
  * 前端不做這道防線是危險的 —— 資料雖然來自我們自己的伺服器，
  * 但一旦網域或流程出錯，前端不過濾就會把未授權內容顯示出去。
+ *
+ * 播放網址可以是 `stream_url`（直接播放 HLS/DASH）或 `embed_url`
+ * （嵌入官方播放器）。兩者至少要有一個，否則這個頻道無法播放。
  */
 export function isPublishable(channel: Channel): boolean {
+  const hasSource =
+    channel.stream_url.trim().length > 0 ||
+    (channel.embed_url?.trim().length ?? 0) > 0;
+
   return (
     channel.is_active &&
     ALLOWED_AUTHORIZATION.includes(channel.authorization_status) &&
-    channel.stream_url.trim().length > 0
+    hasSource
   );
 }
 

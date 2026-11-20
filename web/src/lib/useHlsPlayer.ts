@@ -3,8 +3,66 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Hls from 'hls.js';
 import type { Channel } from '../lib/types';
+import { isYouTubeEmbed, postYouTubeCommand, useEmbedPlayer } from './useEmbedPlayer';
 
 export type PlayerStatus = 'idle' | 'loading' | 'playing' | 'error';
+
+/**
+ * 播放方式
+ *
+ * - `hls`  —— 直接以 HLS.js／原生 HLS 播放 m3u8
+ * - `iframe` —— 以 iframe 嵌入官方播放器（YouTube IFrame Player、litv 播放器等）
+ *
+ * 為什麼需要 iframe 模式：
+ *   查證發現，部分台灣頻道的官方直播頁本身就是以 iframe 內嵌播放器呈現
+ *   （例如三立、東森用 litv 播放器；華視、中天、中視、鏡新聞、大愛用 YouTube）。
+ *   這些播放器端點**沒有** X-Frame-Options 或 frame-ancestors 限制，
+ *   等同官方已默許第三方嵌入 —— 屬於授權狀態 A。
+ *
+ *   這類來源多半「不提供公開 HLS manifest」，只有 iframe 可用。
+ */
+export type PlaybackMode = 'hls' | 'iframe';
+
+export interface BackupSource {
+  url: string;
+  source?: string;
+  cors?: boolean;
+}
+
+/**
+ * 取得應該使用的串流網址。
+ *
+ * 若來源不支援 CORS（`cors_enabled === false`），改走本站的代理路由。
+ * 代理會驗證目標網址確實在已授權的頻道清單中，不是開放代理。
+ *
+ * 注意：代理會為 manifest 內的子資源加上簽章（`sig` 參數），
+ * 那些簽章由代理端自行產生並驗證，前端不需要處理。
+ */
+export function resolveStreamUrl(channel: Channel): string {
+  if (channel.cors_enabled !== false) return channel.stream_url;
+  return `/api/proxy?url=${encodeURIComponent(channel.stream_url)}`;
+}
+
+/**
+ * 取得應該使用的備援來源網址（同樣套用代理規則）。
+ */
+export function resolveBackupUrls(channel: Channel): string[] {
+  return (channel.playlist_source?.backup_urls ?? [])
+    .map((b) => b.url)
+    .filter(Boolean)
+    .map((url) =>
+      channel.cors_enabled === false
+        ? `/api/proxy?url=${encodeURIComponent(url)}`
+        : url,
+    );
+}
+
+/** 頻道是否應使用 iframe 播放 */
+export function playbackModeOf(channel: Channel | null): PlaybackMode {
+  if (!channel) return 'hls';
+  const embed = (channel as Channel & { embed_url?: string }).embed_url;
+  return embed ? 'iframe' : 'hls';
+}
 
 /**
  * 判斷瀏覽器是否應走「原生 HLS」路徑。
@@ -24,7 +82,6 @@ export function shouldUseNativeHls(video: HTMLVideoElement): boolean {
 
   const isIOS =
     /iPad|iPhone|iPod/.test(ua) ||
-    // iPadOS 13+ 預設偽裝成 Mac，需靠觸控點數判斷
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
   // Safari 但排除 Chrome / Chromium / Edge / Opera（它們都帶 Safari 字樣）
@@ -39,22 +96,72 @@ export function shouldUseNativeHls(video: HTMLVideoElement): boolean {
 }
 
 /**
- * HLS 播放器 Hook。
+ * HLS 播放器 Hook —— 支援備援來源自動切換。
  *
  * 設計原則：
  *  1. Safari / iOS 走原生 HLS，其他瀏覽器用 hls.js
  *  2. **播放失敗必須明確顯示錯誤** —— 絕不把無效串流假裝成正常播放
  *  3. 自動播放受瀏覽器政策限制：必須 muted + playsInline，並提供使用者點擊入口
  *  4. 載入逾時 watchdog：串流卡住時必須轉為錯誤，不能永遠顯示「連線中」
+ *  5. **備援來源 failover**：主來源失敗時自動改用下一個來源。
+ *     IPTV 清單的來源時常失效，這是必備功能而非選配。
  */
 export function useHlsPlayer(channel: Channel | null) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  /**
+   * video 元素放在 state（搭配 callback ref）。
+   *
+   * 原因：React 的 ref 賦值不會觸發 re-render。
+   *   而 `<video>` 元素會在 HLS 模式與 iframe 模式之間被替換
+   *   （兩個分支回傳不同的 JSX 樹），
+   *   若事件監聽器只綁在 mount 時拿到的元素上，切換頻道後就會失效 ——
+   *   結果是播放中永遠不會觸發取消靜音。
+   */
+  const [videoEl, setVideoElState] = useState<HTMLVideoElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [needsUserGesture, setNeedsUserGesture] = useState(false);
   const [nativeHls, setNativeHls] = useState(false);
+  const [activeSourceIndex, setActiveSourceIndex] = useState(0);
+  const [attemptedUrls, setAttemptedUrls] = useState<string[]>([]);
+  /**
+   * 靜音狀態。
+   *
+   * 預設為「靜音」，但**播放一旦開始就自動取消靜音**。
+   *
+   * 為什麼要這麼做：瀏覽器的自動播放政策只允許「靜音自動播放」。
+   *   但靜音自動播放需要 video.muted = true，否則 play() 會被拒絕。
+   *
+   *   解法：先以靜音狀態啟動（滿足自動播放政策），
+   *   等 playing 事件觸發後再把 muted 設為 false。
+   *   切換頻道本身是使用者點擊（user activation），
+   *   因此取消靜音不會被 Chrome 暫停。
+   */
+  const [muted, setMuted] = useState(true);
+  /** 使用者是否手動靜音（手動靜音後不再自動取消靜音） */
+  const userMutedRef = useRef(false);
+  /**
+   * 是否期望保持「有聲播放」。
+   *
+   * Chrome 會在媒體變成有聲後非同步地自動暫停它。
+   * 這個旗標讓常駐的 pause 監聽器知道：被暫停是 Chrome 的自動行為，
+   * 應該重新 play() 讓它繼續，而不是當成使用者暫停。
+   */
+  const wantUnmutedRef = useRef(false);
+  /**
+   * iframe 播放器的網址與 key。
+   *
+   * key 用來強制重新掛載 iframe（切換靜音時需要重新載入播放器）；
+   * src 則是實際載入的網址，可能與 channel.embed_url 不同（例如加了 mute=1）。
+   */
+  const [iframeSrc, setIframeSrc] = useState<string | null>(null);
+  const [iframeKey, setIframeKey] = useState(0);
+
+  const mode = playbackModeOf(channel);
+  const embedUrl = (channel as (Channel & { embed_url?: string }) | null)?.embed_url ?? null;
 
   const teardown = useCallback(() => {
     if (watchdogRef.current) {
@@ -67,32 +174,61 @@ export function useHlsPlayer(channel: Channel | null) {
     }
   }, []);
 
+  /** 取得該頻道的所有候選來源：主來源 + 備援（皆已套用代理規則） */
+  const candidateUrls = useCallback((): string[] => {
+    if (!channel) return [];
+    const list: string[] = [];
+    const primary = resolveStreamUrl(channel);
+    if (primary) list.push(primary);
+    for (const b of resolveBackupUrls(channel)) {
+      if (!list.includes(b)) list.push(b);
+    }
+    return list;
+  }, [channel]);
+
   /** 載入 watchdog：超過時限仍未開始播放 → 判定為失敗 */
-  const armWatchdog = useCallback((target: Channel) => {
-    if (watchdogRef.current) clearTimeout(watchdogRef.current);
-    watchdogRef.current = setTimeout(() => {
-      const video = videoRef.current;
-      const started = video && video.readyState >= 3 && video.currentTime > 0;
-      if (!started) {
-        setStatus('error');
-        setErrorMessage(
-          `載入「${target.channel_name}」逾時。來源可能已失效、不支援跨網域存取（CORS），或需要登入。`,
-        );
-      }
-    }, LOAD_TIMEOUT_MS);
-  }, []);
+  const armWatchdog = useCallback(
+    (target: Channel, url: string) => {
+      if (watchdogRef.current) clearTimeout(watchdogRef.current);
+      watchdogRef.current = setTimeout(() => {
+        const video = videoRef.current;
+        const started = video && video.readyState >= 3 && video.currentTime > 0;
+        if (!started) {
+          void handleFailureRef.current?.(
+            target,
+            url,
+            `載入「${target.channel_name}」逾時`,
+          );
+        }
+      }, LOAD_TIMEOUT_MS);
+    },
+    // handleFailure 以 ref 引用避免循環相依
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   const startPlayback = useCallback(
-    async (target: Channel) => {
+    async (target: Channel, url: string) => {
       const video = videoRef.current;
       if (!video) return;
 
       teardown();
       setErrorMessage(null);
       setStatus('loading');
-      armWatchdog(target);
+      armWatchdog(target, url);
 
-      const url = target.stream_url;
+      /**
+       * 自動播放政策只允許「靜音自動播放」。
+       * 所以啟動時一定要先設 muted = true，
+       * 等 playing 事件觸發後再取消靜音（見 unmuteAndResume）。
+       *
+       * 使用者若已手動選擇靜音，就維持靜音不再自動取消。
+       */
+      video.muted = true;
+      video.volume = 1;
+      setMuted(true);
+      // 新頻道：尚未嘗試取消靜音
+      wantUnmutedRef.current = false;
 
       // --- 原生 HLS（Safari / iOS）---
       if (shouldUseNativeHls(video)) {
@@ -139,6 +275,12 @@ export function useHlsPlayer(channel: Channel | null) {
         levelLoadingMaxRetry: 3,
         fragLoadingTimeOut: 30_000,
         fragLoadingMaxRetry: 4,
+        // 起始碼率：預設 -1 會從最低階開始再慢慢往上跳，
+        // 電視螢幕大、等爬升的時間長，觀看體驗差。
+        // 設為 2 表示從第 3 階起步（若只有 1–2 階則自動退到最後一階）。
+        startLevel: 2,
+        // 限制最高碼率不超過播放器尺寸，避免在低解析度裝置上浪費頻寬
+        capLevelToPlayerSize: true,
       });
       hlsRef.current = hls;
 
@@ -155,44 +297,213 @@ export function useHlsPlayer(channel: Channel | null) {
         });
       });
 
-      hls.on(Hls.Events.ERROR, (_event: string, data: { fatal: boolean; type: string; details: string }) => {
-        if (!data.fatal) return;
+      hls.on(
+        Hls.Events.ERROR,
+        (_event: string, data: { fatal: boolean; type: string; details: string }) => {
+          if (!data.fatal) return;
 
-        switch (data.type) {
-          case Hls.ErrorTypes.NETWORK_ERROR:
-            if (data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR ||
-                data.details === Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT) {
-              setErrorMessage(
-                '無法載入串流清單：來源可能未提供跨網域存取（CORS），或網址已失效',
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              if (
+                data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR ||
+                data.details === Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT
+              ) {
+                void handleFailure(
+                  target,
+                  url,
+                  '無法載入串流清單：來源可能未提供跨網域存取（CORS），或網址已失效',
+                );
+              } else {
+                void handleFailure(target, url, '網路錯誤：串流載入失敗');
+              }
+              break;
+
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              void handleFailure(
+                target,
+                url,
+                '媒體解碼錯誤：此串流的編碼格式可能不受支援',
               );
-              setStatus('error');
-              hls.startLoad();
-            } else {
-              setErrorMessage('網路錯誤：串流載入失敗');
-              setStatus('error');
-              hls.recoverMediaError();
-            }
-            break;
+              break;
 
-          case Hls.ErrorTypes.MEDIA_ERROR:
-            setErrorMessage('媒體解碼錯誤：此串流的編碼格式可能不受支援');
-            setStatus('error');
-            hls.recoverMediaError();
-            break;
-
-          default:
-            setErrorMessage(`播放失敗（${data.details || data.type}）`);
-            setStatus('error');
-            teardown();
-            break;
-        }
-      });
+            default:
+              void handleFailure(target, url, `播放失敗（${data.details || data.type}）`);
+              break;
+          }
+        },
+      );
 
       hls.loadSource(url);
       hls.attachMedia(video);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [armWatchdog, teardown],
   );
+
+  /**
+   * 播放失敗處理：嘗試下一個備援來源，全部失敗才顯示錯誤。
+   */
+  const handleFailure = useCallback(
+    async (target: Channel, failedUrl: string, reason: string) => {
+      const urls = candidateUrls();
+      const currentIndex = urls.indexOf(failedUrl);
+      const nextIndex = currentIndex >= 0 ? currentIndex + 1 : activeSourceIndex + 1;
+
+      setAttemptedUrls((prev) => [...new Set([...prev, failedUrl])]);
+
+      if (nextIndex < urls.length) {
+        // 還有備援來源可試
+        const nextUrl = urls[nextIndex];
+        setActiveSourceIndex(nextIndex);
+        console.info(
+          `[播放器] 「${target.channel_name}」來源失敗（${reason}），改用備援來源 ${nextIndex + 1}/${urls.length}`,
+        );
+        await startPlayback(target, nextUrl);
+        return;
+      }
+
+      // 所有來源都失敗
+      teardown();
+      setStatus('error');
+      setErrorMessage(`${reason}。已嘗試 ${urls.length} 個來源（含備援）皆無法播放。`);
+    },
+    [candidateUrls, startPlayback, teardown, activeSourceIndex],
+  );
+
+  // handleFailure 的 ref，供 watchdog 使用（避免 useCallback 循環相依）
+  const handleFailureRef = useRef(handleFailure);
+  useEffect(() => {
+    handleFailureRef.current = handleFailure;
+  }, [handleFailure]);
+
+  /**
+   * 取消靜音。
+   *
+   * HLS 模式：直接設 video.muted = false。
+   * iframe 模式：
+   *   - YouTube：用 IFrame Player API 下 unMute 指令（不需重新載入播放器）
+   *   - 其他播放器：無法從外部控制，改用重新載入且移除 mute=1 的方式
+   */
+  /**
+   * iframe 元素掛載回呼（由 VideoPlayer 當作 ref 使用）。
+   *
+   * 為什麼不用 ref 物件直接傳：React 的 ref 賦值不會觸發 re-render，
+   *   useEffect 若依賴 ref.current 就不會重跑 —— handshake / 取消靜音的邏輯
+   *   會永遠掛不上。所以改用 callback ref + state，讓元素掛載能觸發 effect。
+   */
+  const [iframeMounted, setIframeMounted] = useState<HTMLIFrameElement | null>(null);
+
+  const setIframeEl = useCallback((el: HTMLIFrameElement | null) => {
+    iframeRef.current = el;
+    setIframeMounted(el);
+  }, []);
+
+  /** video 元素掛載回呼（由 VideoPlayer 當作 ref 使用） */
+  const setVideoEl = useCallback((el: HTMLVideoElement | null) => {
+    videoRef.current = el;
+    setVideoElState(el);
+  }, []);
+
+  // 嵌入播放器的整合：litv handshake + YouTube 取消靜音
+  useEmbedPlayer(iframeMounted, channel?.channel_id ?? null, embedUrl);
+
+  /**
+   * 取消靜音並確保播放繼續。
+   *
+   * 為什麼需要這麼多步驟（實測 Chrome 157 行為）：
+   *   1. 瀏覽器的自動播放政策**只允許靜音自動播放**。
+   *      所以 video 必須先以 muted = true 啟動，play() 才不會被拒絕。
+   *   2. 播放開始後再取消靜音，Chrome 會因為「變成有聲但沒有使用者手勢」
+   *      而**自動暫停**該媒體。
+   *      → 所以取消靜音之後必須補一次 play() 讓它繼續。
+   *   3. 若補 play() 仍被拒絕（例如 App 啟動時自動恢復上次頻道，完全沒有
+   *      使用者互動），就退回靜音並提示使用者點擊。
+   */
+  /**
+   * 取消靜音並確保播放繼續。
+   *
+   * 為什麼需要這麼多步驟（實測 Chrome 157）：
+   *   1. 瀏覽器的自動播放政策**只允許靜音自動播放**。
+   *      所以 video 必須先以 muted = true 啟動，play() 才不會被拒絕。
+   *   2. 播放開始後再取消靜音，Chrome 會因為「變成有聲但沒有使用者手勢」
+   *      而**非同步地自動暫停**該媒體。
+   *      實測這個 pause 可能在取消靜音後好幾秒才發生，
+   *      所以不能用「取消靜音後馬上看一眼」的短暫檢查，
+   *      必須有一個常駐的監聽器：只要被 Chrome 暫停就重新 play()。
+   *   3. 若重新 play() 仍被拒絕（例如完全沒有使用者互動），
+   *      就退回靜音並提示使用者點擊。
+   */
+  const unmuteAndResume = useCallback(async () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = false;
+    video.volume = 1;
+    wantUnmutedRef.current = true;
+
+    try {
+      await video.play();
+      setMuted(false);
+      setNeedsUserGesture(false);
+    } catch {
+      // 沒有使用者手勢 → Chrome 不允許有聲自動播放 → 退回靜音
+      wantUnmutedRef.current = false;
+      video.muted = true;
+      setMuted(true);
+      try {
+        await video.play();
+      } catch {
+        // 仍然無法播放，維持提示
+      }
+      setNeedsUserGesture(true);
+    }
+  }, []);
+
+  const unmute = useCallback(() => {
+    if (mode === 'iframe') {
+      if (isYouTubeEmbed(embedUrl)) {
+        postYouTubeCommand(iframeMounted, 'unMute');
+        postYouTubeCommand(iframeMounted, 'setVolume', 100);
+        setMuted(false);
+        return;
+      }
+      if (!embedUrl) return;
+      const next = embedUrl.replace(/([?&])mute=1(&|$)/, (_m, p1, p2) => (p2 ? p1 : ''));
+      if (next !== embedUrl) {
+        setIframeSrc(next);
+        setIframeKey((k) => k + 1);
+      }
+      setMuted(false);
+      return;
+    }
+    void unmuteAndResume();
+  }, [mode, embedUrl, iframeMounted, unmuteAndResume]);
+
+  /** 手動切換靜音 */
+  const toggleMute = useCallback(() => {
+    if (muted) {
+      userMutedRef.current = false;
+      unmute();
+    } else {
+      userMutedRef.current = true;
+      wantUnmutedRef.current = false;
+      if (mode === 'iframe') {
+        if (isYouTubeEmbed(embedUrl)) {
+          postYouTubeCommand(iframeMounted, 'mute');
+          setMuted(true);
+          return;
+        }
+        if (!embedUrl) return;
+        const sep = embedUrl.includes('?') ? '&' : '?';
+        setIframeSrc(`${embedUrl}${sep}mute=1`);
+        setIframeKey((k) => k + 1);
+      } else {
+        const video = videoRef.current;
+        if (video) video.muted = true;
+      }
+      setMuted(true);
+    }
+  }, [muted, unmute, mode, embedUrl]);
 
   // 頻道變更時重新載入
   useEffect(() => {
@@ -201,13 +512,32 @@ export function useHlsPlayer(channel: Channel | null) {
       setStatus('idle');
       return;
     }
-    void startPlayback(channel);
+    if (mode === 'iframe') {
+      // iframe 模式：交由 VideoPlayer 渲染 <iframe>，此處不做 HLS 處理
+      setIframeSrc(embedUrl);
+      setIframeKey((k) => k + 1);
+      setStatus('playing');
+      setErrorMessage(null);
+      return;
+    }
+    setIframeSrc(null);
+    const urls = candidateUrls();
+    setActiveSourceIndex(0);
+    setAttemptedUrls([]);
+    if (urls.length > 0) {
+      void startPlayback(channel, urls[0]);
+    }
     return () => teardown();
-  }, [channel, startPlayback, teardown]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [channel, candidateUrls, mode, embedUrl]);
 
   // video 事件監聽
+  //
+  // 依賴 videoEl（元素本身）而不是 videoRef.current ——
+  // `<video>` 元素會在 HLS 模式與 iframe 模式切換時被替換，
+  // 若依賴 ref.current，監聽器會綁在已被移除的元素上，之後就再也收不到事件。
   useEffect(() => {
-    const video = videoRef.current;
+    const video = videoEl;
     if (!video) return;
 
     const onPlaying = () => {
@@ -217,10 +547,36 @@ export function useHlsPlayer(channel: Channel | null) {
       }
       setStatus('playing');
       setErrorMessage(null);
+
+      // 播放已開始 → 取消靜音（除非使用者手動靜音過）
+      if (!userMutedRef.current) {
+        void unmuteAndResume();
+      }
     };
     const onWaiting = () => setStatus('loading');
+
+    /**
+     * Chrome 的自動暫停處理。
+     *
+     * 當媒體從靜音變成有聲，Chrome 會非同步地暫停它（沒有使用者手勢）。
+     * 這裡偵測到被暫停且我們期望有聲播放時，就重新 play() 讓它繼續。
+     *
+     * 若是使用者自己按了暫停（wantUnmutedRef 為 false），則不做任何事。
+     */
+    const onPause = () => {
+      if (!wantUnmutedRef.current || userMutedRef.current) return;
+      const v = videoRef.current;
+      if (!v || v.ended) return;
+      v.play().catch(() => {
+        // 沒有使用者手勢 → 退回靜音
+        wantUnmutedRef.current = false;
+        v.muted = true;
+        setMuted(true);
+        setNeedsUserGesture(true);
+      });
+    };
+
     const onError = () => {
-      // 原生 HLS 的錯誤：video.error 只有代碼，沒有詳細訊息
       if (nativeHls) {
         setErrorMessage('串流載入失敗：請確認來源網址有效且支援跨網域存取');
         setStatus('error');
@@ -229,25 +585,44 @@ export function useHlsPlayer(channel: Channel | null) {
 
     video.addEventListener('playing', onPlaying);
     video.addEventListener('waiting', onWaiting);
+    video.addEventListener('pause', onPause);
     video.addEventListener('error', onError);
 
     return () => {
       video.removeEventListener('playing', onPlaying);
       video.removeEventListener('waiting', onWaiting);
+      video.removeEventListener('pause', onPause);
       video.removeEventListener('error', onError);
     };
-  }, [nativeHls]);
+  }, [nativeHls, videoEl, unmuteAndResume]);
 
   const retry = useCallback(() => {
-    if (channel) void startPlayback(channel);
-  }, [channel, startPlayback]);
+    if (!channel) return;
+    if (mode === 'iframe') {
+      // iframe 模式由上層重新掛載 iframe（改 key 即可）
+      setAttemptedUrls([]);
+      setStatus('playing');
+      setErrorMessage(null);
+      return;
+    }
+    const urls = candidateUrls();
+    if (urls.length === 0) return;
+    // 重試時從第一個來源重新開始
+    setActiveSourceIndex(0);
+    setAttemptedUrls([]);
+    void startPlayback(channel, urls[0]);
+  }, [channel, candidateUrls, startPlayback, mode]);
 
   const resumeFromUserGesture = useCallback(async () => {
     const video = videoRef.current;
     if (!video) return;
     try {
+      // 使用者點擊 = 有使用者手勢 → 可以直接以有聲方式播放
+      video.muted = false;
+      video.volume = 1;
       await video.play();
       setNeedsUserGesture(false);
+      setMuted(false);
       setStatus('playing');
     } catch {
       // 仍然失敗，保持提示
@@ -256,12 +631,22 @@ export function useHlsPlayer(channel: Channel | null) {
 
   return {
     videoRef,
+    iframeRef,
+    setIframeEl,
+    setVideoEl,
     status,
     errorMessage,
     needsUserGesture,
     nativeHls,
     retry,
     resumeFromUserGesture,
+    activeSourceIndex,
+    totalSources: candidateUrls().length,
+    mode,
+    embedUrl: iframeSrc,
+    iframeKey,
+    muted,
+    toggleMute,
   };
 }
 

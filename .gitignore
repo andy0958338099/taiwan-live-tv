@@ -33,6 +33,11 @@ android/app/src/main/assets/channels.json
 .env.local
 .env.*.local
 
+# TypeScript 增量建置快取
+*.tsbuildinfo
+
 # Logs
 *.log
 /logs
+shared/.probe-result.json
+*.probe-result.json

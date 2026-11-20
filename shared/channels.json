@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-19T12:04:35.992Z",
+  "updated_at": "2026-11-20T12:01:10.892Z",
   "categories": [
     {
       "id": "news",
@@ -120,7 +120,7 @@
       "category": "general",
       "channel_number": 903,
       "logo": null,
-      "stream_url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/gear0/prog_index.m3u8",
+      "stream_url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8",
       "stream_type": "hls",
       "source_name": "Apple 官方公開測試串流",
       "source_website": "https://developer.apple.com/streaming/examples/",
@@ -138,6 +138,1217 @@
       "cors_enabled": true,
       "http_referrer": null,
       "notes": "僅供 MVP 驗證，非實際台灣頻道。"
+    },
+    {
+      "channel_id": "playlist-緯來-緯來",
+      "channel_name": "緯來",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/緯來體育台.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/bmgxnp.m3u8",
+      "stream_type": "hls",
+      "source_name": "緯來（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.349Z",
+      "description": "由 IPTV 播放清單取得之「緯來體育「Relay」」。備援來源 6 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：緯來體育「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "緯來體育「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/bmgxnp.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/yqne38.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/djz6c4.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/6tbfep.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://cdn.qd.je/163189/wlxj",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/wlty",
+            "source": "yang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-愛爾達-愛爾達體育",
+      "channel_name": "愛爾達體育",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/愛爾達體育1台.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/hfu9qf.m3u8",
+      "stream_type": "hls",
+      "source_name": "愛爾達體育（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.351Z",
+      "description": "由 IPTV 播放清單取得之「愛爾達體育 一「Relay」」。備援來源 4 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：愛爾達體育 一「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "愛爾達體育 一「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/hfu9qf.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/tw6ac9.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/dcnw5r.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/2j74gj.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-年代-年代-much",
+      "channel_name": "年代 MUCH",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/年代新聞台.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/tf9s8r.m3u8",
+      "stream_type": "hls",
+      "source_name": "年代 MUCH（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.351Z",
+      "description": "由 IPTV 播放清單取得之「年代新聞「Relay」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：年代新聞「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "年代新聞「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/tf9s8r.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-台視-台視-ttv",
+      "channel_name": "台視 TTV",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/台視.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/be6z3t.m3u8",
+      "stream_type": "hls",
+      "source_name": "台視 TTV（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.351Z",
+      "description": "由 IPTV 播放清單取得之「台視「Relay」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：台視「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "台視「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/be6z3t.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-MTV-mtv台",
+      "channel_name": "MTV台",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/MTV綜合台.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/dpz7pb.m3u8",
+      "stream_type": "hls",
+      "source_name": "MTV台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.351Z",
+      "description": "由 IPTV 播放清單取得之「MTV綜合台「Relay」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：MTV綜合台「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "MTV綜合台「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/dpz7pb.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-動物星球-動物星球",
+      "channel_name": "動物星球",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/動物星球.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/8uvr8t.m3u8",
+      "stream_type": "hls",
+      "source_name": "動物星球（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.351Z",
+      "description": "由 IPTV 播放清單取得之「動物星球「Relay」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：動物星球「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "動物星球「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/8uvr8t.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-龍祥-龍祥",
+      "channel_name": "龍祥",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/龍祥時代.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/haj8zn.m3u8",
+      "stream_type": "hls",
+      "source_name": "龍祥（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「龍祥時代「Relay」」。備援來源 2 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：龍祥時代「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "龍祥時代「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/haj8zn.m3u8",
+            "source": "yang",
+            "cors": true
+          },
+          {
+            "url": "https://cdn.qd.je/163189/lxsd",
+            "source": "yang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-CINEMAX-cinemax",
+      "channel_name": "CINEMAX",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/CINEMAX.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/k6r8vd.m3u8",
+      "stream_type": "hls",
+      "source_name": "CINEMAX（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「CINEMAX「Relay」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：CINEMAX「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "CINEMAX「Relay」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/tw/k6r8vd.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-龍華-龍華電視",
+      "channel_name": "龍華電視",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/龍華經典台.webp",
+      "stream_url": "https://cdn.qd.je/163189/lhjd",
+      "stream_type": "hls",
+      "source_name": "龍華電視（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「龍華經典台」。備援來源 6 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：龍華經典台。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "龍華經典台",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/lhjd",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/lhox",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/lhrh",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/lhxj",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/lhyp",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/lhkt",
+            "source": "yang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-台灣戲劇-台灣戲劇台",
+      "channel_name": "台灣戲劇台",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/台灣戲劇台.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/ofiii/vsccw4.m3u8",
+      "stream_type": "hls",
+      "source_name": "台灣戲劇台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「台灣戲劇「ofiii」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：台灣戲劇「ofiii」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "台灣戲劇「ofiii」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/ofiii/vsccw4.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-第1商業-第1商業台",
+      "channel_name": "第1商業台",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/第1商業.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/ofiii/f9nc8f.m3u8",
+      "stream_type": "hls",
+      "source_name": "第1商業台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「第1商業「ofiii」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：第1商業「ofiii」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "第1商業「ofiii」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/ofiii/f9nc8f.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-Smart知識-smart知識台",
+      "channel_name": "Smart知識台",
+      "name_en": null,
+      "category": "education",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/Smart知識台.webp",
+      "stream_url": "https://iptv.yang-1989.xyz/ofiii/yb2pxm.m3u8",
+      "stream_type": "hls",
+      "source_name": "Smart知識台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「Smart知識「ofiii」」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：Smart知識「ofiii」。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "Smart知識「ofiii」",
+        "backup_urls": [
+          {
+            "url": "https://iptv.yang-1989.xyz/ofiii/yb2pxm.m3u8",
+            "source": "yang",
+            "cors": true
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-翡翠台-tvb翡翠台",
+      "channel_name": "TVB翡翠台",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/翡翠台.webp",
+      "stream_url": "https://cdn.qd.je/163189/fct",
+      "stream_type": "hls",
+      "source_name": "TVB翡翠台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「翡翠台」。備援來源 4 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：翡翠台。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "翡翠台",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/fct",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/hlt",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/jade",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/hlfct",
+            "source": "yang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-TVB-tvb系",
+      "channel_name": "TVB系",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/TVBJ1.webp",
+      "stream_url": "https://cdn.qd.je/163189/j1",
+      "stream_type": "hls",
+      "source_name": "TVB系（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「TVBJ1」。備援來源 6 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：TVBJ1。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "TVBJ1",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/j1",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/tvbp",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/tvb1",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/tvbd",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/yzwx",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/tvbp2",
+            "source": "yang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-Now-now-tv",
+      "channel_name": "Now TV",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/Now新聞台.webp",
+      "stream_url": "https://cdn.qd.je/163189/now",
+      "stream_type": "hls",
+      "source_name": "Now TV（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「Now新聞台」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：Now新聞台。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "Now新聞台",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/now",
+            "source": "yang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-HOY-hoy-tv",
+      "channel_name": "HOY TV",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/HOY%20TV.webp",
+      "stream_url": "https://cdn.qd.je/163189/hoy2",
+      "stream_type": "hls",
+      "source_name": "HOY TV（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「HOY TV」。備援來源 6 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "kuliao",
+        "kuliao",
+        "kuliao"
+      ],
+      "region": "台灣",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：HOY TV。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "HOY TV",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/hoy2",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/hoy78",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/hoy76",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/hoy",
+            "source": "kuliao",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/hoy2",
+            "source": "kuliao",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/hoy78",
+            "source": "kuliao",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-澳視-澳視",
+      "channel_name": "澳視",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/澳視澳門.webp",
+      "stream_url": "https://cdn.qd.je/163189/asam",
+      "stream_type": "hls",
+      "source_name": "澳視（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「澳視澳門」。備援來源 1 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang"
+      ],
+      "region": "台灣",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：澳視澳門。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "澳視澳門",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/asam",
+            "source": "yang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-天映-天映",
+      "channel_name": "天映",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/天映經典頻道.webp",
+      "stream_url": "https://cdn.qd.je/163189/ccm",
+      "stream_type": "hls",
+      "source_name": "天映（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「天映經典「新加坡」」。備援來源 6 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "yang",
+        "kuliao"
+      ],
+      "region": "台灣",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：天映經典「新加坡」。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "天映經典「新加坡」",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/ccm",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/typd",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/ccm2",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/jtyh",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/typd2",
+            "source": "yang",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/ccm",
+            "source": "kuliao",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "playlist-TVBS-tvbs",
+      "channel_name": "TVBS",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": "https://epg.112114.xyz/logo/TVBS%20Asia.png",
+      "stream_url": "http://38.64.72.148/hls/modn/list/4005/playlist.m3u8",
+      "stream_type": "hls",
+      "source_name": "TVBS（經 裤佬 IPTV 清單轉載）",
+      "source_website": "https://iptv.445569.xyz/live.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-19T12:20:56.352Z",
+      "description": "由 IPTV 播放清單取得之「TVBS Asia」。備援來源 3 個。",
+      "tags": [
+        "台灣",
+        "iptv",
+        "kuliao",
+        "kuliao",
+        "kuliao",
+        "suxuang"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "轉載自 裤佬 IPTV（https://iptv.445569.xyz/live.m3u）。原始頻道名稱：TVBS Asia。此來源支援 CORS，網頁版可直接播放。",
+      "playlist_source": {
+        "provider": "kuliao",
+        "provider_label": "裤佬 IPTV",
+        "provider_url": "https://iptv.445569.xyz/live.m3u",
+        "raw_channel_name": "TVBS Asia",
+        "backup_urls": [
+          {
+            "url": "http://38.64.72.148/hls/modn/list/4005/playlist.m3u8",
+            "source": "kuliao",
+            "cors": true
+          },
+          {
+            "url": "https://d2jc41c1shgcol.cloudfront.net/live/tvbsnewsqt/playlist.m3u8",
+            "source": "kuliao",
+            "cors": true
+          },
+          {
+            "url": "http://61.221.215.25:8800/hls/9/index.m3u8",
+            "source": "suxuang",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
+      "channel_id": "cts-news-52",
+      "channel_name": "華視新聞 CH52",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "華視新聞網（官方直播頁以 YouTube 播放器嵌入）",
+      "source_website": "https://news.cts.com.tw/live",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.502Z",
+      "description": "華視新聞 CH52 24 小時直播。官方直播頁即以此 iframe 呈現。",
+      "tags": [
+        "華視",
+        "CTS",
+        "新聞",
+        "youtube-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "官方頁面本身有 x-frame-options: SAMEORIGIN，但內嵌的 YouTube 播放器可用（playableInEmbed=true）。直播 ID 會隨場次輪替。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
+      "embed_url": "https://www.youtube.com/embed/wM0g8EoUZ_E?rel=0&autoplay=1&mute=1&enablejsapi=1"
+    },
+    {
+      "channel_id": "cti-news-52",
+      "channel_name": "中天新聞 CH52",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "中天電視（官方首頁以 YouTube 播放器嵌入）",
+      "source_website": "https://www.ctitv.com.tw/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "中天新聞 24 小時直播。ctitv.com.tw 首頁即以此 iframe 呈現。",
+      "tags": [
+        "中天",
+        "CTI",
+        "新聞",
+        "youtube-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "playableInEmbed=true。直播 ID 會隨場次輪替。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
+      "embed_url": "https://www.youtube.com/embed/vr3XyVCR4T0?rel=0&autoplay=1&mute=1&enablejsapi=1"
+    },
+    {
+      "channel_id": "mnews-24h",
+      "channel_name": "鏡新聞 24H",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "鏡新聞（官方首頁以 YouTube 播放器嵌入）",
+      "source_website": "https://www.mnews.tw/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "鏡新聞 24 小時直播。mnews.tw 首頁即以此 iframe 呈現。",
+      "tags": [
+        "鏡新聞",
+        "新聞",
+        "youtube-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "playableInEmbed=true。直播 ID 會隨場次輪替。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
+      "embed_url": "https://www.youtube.com/embed/5n0y6b0Q25o?rel=0&autoplay=1&mute=1&enablejsapi=1"
+    },
+    {
+      "channel_id": "ctv-news",
+      "channel_name": "中視新聞台",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "中視新聞網（官方 YT 頻道 @twctvnews 現行直播）",
+      "source_website": "https://www.ctv.com.tw/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "中視新聞台直播。取自中視官方 YouTube 頻道目前直播場次。",
+      "tags": [
+        "中視",
+        "CTV",
+        "新聞",
+        "youtube-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "playableInEmbed=true。直播 ID 會隨場次輪替，應於執行期更新。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
+      "embed_url": "https://www.youtube.com/embed/TCnaIE_SAtM?rel=0&autoplay=1&mute=1&enablejsapi=1"
+    },
+    {
+      "channel_id": "ebc-news-51",
+      "channel_name": "東森新聞 CH51",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "東森新聞 CH51（官方頁以 litv 播放器嵌入，並以 embedUrl 宣告）",
+      "source_website": "https://news.ebc.net.tw/video",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "東森新聞 51 頻道 24 小時線上直播。官方頁面以 schema.org embedUrl 宣告此播放器。",
+      "tags": [
+        "東森",
+        "ETTV",
+        "新聞",
+        "litv-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "litv 播放器端點無 X-Frame-Options、無 CSP frame-ancestors 限制，等同官方默許嵌入。",
+      "embed_url": "https://player.svc.litv.tv/v3/ppnif.html?s=ZWJjbmV3c2NoX2hvbWVfd2Vi&ap=1"
+    },
+    {
+      "channel_id": "setn-news-54",
+      "channel_name": "三立新聞台 CH54",
+      "name_en": null,
+      "category": "news",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "三立新聞台 CH54（官方首頁以 litv 播放器嵌入）",
+      "source_website": "https://www.setn.com/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "CH54 三立新聞台直播。setn.com 首頁即以此 iframe 呈現。",
+      "tags": [
+        "三立",
+        "SET",
+        "新聞",
+        "litv-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "litv 播放器端點無 frame 限制。",
+      "embed_url": "https://player.svc.litv.tv/v3/ppnif.html?s=c2V0bmNoX3dlYg==&c=setnewsrtmp&t=CH54%E4%B8%89%E7%AB%8B%E6%96%B0%E8%81%9E%E5%8F%B0%E7%9B%B4%E6%92%AD"
+    },
+    {
+      "channel_id": "hakka-tv",
+      "channel_name": "客家電視台",
+      "name_en": null,
+      "category": "public",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "客家電視（官方直播頁以 4gTV 播放器嵌入）",
+      "source_website": "https://www.hakkatv.org.tw/live",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "客家電視台直播。官方直播頁即以此 iframe 呈現。",
+      "tags": [
+        "客家",
+        "公共",
+        "4gtv-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "4gTV 服務條款禁止商業轉載，僅限非商業個人使用；embed 端點 ACAO:* 且無 frame 限制。",
+      "embed_url": "https://embed.4gtv.tv/hakka/hakkatv.html"
+    },
+    {
+      "channel_id": "daai-tv-global",
+      "channel_name": "大愛電視（全球）",
+      "name_en": null,
+      "category": "education",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "大愛電視（官方頁以 YouTube 播放器嵌入）",
+      "source_website": "https://m.daai.tv/v3/live",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "大愛電視全球直播。官方頁面即以 YouTube iframe 呈現。",
+      "tags": [
+        "大愛",
+        "教育",
+        "youtube-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "playableInEmbed=true。另有台灣專用 ID（oV_i3Hsl_zg），大愛 HLS manifest 另有 referer 白名單限制。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
+      "embed_url": "https://www.youtube.com/embed/MIqUplvSRWA?rel=0&autoplay=1&mute=1&enablejsapi=1"
+    },
+    {
+      "channel_id": "globalnews-taiwan",
+      "channel_name": "寰宇新聞台灣台",
+      "name_en": null,
+      "category": "education",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "寰宇新聞（官方 YT 直播）",
+      "source_website": "https://globalnewstv.com.tw/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "寰宇新聞台灣台直播。",
+      "tags": [
+        "寰宇",
+        "教育",
+        "youtube-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "playableInEmbed=true。直播 ID 會隨場次輪替。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
+      "embed_url": "https://www.youtube.com/embed/w87VGpgd90U?rel=0&autoplay=1&mute=1&enablejsapi=1"
+    },
+    {
+      "channel_id": "pts-network-live",
+      "channel_name": "公視網路直播",
+      "name_en": null,
+      "category": "public",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "公共電視（官方 YouTube 頻道「公視 網路直播頻道」）",
+      "source_website": "https://www.pts.org.tw/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-19T13:15:17.503Z",
+      "description": "公視網路直播頻道（YouTube 官方直播）。",
+      "tags": [
+        "公視",
+        "PTS",
+        "公共",
+        "youtube-embed"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "ptsplus.tv 站內直播需登入且服務條款禁止未經同意的公開播送；改用官方 YouTube 頻道。playableInEmbed=true。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
+      "embed_url": "https://www.youtube.com/embed/C6gYqSHLRw4?rel=0&autoplay=1&mute=1&enablejsapi=1"
     }
   ]
 }
