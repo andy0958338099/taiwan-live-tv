@@ -712,6 +712,63 @@ HTTP 206  Content-Range: bytes 0-162/163  Content-Length: 163
 > 有時 78 秒。測試腳本因此用「只讀第一個 chunk」+ 重試，
 > 不因單次逾時就誤判。
 
+### 🚨 P0：Netlify 的 CDN 快取鍵**不含 query string**
+
+**這是 2026-11-21 實際發生的線上故障**（由「segment CDN 快取」這個改動引入）。
+
+Netlify 的 Next.js runtime 用 `netlify-vary: query=__nextDataReq|_rsc`
+決定快取鍵 —— **一般的 query 參數（`url`、`sig`）不在鍵裡**。
+
+舊版把目標網址放在 `?url=`，結果**所有頻道、所有 segment 共用同一個快取項目**。
+實測 6 個不同頻道拿到的 manifest sha256 完全相同：
+
+```
+playlist-龍華-龍華電視    sha=bb394a1f3c2c age=245 是manifest=否
+playlist-翡翠台-tvb翡翠台 sha=bb394a1f3c2c age=246 是manifest=否
+playlist-TVB-tvb系        sha=bb394a1f3c2c age=246 是manifest=否
+playlist-Now-now-tv      sha=bb394a1f3c2c age=246 是manifest=否
+playlist-HOY-hoy-tv      sha=bb394a1f3c2c age=246 是manifest=否
+playlist-澳視-澳視         sha=bb394a1f3c2c age=246 是manifest=否
+
+不同頻道數：6　不同內容數：1
+✗ 所有頻道拿到同一份內容 → CDN 快取鍵沒有包含 query string
+```
+
+而且因為 segment 被設成 `max-age=300`，
+**manifest 請求會拿到某個 segment 的位元組**（`0x47` MPEG-TS）——
+使用者拿到的是一段影片而不是清單 → **頻道完全播不出來**。
+
+#### 修正
+
+目標網址 base64url 編碼後放進 **path**（快取鍵**一定**包含 path）：
+
+```
+/api/proxy/<base64url(target)>?sig=<sig>
+```
+
+- `web/src/app/api/proxy/[target]/route.ts` —— 新版路由
+- `web/src/app/api/proxy/route.ts` —— 舊版改為 **308 轉址** shim
+  （舊網址可能還在瀏覽器快取或使用者書籤裡；轉址回應本身 `no-store`）
+- `web/src/lib/useHlsPlayer.ts` —— `encodeProxyTarget()`
+
+base64url 字元集 `A–Z a–z 0–9 - _`，不含 `/`、`?`、`&`，
+可安全當成單一 path segment。
+
+修正後實測（6 個不同頻道）：
+
+```
+playlist-龍華-龍華電視    sha=fe4fc8e49cb4 是manifest=是 ✓
+playlist-翡翠台-tvb翡翠台 sha=a968d20b293e 是manifest=是 ✓
+...
+不同頻道數：6　不同內容數：6
+✓ 每個頻道內容不同 → 快取鍵正確隔離
+```
+
+> **教訓**：在 serverless + CDN 的架構下，
+> 「把識別資訊放在 query string」是危險的 ——
+> 你以為 query 會進快取鍵，但它可能不會。
+> **要快取就必須把識別資訊放進 path。**
+
 ## 10. 結論
 
 | 測試面向 | 結果 |
