@@ -171,12 +171,30 @@ async function verify(url) {
 async function main() {
   const catalog = JSON.parse(readFileSync(CHANNELS_PATH, 'utf8'));
   let targets = catalog.channels;
+
+  /**
+   * embed 類型的頻道要排除。
+   *
+   * 它們的 stream_url 是空字串（實際播放走官方 iframe 播放器），
+   * 用 stream_url 驗證只會得到「主來源 無」，屬於誤判。
+   * 官方 embed 頻道的可用性改由 scripts/test-playback-local.mjs 實測。
+   */
+  const embedChannels = targets.filter((c) => c.embed_url);
+  targets = targets.filter((c) => !c.embed_url);
+
   if (IDS.length) targets = targets.filter((c) => IDS.includes(c.channel_id));
 
   console.log('═'.repeat(78));
   console.log('頻道來源驗證（manifest → child → segment，含耗時）');
   console.log('═'.repeat(78));
-  console.log(`檢查 ${targets.length} 個頻道\n`);
+  console.log(`檢查 ${targets.length} 個頻道`);
+  if (embedChannels.length) {
+    console.log(
+      `（另排除 ${embedChannels.length} 個官方 embed 頻道 —— ` +
+        `它們以 iframe 播放，無法用 stream_url 驗證）`,
+    );
+  }
+  console.log('');
 
   const results = [];
 

@@ -135,8 +135,18 @@ async function main() {
   for (const ch of catalog.channels) {
     const v = byId.get(ch.channel_id);
 
-    // 沒被驗證到的頻道（例如 embed 類型沒有 stream_url）→ 保留
+    // 沒被驗證到的頻道 → 保留
     if (!v) {
+      kept.push(ch);
+      continue;
+    }
+
+    // ⚠️ **embed 類型的頻道不能用 stream_url 驗證** ——
+    // 它們的 stream_url 是空字串，實際播放走的是官方 iframe 播放器。
+    // 驗證腳本對它們只會得到「主來源 無」，若照樣判成失效就會誤刪。
+    // 官方 embed 頻道的可用性要在瀏覽器裡實測（scripts/test-playback-local.mjs），
+    // 不在這裡處理。
+    if (ch.embed_url) {
       kept.push(ch);
       continue;
     }
