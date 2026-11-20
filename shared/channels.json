@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-20T21:24:02.500Z",
+  "updated_at": "2026-11-20T21:43:05.658Z",
   "categories": [
     {
       "id": "news",
@@ -4586,6 +4586,316 @@
             "cors": false
           }
         ]
+      }
+    },
+    {
+      "channel_id": "tw-ebc-financial",
+      "channel_name": "東森財經新聞台",
+      "name_en": null,
+      "category": "finance",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/uFDkOhV.png",
+      "stream_url": "https://iptv.ebc.edu.kh/iptv/channel/1.m3u8",
+      "stream_type": "hls",
+      "source_name": "東森新聞 EBC（ebc.edu.kh 自家 CDN）",
+      "source_website": "https://iptv.ebc.edu.kh/iptv/channel/1.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "東森財經新聞台（東森新聞 EBC（ebc.edu.kh 自家 CDN））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "東森財經新聞台",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-tvbs-asia",
+      "channel_name": "TVBS Asia",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/4S1rkhm.png",
+      "stream_url": "http://38.64.72.148/hls/modn/list/4005/playlist.m3u8",
+      "stream_type": "hls",
+      "source_name": "TVBS（自有 HLS 伺服器）",
+      "source_website": "http://38.64.72.148/hls/modn/list/4005/playlist.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "TVBS Asia（TVBS（自有 HLS 伺服器））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "TVBS Asia",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-hakka",
+      "channel_name": "客家電視台 HAKKA TV",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/1CdGSbU.png",
+      "stream_url": "https://h5cul1yar48um3t.wcetv.com/hls/hakkatv.m3u8",
+      "stream_type": "hls",
+      "source_name": "客家電視台（wcetv.com 自家 CDN）",
+      "source_website": "https://h5cul1yar48um3t.wcetv.com/hls/hakkatv.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "客家電視台 HAKKA TV（客家電視台（wcetv.com 自家 CDN））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "客家電視台 HAKKA TV",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-taiwan-plus",
+      "channel_name": "Taiwan Plus TV",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://jiotvimages.cdn.jio.com/dare_images/images/Taiwan_Plus.png",
+      "stream_url": "https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8",
+      "stream_type": "hls",
+      "source_name": "TaiwanPlus（Akamai HD 帳號）",
+      "source_website": "https://bcovlive-a.akamaihd.net/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "Taiwan Plus TV（TaiwanPlus（Akamai HD 帳號））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "Taiwan Plus TV",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-beautiful-life",
+      "channel_name": "Beautiful Life TV 美麗人生",
+      "name_en": null,
+      "category": "local",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/hkwcBM9.png",
+      "stream_url": "https://5ddce30eb4b55.streamlock.net/bltvhd/bltv1/playlist.m3u8",
+      "stream_type": "hls",
+      "source_name": "美麗人生廣播電台（streamlock.net）",
+      "source_website": "https://5ddce30eb4b55.streamlock.net/bltvhd/bltv1/playlist.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "Beautiful Life TV 美麗人生（美麗人生廣播電台（streamlock.net））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "Beautiful Life TV 美麗人生",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-cgn",
+      "channel_name": "CGNTV 中文台",
+      "name_en": null,
+      "category": "general",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/bPoPAbR.png",
+      "stream_url": "https://d3e05csss9c272.cloudfront.net/out/v1/f0bf71c57581470fb9379f603e8f5d83/CGNWebLiveCN.m3u8",
+      "stream_type": "hls",
+      "source_name": "CGNTV（CloudFront 派送）",
+      "source_website": "https://d3e05csss9c272.cloudfront.net/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "CGNTV 中文台（CGNTV（CloudFront 派送））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "CGNTV 中文台",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-weixin",
+      "channel_name": "唯心電視",
+      "name_en": null,
+      "category": "local",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/s8tiTeb.png",
+      "stream_url": "https://mobile.ccdntech.com/transcoder/_definst_/vod164_Live/live/chunklist_w1177047531.m3u8",
+      "stream_type": "hls",
+      "source_name": "唯心電視（ccdntech transcoder）",
+      "source_website": "https://mobile.ccdntech.com/",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "唯心電視（唯心電視（ccdntech transcoder））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "唯心電視",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-supreme-master",
+      "channel_name": "真善美電視",
+      "name_en": null,
+      "category": "local",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/kFMHayP.png",
+      "stream_url": "https://lbs-us1.suprememastertv.com/720p.m3u8",
+      "stream_type": "hls",
+      "source_name": "真善美電視台（自有伺服器）",
+      "source_website": "https://lbs-us1.suprememastertv.com/720p.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "真善美電視（真善美電視台（自有伺服器））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "真善美電視",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-goodtv-ch1",
+      "channel_name": "GOOD TV 綜合台",
+      "name_en": null,
+      "category": "local",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/k28Kc3o.png",
+      "stream_url": "https://live.streamingfast.net/osmflivech1.m3u8",
+      "stream_type": "hls",
+      "source_name": "GOOD TV 好漾人間（streamingfast.net）",
+      "source_website": "https://live.streamingfast.net/osmflivech1.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "GOOD TV 綜合台（GOOD TV 好漾人間（streamingfast.net））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "GOOD TV 綜合台",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-goodtv-ch2",
+      "channel_name": "GOOD TV 真理台",
+      "name_en": null,
+      "category": "local",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/YxFRoft.png",
+      "stream_url": "https://live.streamingfast.net/osmflivech2.m3u8",
+      "stream_type": "hls",
+      "source_name": "GOOD TV 好漾人間（streamingfast.net）",
+      "source_website": "https://live.streamingfast.net/osmflivech2.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-20T21:42:03.320Z",
+      "description": "GOOD TV 真理台（GOOD TV 好漾人間（streamingfast.net））。已通過 deep probe：segment 位元組驗證為 MPEG-TS。",
+      "tags": [
+        "台灣",
+        "official"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 CDN。經 scripts/probe-taiwan-sources.mjs 驗證：manifest 可讀、非 VOD、segment 位元組正確。",
+      "playlist_source": {
+        "provider": "github",
+        "provider_label": "GitHub 公開清單",
+        "provider_url": "https://github.com/limajj2021/taiwan-iptv",
+        "raw_channel_name": "GOOD TV 真理台",
+        "backup_urls": []
       }
     }
   ]

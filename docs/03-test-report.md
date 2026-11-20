@@ -495,6 +495,26 @@ manifest 可讀 + 非 VOD + segment 位元組驗證（0x47 MPEG-TS 或 fMP4 `fty
 > `pingponn/jackiptv` 那類第三方轉載主機 → 只能 `user_provided`，
 > 且技術可達 ≠ 有權散布，需謹慎處理。
 
+### 已匯入的 10 個頻道
+
+`scripts/import-taiwan-channels.mjs` 匯入（每個都有 deep probe 證據）：
+
+| 頻道 | 分類 | 來源 | 授權 |
+| --- | --- | --- | --- |
+| 東森財經新聞台 | 財經台 | 東森新聞 EBC（ebc.edu.kh 自家 CDN） | `public_official` |
+| TVBS Asia | 綜合台 | TVBS 自有 HLS 伺服器 | `public_official` |
+| 客家電視台 HAKKA TV | 綜合台 | 客家電視台（wcetv.com 自家 CDN） | `public_official` |
+| Taiwan Plus TV | 綜合台 | TaiwanPlus（Akamai HD 帳號） | `public_official` |
+| CGNTV 中文台 | 綜合台 | CGNTV（CloudFront 派送） | `public_official` |
+| Beautiful Life TV 美麗人生 | 地方及其他 | 美麗人生廣播電台（streamlock.net） | `public_official` |
+| 唯心電視 | 地方及其他 | 唯心電視（ccdntech transcoder） | `public_official` |
+| 真善美電視 | 地方及其他 | 真善美電視台（自有伺服器） | `public_official` |
+| GOOD TV 綜合台 | 地方及其他 | GOOD TV 好漾人間（streamingfast.net） | `public_official` |
+| GOOD TV 真理台 | 地方及其他 | GOOD TV 好漾人間（streamingfast.net） | `public_official` |
+
+**全部有 CORS**（實測 `Access-Control-Allow-Origin` 存在）→ 網頁版直接播放，
+不需經過代理。頻道總數 80 → 90。
+
 ## 頻道選擇抽屜（可隱藏式）
 
 ### 設計意圖
