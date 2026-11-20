@@ -230,6 +230,8 @@ node scripts/import-china-channels.mjs              # 實際匯入
 
 ## 10. Deep probe：為什麼「manifest 可讀」不代表「能播」
 
+### 10.1 三層結構與探測結果
+
 這批 IPTV 來源是**三層結構**：
 
 ```
@@ -256,14 +258,72 @@ cdn.qd.je/163189/lhjd          ← 第一層：入口 manifest（永遠回 200�
 - 有效頻道的主來源改為**直接指向驗證過的 child manifest**，
   避免每次播放都要多繞一層入口
 
-### 探測腳本
+### 10.2 慢速來源與代理的串流化（重要）
+
+**「manifest 可讀」還不夠 —— segment 的大小與下載速度才是關鍵。**
+
+實測央視來源的特徵：
+
+| 項目 | 數值 |
+|---|---|
+| segment 大小 | **5.2 MB** |
+| 上游傳輸速度 | **約 480 KB/s** |
+| 單一 segment 下載時間 | **11–33 秒**（視上游負載） |
+| segment 存活時間 | **約 10 秒**（過期即回 404） |
+
+原本的代理用 `upstream.arrayBuffer()` 把整份 segment 緩衝完才回應，造成三個問題：
+
+1. **Netlify Functions 30 秒執行上限** → function 被強制中斷，
+   瀏覽器收到 HTTP 504 / `{"errorType":"Error","errorMessage":"An unknown error has occurred"}`
+2. **hls.js `fragLoadingTimeOut` 預設 20 秒** → 直接判定頻道失敗
+3. 即使在本地能跑，使用者也要等 30 秒以上才看到畫面
+
+**修正方式：只讀第一個 chunk 判斷型別，其餘串流輸出。**
+
+```
+manifest → 讀完整份（幾 KB）→ 改寫網址 → 回應
+segment  → 只讀第一個 chunk 判斷不是 manifest → 直接把上游 ReadableStream 串流回應
+```
+
+實測第一個 chunk 的到達時間：**33 秒 → 123 毫秒**（本地）、**596 毫秒**（線上）。
+
+> 這**不是**先前註解提的 `tee()` 死鎖問題。
+> `tee()` 會把上游分流成兩支，其中一支被取消時另一支的 backpressure
+> 會卡住上游；而這裡是「先讀一塊判斷型別 → 決定要不要繼續讀」，
+> 只有一條消費路徑，不會有 backpressure 死結。
+
+配合調整的逾時值（`web/src/lib/useHlsPlayer.ts`）：
+
+| 設定 | 原值 | 新值 |
+|---|---|---|
+| `fragLoadingTimeOut` | 30 秒 | **90 秒** |
+| `manifestLoadingTimeOut` | 20 秒 | **40 秒** |
+| `levelLoadingTimeOut` | 20 秒 | **40 秒** |
+| 載入 watchdog | 25 秒 | **60 秒** |
+
+### 10.3 探測腳本
 
 | 腳本 | 用途 |
 |---|---|
 | `scripts/probe-cdn-paths.mjs` | 深度探測 `cdn.qd.je/163189/*` 全部路徑 → `shared/cdn-paths.json` |
 | `scripts/apply-verified-sources.mjs` | 套用探測結果：移除失效、更新網址、補上漏掉的頻道 |
+| `scripts/verify-channel-sources.mjs` | 驗證每個頻道的主來源**與備援**，並量測 segment 下載耗時 → `shared/source-verification.json` |
 | `scripts/probe-live-sources.mjs` | 深度探測直播聚合源（抖音／斗魚／B站／虎牙等） |
 | `scripts/import-china-channels.mjs` | 中國頻道匯入（含直播性與 VOD 檢查） |
+
+### 10.4 排查時容易踩到的兩個陷阱
+
+**陷阱一：segment 過期看起來像代理壞掉。**
+央視來源的 segment 只活約 10 秒。測試腳本若「先抓 manifest、
+再依序抓每個 segment」，抓第 2 個時第 1 個已經過期，
+上游回 404 → 代理回 502。這會被誤判成「代理有問題」。
+判斷方式是：**單獨重抓該 segment，看是否回 200。**
+
+**陷阱二：主來源的「看似合理網址」其實是壞的。**
+例如湖南衛視的主來源 `http://101.35.240.114:88/live.php?id=湖南卫视`
+回 404 —— 這個 PHP 轉址端點需要正確的頻道參數，
+中文 ID 怎麼編碼都不對。該頻道實際可播的是備援來源。
+`verify-channel-sources.mjs` 就是為了找出這種情況。
 
 ## 11. 已知限制
 
