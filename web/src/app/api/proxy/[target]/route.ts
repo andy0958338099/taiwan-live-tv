@@ -437,13 +437,70 @@ export async function GET(
      * 於是把這個 HTML 錯誤頁當成 segment 回 200 + `max-age=300` 快取起來 ——
      * 使用者就會拿到 HTML 當影片，且被釘住 5 分鐘。
      *
-     * 所以判斷必須加上**位元組層級**的驗證：
-     *   · MPEG-TS：第 1 byte 是同步位元組 0x47
-     *   · fMP4：第 5–8 byte 是 'ftyp' box
-     * 不符合 → 視為錯誤回應，**不快取**，並回 502 讓播放器換來源。
+     * 所以判斷必須加上**位元組層級**的驗證。
+     *
+     * ## ⚠️ fMP4 不能只認 'ftyp'（2026-11-21 線上實測）
+     *
+     * 初版只接受 `ftyp`，結果 **天映頻道整個播不出來**（線上實測 502）。
+     *
+     * 原因在 ISO BMFF 規格（W3C MSE Byte Stream Format）：
+     *   · **初始化區段**（`EXT-X-MAP`）= `ftyp` + `moov`
+     *   · **媒體區段**（media segment）= 選用的 `styp` + `moof` + `mdat`
+     *
+     * 也就是說 **`ftyp` 只會出現在初始化區段**；
+     * 真正的影片片段開頭是 `styp`（或直接 `moof`）。
+     *
+     * 實測天映（`10.fast.hidns.vip/163189/ccm`）：
+     *   init.txt  → box[4:8] = 'ftyp'  （初始化區段）
+     *   10769….jpg → box[4:8] = 'styp' （媒體區段）← 只認 ftyp 會被誤殺
+     *
+     * 所以這裡接受**所有合法的頂層 box 型別**。
      */
     const contentRange = upstream.headers.get('content-range');
-    const rangeMatch = contentRange ? /bytes 0-(\d+)\/(\d+)/.exec(contentRange) : null;
+    const rangeMatch = contentRange
+      ? /bytes (\d+)-(\d+)\/(\d+)/.exec(contentRange)
+      : null;
+
+    /**
+     * 回應是否「從資源的開頭開始」。
+     *
+     * 位元組層級的判斷（0x47 / box 型別）只有在拿到**開頭**時才成立。
+     *
+     * byte-range playlist（`#EXT-X-BYTERANGE`）會讓 hls.js 送
+     * `Range: bytes=100-200` —— 這時回應的第一個位元組是位元組 100，
+     * 不是 0x47 也不是 box 開頭。若照樣套用位元組判斷，會**誤判成錯誤頁**
+     * 而回 502，讓頻道播不出來。
+     *
+     * 所以只有在「從頭開始」時才做位元組驗證；中途的片段一律視為
+     * 合法但不可快取（維持 206 + Content-Range）。
+     */
+    const startsAtBeginning =
+      upstream.status === 200 ||
+      (rangeMatch !== null && Number(rangeMatch[1]) === 0);
+
+    /**
+     * ISO BMFF 合法的頂層 box 型別（4 bytes ASCII）。
+     *
+     * 依 W3C「ISO BMFF Byte Stream Format」規格：
+     *   · 初始化區段：`ftyp`（後接 `moov`），前面可有 `pdin`/`free`/`sidx`
+     *   · 媒體區段：選用的 `styp`，後接 `moof`、`mdat`
+     *   · 片段之間可出現其他 ISO/IEC 14496-12 定義的 box
+     *
+     * 規格允許的 box 出現在最前面，所以這些都要視為合法串流內容。
+     */
+    const ISO_BMFF_BOX_TYPES = new Set([
+      'ftyp', // File Type Box —— 初始化區段開頭
+      'styp', // Segment Type Box —— 媒體區段開頭
+      'moof', // Movie Fragment Box
+      'mdat', // Media Data Box
+      'moov', // Movie Box
+      'sidx', // Segment Index Box
+      'emsg', // Event Message Box
+      'prft', // Producer Reference Time Box
+      'pdin', // Progressive Download Information Box
+      'free', // Free Space Box
+      'skip', // Skipped Space Box（部分 CDN 會把 free 改名為 skip）
+    ]);
 
     /**
      * 位元組層級的「這是有效串流內容」判定。
@@ -451,29 +508,38 @@ export async function GET(
      * 我們已經讀了第一個 chunk（為了嗅探 manifest），
      * 所以可以直接檢查它的開頭。
      */
+    const boxType =
+      firstChunk.length >= 8
+        ? String.fromCharCode(
+            firstChunk[4],
+            firstChunk[5],
+            firstChunk[6],
+            firstChunk[7],
+          )
+        : '';
+
     const looksLikeStream =
       firstChunk.length > 0 &&
       (firstChunk[0] === 0x47 || // MPEG-TS 同步位元組
-        // fMP4：'ftyp' box（4 bytes 長度 + 4 bytes 型別）
-        (firstChunk.length >= 8 &&
-          firstChunk[4] === 0x66 &&
-          firstChunk[5] === 0x74 &&
-          firstChunk[6] === 0x79 &&
-          firstChunk[7] === 0x70)); // 'f','t','y','p'
+        // fMP4 / ISO BMFF：合法的頂層 box 型別
+        ISO_BMFF_BOX_TYPES.has(boxType));
 
     // Content-Range 宣稱「從頭到尾全部」
     const rangeCoversWhole =
-      rangeMatch !== null && Number(rangeMatch[1]) + 1 === Number(rangeMatch[2]);
+      rangeMatch !== null &&
+      Number(rangeMatch[1]) === 0 &&
+      Number(rangeMatch[2]) + 1 === Number(rangeMatch[3]);
 
     // 必須同時滿足：位元組看起來是串流 + Range 涵蓋全部 + HTTP 200
     const isFullContent =
       looksLikeStream &&
+      startsAtBeginning &&
       (upstream.status === 200 || rangeCoversWhole) &&
-      // 排除 HTML/XML 錯誤頁（它們不會通過 0x47 / ftyp 檢查，
+      // 排除 HTML/XML 錯誤頁（它們不會通過 0x47 / box 型別檢查，
       //  但這裡再明確擋一次，萬一上游把錯誤頁包成合法的 MP4 容器）
       !/^\s*</.test(new TextDecoder().decode(firstChunk.slice(0, 16)));
 
-    if (!isFullContent && !looksLikeStream) {
+    if (startsAtBeginning && !looksLikeStream) {
       // 上游回的不是串流內容（多半是 HTML 錯誤頁或已過期的 segment）
       console.warn(
         `[代理] 上游回應不是串流內容（status=${upstream.status} ` +
