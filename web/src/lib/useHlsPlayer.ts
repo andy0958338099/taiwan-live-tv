@@ -229,6 +229,21 @@ export function useHlsPlayer(channel: Channel | null) {
       setMuted(true);
       // 新頻道：尚未嘗試取消靜音
       wantUnmutedRef.current = false;
+      /**
+       * 立刻呼叫 play()（此時仍是靜音）。
+       *
+       * 為什麼要在這裡就呼叫：
+       *   Chrome 的自動播放政策允許「靜音自動播放」，但要求 play() 發生在
+       *   使用者手勢的有效時間窗內。等 manifest 載完才呼叫 play()，
+       *   手勢會失效 → 有聲自動播放被拒絕。
+       *
+       *   所以先在這裡（點擊手勢內）啟動播放（靜音），
+       *   之後 playing 事件觸發時再取消靜音。
+       */
+      video.play().catch(() => {
+        // 自動播放被拒絕 → 交由 needsUserGesture 提示使用者點擊
+        setNeedsUserGesture(true);
+      });
 
       // --- 原生 HLS（Safari / iOS）---
       if (shouldUseNativeHls(video)) {
@@ -432,6 +447,12 @@ export function useHlsPlayer(channel: Channel | null) {
    *      必須有一個常駐的監聽器：只要被 Chrome 暫停就重新 play()。
    *   3. 若重新 play() 仍被拒絕（例如完全沒有使用者互動），
    *      就退回靜音並提示使用者點擊。
+   *
+   * ⚠️ 關鍵：取消靜音必須發生在**使用者的點擊手勢之內**。
+   *   Chrome 的規則是「媒體變成有聲的那一刻，使用者手勢必須仍然有效」。
+   *   若等到串流載入完成（數秒後）才取消靜音，手勢早已失效 → Chrome 會暫停。
+   *   因此在 startPlayback 裡就先設好 muted=false 並 play()，
+   *   讓整個播放動作都落在點擊手勢的時間窗內。
    */
   const unmuteAndResume = useCallback(async () => {
     const video = videoRef.current;
@@ -458,7 +479,6 @@ export function useHlsPlayer(channel: Channel | null) {
       setNeedsUserGesture(true);
     }
   }, []);
-
   const unmute = useCallback(() => {
     if (mode === 'iframe') {
       if (isYouTubeEmbed(embedUrl)) {
@@ -548,9 +568,33 @@ export function useHlsPlayer(channel: Channel | null) {
       setStatus('playing');
       setErrorMessage(null);
 
-      // 播放已開始 → 取消靜音（除非使用者手動靜音過）
+      /**
+       * 播放已開始 → 取消靜音（除非使用者手動靜音過）。
+       *
+       * 這裡刻意「同步」設定 muted（不 await）：
+       *   Chrome 的規則是「媒體變成有聲的那一刻，使用者手勢必須仍有效」。
+       *   playing 事件是在 play() 成功後觸發的，此時若 play() 是由
+       *   使用者手勢觸發的（我們在 startPlayback 裡就呼叫了 play()），
+       *   手勢仍在有效窗內 → 立刻取消靜音就能持續播放。
+       *
+       *   若改成 await 之後才設 muted，中間的 microtask 會讓手勢失效，
+       *   Chrome 就會自動暫停媒體（實測會停在 t=10）。
+       */
       if (!userMutedRef.current) {
-        void unmuteAndResume();
+        const v = videoRef.current;
+        if (v) {
+          v.muted = false;
+          v.volume = 1;
+          wantUnmutedRef.current = true;
+          setMuted(false);
+          // 補一次 play()：若 Chrome 因變成有聲而暫停，這裡會讓它繼續
+          v.play().catch(() => {
+            wantUnmutedRef.current = false;
+            v.muted = true;
+            setMuted(true);
+            setNeedsUserGesture(true);
+          });
+        }
       }
     };
     const onWaiting = () => setStatus('loading');

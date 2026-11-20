@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-20T12:01:10.892Z",
+  "updated_at": "2026-11-20T12:55:48.276Z",
   "categories": [
     {
       "id": "news",
@@ -61,92 +61,13 @@
   ],
   "channels": [
     {
-      "channel_id": "test-mux-bigbuckbunny",
-      "channel_name": "測試頻道 A（Mux 官方測試串流）",
-      "name_en": "Test Channel A (Mux official test stream)",
-      "category": "general",
-      "channel_number": 901,
-      "logo": null,
-      "stream_url": "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8",
-      "stream_type": "hls",
-      "source_name": "Mux 官方公開測試串流",
-      "source_website": "https://github.com/robwalch/awesome-mux-videos",
-      "authorization_status": "public_official",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:00:00Z",
-      "description": "Mux 官方公開測試用 HLS 串流，供 Media3 / HLS.js 播放管線驗證使用，非台灣頻道。",
-      "tags": [
-        "test",
-        "測試",
-        "mux",
-        "hls"
-      ],
-      "region": null,
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "僅供 MVP 驗證，非實際台灣頻道。"
-    },
-    {
-      "channel_id": "test-unified-tearsofsteel",
-      "channel_name": "測試頻道 B（Unified Streaming 官方測試串流）",
-      "name_en": "Test Channel B (Unified Streaming official test stream)",
-      "category": "general",
-      "channel_number": 902,
-      "logo": null,
-      "stream_url": "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
-      "stream_type": "hls",
-      "source_name": "Unified Streaming 官方公開測試串流",
-      "source_website": "https://www.unified-streaming.com/",
-      "authorization_status": "public_official",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:00:00Z",
-      "description": "Unified Streaming 官方公開 HLS 測試串流，供多碼率與錯誤處理驗證使用，非台灣頻道。",
-      "tags": [
-        "test",
-        "測試",
-        "unified",
-        "hls",
-        "multibitrate"
-      ],
-      "region": null,
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "僅供 MVP 驗證，非實際台灣頻道。"
-    },
-    {
-      "channel_id": "test-apple-bipbop",
-      "channel_name": "測試頻道 C（Apple 官方測試串流）",
-      "name_en": "Test Channel C (Apple official test stream)",
-      "category": "general",
-      "channel_number": 903,
-      "logo": null,
-      "stream_url": "https://devstreaming-cdn.apple.com/videos/streaming/examples/bipbop_4x3/bipbop_4x3_variant.m3u8",
-      "stream_type": "hls",
-      "source_name": "Apple 官方公開測試串流",
-      "source_website": "https://developer.apple.com/streaming/examples/",
-      "authorization_status": "public_official",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:00:00Z",
-      "description": "Apple Developer 官方公開 HLS 測試串流，含字幕與多組 Gear 變體，供快速切換與錯誤重試驗證使用，非台灣頻道。",
-      "tags": [
-        "test",
-        "測試",
-        "apple",
-        "hls"
-      ],
-      "region": null,
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "僅供 MVP 驗證，非實際台灣頻道。"
-    },
-    {
       "channel_id": "playlist-緯來-緯來",
       "channel_name": "緯來",
       "name_en": null,
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/緯來體育台.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/bmgxnp.m3u8",
+      "stream_url": "https://cdn.qd.je/163189/wlxj",
       "stream_type": "hls",
       "source_name": "緯來（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
@@ -166,35 +87,15 @@
         "yang"
       ],
       "region": "台灣",
-      "cors_enabled": true,
+      "cors_enabled": false,
       "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：緯來體育「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：緯來體育「Relay」。此來源支援 CORS，網頁版可直接播放。 | 主來源為 VOD 預覽片段，已改用同頻道的直播備援來源",
       "playlist_source": {
         "provider": "yang",
         "provider_label": "YanG IPTV",
         "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
         "raw_channel_name": "緯來體育「Relay」",
         "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/bmgxnp.m3u8",
-            "source": "yang",
-            "cors": true
-          },
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/yqne38.m3u8",
-            "source": "yang",
-            "cors": true
-          },
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/djz6c4.m3u8",
-            "source": "yang",
-            "cors": true
-          },
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/6tbfep.m3u8",
-            "source": "yang",
-            "cors": true
-          },
           {
             "url": "https://cdn.qd.je/163189/wlxj",
             "source": "yang",
@@ -209,226 +110,13 @@
       }
     },
     {
-      "channel_id": "playlist-愛爾達-愛爾達體育",
-      "channel_name": "愛爾達體育",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/愛爾達體育1台.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/hfu9qf.m3u8",
-      "stream_type": "hls",
-      "source_name": "愛爾達體育（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.351Z",
-      "description": "由 IPTV 播放清單取得之「愛爾達體育 一「Relay」」。備援來源 4 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang",
-        "yang",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：愛爾達體育 一「Relay」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "愛爾達體育 一「Relay」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/hfu9qf.m3u8",
-            "source": "yang",
-            "cors": true
-          },
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/tw6ac9.m3u8",
-            "source": "yang",
-            "cors": true
-          },
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/dcnw5r.m3u8",
-            "source": "yang",
-            "cors": true
-          },
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/2j74gj.m3u8",
-            "source": "yang",
-            "cors": true
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-年代-年代-much",
-      "channel_name": "年代 MUCH",
-      "name_en": null,
-      "category": "news",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/年代新聞台.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/tf9s8r.m3u8",
-      "stream_type": "hls",
-      "source_name": "年代 MUCH（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.351Z",
-      "description": "由 IPTV 播放清單取得之「年代新聞「Relay」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：年代新聞「Relay」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "年代新聞「Relay」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/tf9s8r.m3u8",
-            "source": "yang",
-            "cors": true
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-台視-台視-ttv",
-      "channel_name": "台視 TTV",
-      "name_en": null,
-      "category": "news",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/台視.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/be6z3t.m3u8",
-      "stream_type": "hls",
-      "source_name": "台視 TTV（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.351Z",
-      "description": "由 IPTV 播放清單取得之「台視「Relay」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：台視「Relay」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "台視「Relay」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/be6z3t.m3u8",
-            "source": "yang",
-            "cors": true
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-MTV-mtv台",
-      "channel_name": "MTV台",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/MTV綜合台.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/dpz7pb.m3u8",
-      "stream_type": "hls",
-      "source_name": "MTV台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.351Z",
-      "description": "由 IPTV 播放清單取得之「MTV綜合台「Relay」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：MTV綜合台「Relay」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "MTV綜合台「Relay」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/dpz7pb.m3u8",
-            "source": "yang",
-            "cors": true
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-動物星球-動物星球",
-      "channel_name": "動物星球",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/動物星球.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/8uvr8t.m3u8",
-      "stream_type": "hls",
-      "source_name": "動物星球（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.351Z",
-      "description": "由 IPTV 播放清單取得之「動物星球「Relay」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：動物星球「Relay」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "動物星球「Relay」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/8uvr8t.m3u8",
-            "source": "yang",
-            "cors": true
-          }
-        ]
-      }
-    },
-    {
       "channel_id": "playlist-龍祥-龍祥",
       "channel_name": "龍祥",
       "name_en": null,
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/龍祥時代.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/haj8zn.m3u8",
+      "stream_url": "https://cdn.qd.je/163189/lxsd",
       "stream_type": "hls",
       "source_name": "龍祥（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
@@ -444,9 +132,9 @@
         "yang"
       ],
       "region": "台灣",
-      "cors_enabled": true,
+      "cors_enabled": false,
       "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：龍祥時代「Relay」。此來源支援 CORS，網頁版可直接播放。",
+      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：龍祥時代「Relay」。此來源支援 CORS，網頁版可直接播放。 | 主來源為 VOD 預覽片段，已改用同頻道的直播備援來源",
       "playlist_source": {
         "provider": "yang",
         "provider_label": "YanG IPTV",
@@ -454,53 +142,9 @@
         "raw_channel_name": "龍祥時代「Relay」",
         "backup_urls": [
           {
-            "url": "https://iptv.yang-1989.xyz/tw/haj8zn.m3u8",
-            "source": "yang",
-            "cors": true
-          },
-          {
             "url": "https://cdn.qd.je/163189/lxsd",
             "source": "yang",
             "cors": false
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-CINEMAX-cinemax",
-      "channel_name": "CINEMAX",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/CINEMAX.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/tw/k6r8vd.m3u8",
-      "stream_type": "hls",
-      "source_name": "CINEMAX（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.352Z",
-      "description": "由 IPTV 播放清單取得之「CINEMAX「Relay」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：CINEMAX「Relay」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "CINEMAX「Relay」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/tw/k6r8vd.m3u8",
-            "source": "yang",
-            "cors": true
           }
         ]
       }
@@ -570,123 +214,6 @@
             "url": "https://cdn.qd.je/163189/lhkt",
             "source": "yang",
             "cors": false
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-台灣戲劇-台灣戲劇台",
-      "channel_name": "台灣戲劇台",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/台灣戲劇台.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/ofiii/vsccw4.m3u8",
-      "stream_type": "hls",
-      "source_name": "台灣戲劇台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.352Z",
-      "description": "由 IPTV 播放清單取得之「台灣戲劇「ofiii」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：台灣戲劇「ofiii」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "台灣戲劇「ofiii」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/ofiii/vsccw4.m3u8",
-            "source": "yang",
-            "cors": true
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-第1商業-第1商業台",
-      "channel_name": "第1商業台",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/第1商業.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/ofiii/f9nc8f.m3u8",
-      "stream_type": "hls",
-      "source_name": "第1商業台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.352Z",
-      "description": "由 IPTV 播放清單取得之「第1商業「ofiii」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：第1商業「ofiii」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "第1商業「ofiii」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/ofiii/f9nc8f.m3u8",
-            "source": "yang",
-            "cors": true
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "playlist-Smart知識-smart知識台",
-      "channel_name": "Smart知識台",
-      "name_en": null,
-      "category": "education",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/Smart知識台.webp",
-      "stream_url": "https://iptv.yang-1989.xyz/ofiii/yb2pxm.m3u8",
-      "stream_type": "hls",
-      "source_name": "Smart知識台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-19T12:20:56.352Z",
-      "description": "由 IPTV 播放清單取得之「Smart知識「ofiii」」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：Smart知識「ofiii」。此來源支援 CORS，網頁版可直接播放。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "Smart知識「ofiii」",
-        "backup_urls": [
-          {
-            "url": "https://iptv.yang-1989.xyz/ofiii/yb2pxm.m3u8",
-            "source": "yang",
-            "cors": true
           }
         ]
       }

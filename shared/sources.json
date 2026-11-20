@@ -46,52 +46,289 @@
   ],
   "import_rules": {
     "_comment": "只匯入台灣／港澳台相關頻道，並排除非線性內容。",
-    "include_group_keywords": ["台灣", "臺灣", "台湾", "港澳台", "台湾+", "台湾台"],
+    "include_group_keywords": [
+      "台灣",
+      "臺灣",
+      "台湾",
+      "港澳台",
+      "台湾+",
+      "台湾台"
+    ],
     "exclude_name_pattern": "回放|录播|录像|电影播放|劇集|劇情|电影|電影|点播|點播|成人|18\\+|情色|色情|WWE|NBA|足球|賽事|赛事|比赛|直播回放|少儿|少兒|点播台|戏曲|戲曲|直播间|聊天|公开课",
     "channel_map": {
-      "台視": { "name": "台視 TTV", "category": "news" },
-      "中視": { "name": "中視 CTV", "category": "general" },
-      "華視": { "name": "華視 CTS", "category": "general" },
-      "民視": { "name": "民視 FTV", "category": "general" },
-      "三立": { "name": "三立 SET", "category": "general" },
-      "東森": { "name": "東森 ETTV", "category": "news" },
-      "TVBS": { "name": "TVBS", "category": "news" },
-      "中天": { "name": "中天 CTI", "category": "news" },
-      "年代": { "name": "年代 MUCH", "category": "news" },
-      "公視": { "name": "公共電視 PTS", "category": "public" },
-      "客家": { "name": "客家電視", "category": "public" },
-      "原住民族": { "name": "原住民族電視台", "category": "public" },
-      "壹電視": { "name": "壹電視 iNEWS", "category": "news" },
-      "鏡新聞": { "name": "鏡新聞", "category": "news" },
-      "大愛": { "name": "大愛電視", "category": "education" },
-      "緯來": { "name": "緯來", "category": "general" },
-      "非凡": { "name": "非凡", "category": "general" },
-      "八大": { "name": "八大", "category": "general" },
-      "三興": { "name": "三興", "category": "general" },
-      "中廣": { "name": "中廣", "category": "general" },
-      "寰宇": { "name": "寰宇", "category": "education" },
-      "慈濟": { "name": "慈濟", "category": "education" },
-      "佛光": { "name": "佛光", "category": "education" },
-      "龍祥": { "name": "龍祥", "category": "entertainment" },
-      "衛視中文": { "name": "衛視中文台", "category": "general" },
-      "MTV": { "name": "MTV台", "category": "entertainment" },
-      "台灣戲劇": { "name": "台灣戲劇台", "category": "entertainment" },
-      "龍華": { "name": "龍華電視", "category": "entertainment" },
-      "第1商業": { "name": "第1商業台", "category": "entertainment" },
-      "Smart知識": { "name": "Smart知識台", "category": "education" },
-      "愛爾達": { "name": "愛爾達體育", "category": "entertainment" },
-      "CATCHPLAY": { "name": "CATCHPLAY電影", "category": "entertainment" },
-      "好萊塢": { "name": "好萊塢電影", "category": "entertainment" },
-      "CINEMAX": { "name": "CINEMAX", "category": "entertainment" },
-      "動物星球": { "name": "動物星球", "category": "entertainment" },
-      "TVB": { "name": "TVB系", "category": "general" },
-      "翡翠台": { "name": "TVB翡翠台", "category": "general" },
-      "天映": { "name": "天映", "category": "general" },
-      "澳視": { "name": "澳視", "category": "general" },
-      "澳亞": { "name": "澳亞卫视", "category": "general" },
-      "耀才": { "name": "耀才財經", "category": "finance" },
-      "Now": { "name": "Now TV", "category": "general" },
-      "HOY": { "name": "HOY TV", "category": "general" }
+      "台視": {
+        "name": "台視 TTV",
+        "category": "news"
+      },
+      "中視": {
+        "name": "中視 CTV",
+        "category": "general"
+      },
+      "華視": {
+        "name": "華視 CTS",
+        "category": "general"
+      },
+      "民視": {
+        "name": "民視 FTV",
+        "category": "general"
+      },
+      "三立": {
+        "name": "三立 SET",
+        "category": "general"
+      },
+      "東森": {
+        "name": "東森 ETTV",
+        "category": "news"
+      },
+      "TVBS": {
+        "name": "TVBS",
+        "category": "news"
+      },
+      "中天": {
+        "name": "中天 CTI",
+        "category": "news"
+      },
+      "年代": {
+        "name": "年代 MUCH",
+        "category": "news"
+      },
+      "公視": {
+        "name": "公共電視 PTS",
+        "category": "public"
+      },
+      "客家": {
+        "name": "客家電視",
+        "category": "public"
+      },
+      "原住民族": {
+        "name": "原住民族電視台",
+        "category": "public"
+      },
+      "壹電視": {
+        "name": "壹電視 iNEWS",
+        "category": "news"
+      },
+      "鏡新聞": {
+        "name": "鏡新聞",
+        "category": "news"
+      },
+      "大愛": {
+        "name": "大愛電視",
+        "category": "education"
+      },
+      "緯來": {
+        "name": "緯來",
+        "category": "general"
+      },
+      "非凡": {
+        "name": "非凡",
+        "category": "general"
+      },
+      "八大": {
+        "name": "八大",
+        "category": "general"
+      },
+      "三興": {
+        "name": "三興",
+        "category": "general"
+      },
+      "中廣": {
+        "name": "中廣",
+        "category": "general"
+      },
+      "寰宇": {
+        "name": "寰宇",
+        "category": "education"
+      },
+      "慈濟": {
+        "name": "慈濟",
+        "category": "education"
+      },
+      "佛光": {
+        "name": "佛光",
+        "category": "education"
+      },
+      "龍祥": {
+        "name": "龍祥",
+        "category": "entertainment"
+      },
+      "衛視中文": {
+        "name": "衛視中文台",
+        "category": "general"
+      },
+      "MTV": {
+        "name": "MTV台",
+        "category": "entertainment"
+      },
+      "台灣戲劇": {
+        "name": "台灣戲劇台",
+        "category": "entertainment"
+      },
+      "龍華": {
+        "name": "龍華電視",
+        "category": "entertainment"
+      },
+      "第1商業": {
+        "name": "第1商業台",
+        "category": "entertainment"
+      },
+      "Smart知識": {
+        "name": "Smart知識台",
+        "category": "education"
+      },
+      "愛爾達": {
+        "name": "愛爾達體育",
+        "category": "entertainment"
+      },
+      "CATCHPLAY": {
+        "name": "CATCHPLAY電影",
+        "category": "entertainment"
+      },
+      "好萊塢": {
+        "name": "好萊塢電影",
+        "category": "entertainment"
+      },
+      "CINEMAX": {
+        "name": "CINEMAX",
+        "category": "entertainment"
+      },
+      "動物星球": {
+        "name": "動物星球",
+        "category": "entertainment"
+      },
+      "TVB": {
+        "name": "TVB系",
+        "category": "general"
+      },
+      "翡翠台": {
+        "name": "TVB翡翠台",
+        "category": "general"
+      },
+      "天映": {
+        "name": "天映",
+        "category": "general"
+      },
+      "澳視": {
+        "name": "澳視",
+        "category": "general"
+      },
+      "澳亞": {
+        "name": "澳亞卫视",
+        "category": "general"
+      },
+      "耀才": {
+        "name": "耀才財經",
+        "category": "finance"
+      },
+      "Now": {
+        "name": "Now TV",
+        "category": "general"
+      },
+      "HOY": {
+        "name": "HOY TV",
+        "category": "general"
+      }
     }
-  }
+  },
+  "pending_review": [
+    {
+      "channel_id": "playlist-愛爾達-愛爾達體育",
+      "channel_name": "愛爾達體育",
+      "category": "entertainment",
+      "source_name": "愛爾達體育（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/hfu9qf.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-年代-年代-much",
+      "channel_name": "年代 MUCH",
+      "category": "news",
+      "source_name": "年代 MUCH（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/tf9s8r.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-台視-台視-ttv",
+      "channel_name": "台視 TTV",
+      "category": "news",
+      "source_name": "台視 TTV（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/be6z3t.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-MTV-mtv台",
+      "channel_name": "MTV台",
+      "category": "entertainment",
+      "source_name": "MTV台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/dpz7pb.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-動物星球-動物星球",
+      "channel_name": "動物星球",
+      "category": "entertainment",
+      "source_name": "動物星球（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/8uvr8t.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-CINEMAX-cinemax",
+      "channel_name": "CINEMAX",
+      "category": "entertainment",
+      "source_name": "CINEMAX（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/tw/k6r8vd.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-台灣戲劇-台灣戲劇台",
+      "channel_name": "台灣戲劇台",
+      "category": "entertainment",
+      "source_name": "台灣戲劇台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/ofiii/vsccw4.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-第1商業-第1商業台",
+      "channel_name": "第1商業台",
+      "category": "entertainment",
+      "source_name": "第1商業台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/ofiii/f9nc8f.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    },
+    {
+      "channel_id": "playlist-Smart知識-smart知識台",
+      "channel_name": "Smart知識台",
+      "category": "education",
+      "source_name": "Smart知識台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "stream_url": "https://iptv.yang-1989.xyz/ofiii/yb2pxm.m3u8",
+      "authorization_status": "user_provided",
+      "removed_at": "2026-11-20T12:54:56.688Z",
+      "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
+    }
+  ]
 }
