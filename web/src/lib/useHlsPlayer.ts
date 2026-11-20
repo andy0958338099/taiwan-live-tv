@@ -317,11 +317,20 @@ export function useHlsPlayer(channel: Channel | null) {
         enableWorker: true,
         lowLatencyMode: false,
         backBufferLength: 30,
-        manifestLoadingTimeOut: 20_000,
+        // ⚠️ 逾時值需要配合「上游實際速度」設定。
+        //
+        // 實測央視來源的 segment 為 5.2 MB，但上游傳輸速度只有約 480 KB/s，
+        // 單一個 segment 需 11–33 秒（視上游負載）。hls.js 預設的
+        // fragLoadingTimeOut = 20 秒會直接判定失敗並放棄整個頻道。
+        //
+        // 代理已改成串流輸出（見 api/proxy/route.ts），
+        // 第一個 chunk 通常 100ms 內就到達，但「下載完成」仍受上游速度限制。
+        // 因此把逾時拉長到 90 秒，讓慢速來源有機會完成下載。
+        manifestLoadingTimeOut: 40_000,
         manifestLoadingMaxRetry: 2,
-        levelLoadingTimeOut: 20_000,
+        levelLoadingTimeOut: 40_000,
         levelLoadingMaxRetry: 3,
-        fragLoadingTimeOut: 30_000,
+        fragLoadingTimeOut: 90_000,
         fragLoadingMaxRetry: 4,
         // 起始碼率：預設 -1 會從最低階開始再慢慢往上跳，
         // 電視螢幕大、等爬升的時間長，觀看體驗差。
@@ -727,4 +736,13 @@ export function useHlsPlayer(channel: Channel | null) {
   };
 }
 
-const LOAD_TIMEOUT_MS = 25_000;
+/**
+ * 載入 watchdog 逾時。
+ *
+ * 實測部分中國來源的 segment 高達 5.2 MB，而上游傳輸速度只有約 480 KB/s，
+ * 單一個 segment 需 11–33 秒。加上 manifest 載入時間，25 秒會誤判失敗。
+ *
+ * 這裡設 60 秒：足以讓慢速來源完成第一個 segment，
+ * 又不會讓使用者無限等待（超過後會自動改用備援來源）。
+ */
+const LOAD_TIMEOUT_MS = 60_000;

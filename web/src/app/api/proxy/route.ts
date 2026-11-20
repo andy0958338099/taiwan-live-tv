@@ -289,19 +289,50 @@ export async function GET(request: NextRequest) {
     // 若只看 content-type 就會把 manifest 當成 segment 直接輸出，
     // 導致 manifest 內的相對路徑沒被改寫，hls.js 解析後指向代理站自身而 404。
     //
-    // 實作選擇：**整份讀進記憶體**再判斷與回應，不用 tee()。
+    // ⚠️ **不能用 `upstream.arrayBuffer()` 把整份讀完**：
     //
-    // 為什麼不用串流：tee() 分流後若其中一支被取消讀取，
-    // 另一支的 backpressure 會讓上游暫停，導致整個請求卡住
-    // （實測 segment 請求 hang 住、hls.js 報 fragLoadTimeOut）。
-    // 而 segment 大小約 1–8 MB，緩衝在記憶體中完全可接受，
-    // 換取的是「位元組絕對正確」與「不會死鎖」。
-    const buf = await upstream.arrayBuffer();
-    const head = new TextDecoder().decode(buf.slice(0, 800));
+    // 實測央視來源的 segment 高達 **5.2 MB**，而上游傳輸速度只有
+    // **約 480 KB/s**（單一個 segment 需 11 秒）。
+    // 整份緩衝會造成兩個問題：
+    //   1. Netlify Functions 有 **30 秒執行上限** — 緩衝 + 傳輸會超過，
+    //      function 被強制中斷，瀏覽器收到 HTTP 504 / "unknown error"
+    //   2. 即使在本地，hls.js 也要等整個 segment 下載完才開始播放，
+    //      等待期間就發出 ERR_ABORTED 而放棄
+    //
+    // 解法：**只讀第一個 chunk 來判斷型別，其餘串流出去**。
+    //   - manifest → 讀完整份（很小，幾 KB）並改寫
+    //   - segment → 直接把上游的 ReadableStream 串流回應
+    //
+    // 這不是先前註解裡提的 `tee()` 死鎖問題：
+    // tee() 會把上游分流成兩支，其中一支被取消時另一支的 backpressure
+    // 會卡住上游。而這裡是「先讀一塊判斷型別 → 決定要不要繼續讀」，
+    // 只有一條消費路徑，不會有 backpressure 死結。
+    const reader = upstream.body?.getReader();
+    if (!reader) {
+      return NextResponse.json({ error: '上游沒有回應內容' }, { status: 502 });
+    }
+
+    const first = await reader.read();
+    const firstChunk = first.value ?? new Uint8Array(0);
+    const head = new TextDecoder().decode(firstChunk.slice(0, 800));
     const isManifest = head.trimStart().startsWith('#EXTM3U');
 
     if (isManifest) {
-      const text = new TextDecoder().decode(buf);
+      // Manifest 很小，讀完後改寫網址
+      const chunks: Uint8Array[] = [firstChunk];
+      let total = firstChunk.byteLength;
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const next = await reader.read();
+        if (next.done) break;
+        chunks.push(next.value);
+        total += next.value.byteLength;
+        // 安全上限，避免異常回應吃光記憶體
+        if (total > 4 * 1024 * 1024) break;
+      }
+      const text = new TextDecoder().decode(
+        chunks.length === 1 ? chunks[0] : concatChunks(chunks, total),
+      );
       const rewritten = rewriteManifest(text, upstream.url || target);
       return new NextResponse(rewritten, {
         status: 200,
@@ -313,22 +344,59 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    // Segment / 其他二進位內容 —— 原封不動回傳
+    // Segment / 其他二進位內容 —— **串流**回傳，不緩衝整份
     const headers = new Headers(CORS_HEADERS);
     headers.set('Content-Type', contentType || 'application/octet-stream');
-    headers.set('Content-Length', String(buf.byteLength));
     headers.set('Accept-Ranges', 'bytes');
     headers.set('Cache-Control', 'no-store');
     const contentRange = upstream.headers.get('content-range');
     if (contentRange) headers.set('Content-Range', contentRange);
+    // 轉發上游的長度（若有），讓瀏覽器知道預期大小
+    const contentLength = upstream.headers.get('content-length');
+    if (contentLength) headers.set('Content-Length', contentLength);
 
-    return new NextResponse(buf, { status: upstream.status, headers });
+    const stream = new ReadableStream<Uint8Array>({
+      async start(controller) {
+        // 先送出判斷型別時已經讀到的第一塊
+        if (firstChunk.byteLength > 0) {
+          controller.enqueue(firstChunk);
+        }
+        try {
+          // eslint-disable-next-line no-constant-condition
+          while (true) {
+            const next = await reader.read();
+            if (next.done) break;
+            controller.enqueue(next.value);
+          }
+          controller.close();
+        } catch (e) {
+          controller.error(e);
+        }
+      },
+      cancel(reason) {
+        // 客戶端取消時也取消上游，避免佔住來源頻寬
+        void reader.cancel(reason).catch(() => {});
+      },
+    });
+
+    return new NextResponse(stream, { status: upstream.status, headers });
   } catch (e) {
     return NextResponse.json(
       { error: `代理失敗：${e instanceof Error ? e.message : String(e)}` },
       { status: 502 },
     );
   }
+}
+
+/** 合併多個 Uint8Array 成單一 Buffer */
+function concatChunks(chunks: Uint8Array[], total: number): Uint8Array {
+  const out = new Uint8Array(total);
+  let offset = 0;
+  for (const c of chunks) {
+    out.set(c, offset);
+    offset += c.byteLength;
+  }
+  return out;
 }
 
 export async function OPTIONS() {

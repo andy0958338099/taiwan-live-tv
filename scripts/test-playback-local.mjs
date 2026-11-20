@@ -185,7 +185,8 @@ async function main() {
 
     // 等播放
     let stat = null;
-    for (let i = 0; i < 14; i++) {
+    const maxWait = parseInt(arg('wait', '28'), 10);
+    for (let i = 0; i < Math.ceil(maxWait / 2); i++) {
       await sleep(2000);
       const r = await s('Runtime.evaluate', {
         expression: `(() => {
