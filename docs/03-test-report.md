@@ -515,6 +515,28 @@ manifest 可讀 + 非 VOD + segment 位元組驗證（0x47 MPEG-TS 或 fMP4 `fty
 **全部有 CORS**（實測 `Access-Control-Allow-Origin` 存在）→ 網頁版直接播放，
 不需經過代理。頻道總數 80 → 90。
 
+### ⚠️ 匯入後必須實測播放（Taiwan Plus TV 的案例）
+
+第一版匯入時 Taiwan Plus TV 用的是 `iptv-org` 清單裡的 Akamai HD 帳號：
+
+```
+https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8
+```
+
+**deep probe 當下通過，線上播放卻失敗**（currentTime=0、0x0）。追查發現該 URL
+的路徑綁定 token 會過期：
+
+```
+HTTP 400
+The requested URL "http://37:5bNo:20Host:5d/rce33d845cb9e42dfa302c7ac345f7858/..." is invalid.
+```
+
+修正為 `limajj2021` 清單中的 `now.amagi.tv` 來源（實測 HTTP 200、CORS `*`），
+失效的 Akamai URL 降為備援。修正後實測：`✓ Taiwan Plus TV t=1.4 1280x720`。
+
+> **教訓**：deep probe 只證明「當下可下載」，不保證數小時後仍可用。
+> 匯入後必須跑一次 `test-playback-local.mjs` 確認真的能播。
+
 ## 頻道選擇抽屜（可隱藏式）
 
 ### 設計意圖
