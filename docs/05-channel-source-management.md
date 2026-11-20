@@ -353,11 +353,17 @@ node scripts/test-playback-local.mjs --base http://localhost:3211 --wait 90
 所以「看起來失效」的頻道會再驗一次，**兩次都失敗才移除**。
 二次確認發生例外時 → 保守保留（寧可留著，也不要誤殺）。
 
-**閘三：轉址入口不算好主來源。**
-`cdn.qd.je/163189/gdty` 回 HTTP 200 但只有 **80 bytes**（是 child manifest
-的轉址入口），而 `2.fast.hidns.vip/163189/gdty` 有 4918 bytes（真正的串流清單）。
-用轉址入口當主來源會多繞一層，且該層的 child 可能已失效。
-因此記錄 manifest 長度，小於 500 bytes 就改用備援。
+**閘三：只依「實際能不能播」判斷，不看 manifest 大小。**
+
+曾經以為 manifest < 500 bytes 就是「轉址入口」，該改用備援。
+但全量驗證顯示 70 個可播頻道裡有 **62 個**的 manifest 只有 72–80 bytes，
+而它們（龍華電視、TVB翡翠台、TVB系、Now TV、HOY TV…）**全部正常播放**。
+
+原因：驗證時已經跟著 child manifest 走到 segment 並確認位元組正確。
+「manifest 小」只是把 child 的資訊精簡寫在第一層，child 本身是好的。
+若再依大小去替換，反而會把已驗證可播的來源換成未驗證的備援。
+
+**真正的判斷依據只有一個：child + segment 能不能通。**
 
 ### 10.6 常見的失效來源型態
 
