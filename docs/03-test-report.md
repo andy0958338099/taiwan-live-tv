@@ -321,7 +321,34 @@ AVD 僅有 phone/tablet），因此這些項目無法用模擬器替代，必須
 修正：代理改成**只讀第一個 chunk 判斷型別，其餘串流輸出**。
 第一個 chunk 到達時間 33 秒 → 123 毫秒（本地）/ 596 毫秒（線上）。
 
-**Bug 二：逾時值配不上實際上游速度。**
+**Bug 二：「已嘗試 0 個來源」—— React 過期閉包讓備援 failover 從未生效。**
+
+症狀：播放失敗訊息寫「網路錯誤：串流載入失敗。**已嘗試 0 個來源**（含備援）皆無法播放」。
+「0 個來源」是關鍵線索 —— 候選清單根本沒被算出來，不是來源失效。
+
+根因：`startPlayback` 的 useCallback deps 是 `[armWatchdog, teardown]`，
+兩者都用 `[]` deps 因此永遠穩定 —— **`startPlayback` 永遠不會重建**。
+它閉包裡捕獲的 `handleFailure` 是「首次渲染時」的那一份，
+那時 `channel` 還是 `null`，於是 `candidateUrls()` 回傳 `[]`：
+
+```
+urls.length === 0
+nextIndex < urls.length → 永遠不成立
+```
+
+後果有兩個：
+1. 錯誤訊息永遠顯示「已嘗試 0 個來源」，誤導人以為是來源問題
+2. **備援 failover 從來沒有生效過** —— 主來源失敗時不會改用 `backup_urls`，
+   所以湖南衛視（主來源是壞的 PHP 端點）必定失敗
+
+修正：`handleFailureRef` 改為在 `startPlayback` **之前**宣告
+（原來宣告在之後，會造成 TDZ 錯誤），HLS 的 ERROR handler 改用
+`handleFailureRef.current` 而非直接用 `handleFailure`。
+
+實測：湖南衛視 1920×1080 有聲播放成功（原本必定失敗），
+TVBS 也從失敗轉為成功（1920×1080，播放 56 秒）。
+
+**Bug 三：逾時值配不上實際上游速度。**
 
 | 設定 | 原值 | 新值 |
 |---|---|---|
@@ -330,7 +357,26 @@ AVD 僅有 phone/tablet），因此這些項目無法用模擬器替代，必須
 | `levelLoadingTimeOut` | 20 秒 | 40 秒 |
 | 載入 watchdog | 25 秒 | 60 秒 |
 
-### 6.4 排查陷阱（記錄以免重蹈）
+### 6.4 避免「一直轉圈圈」
+
+除了修 bug，載入體驗也做了調整 —— 因為慢速上游本來就需要 10–30 秒才有畫面。
+
+**hls.js 設定：**
+
+| 設定 | 原值 | 新值 | 原因 |
+|---|---|---|---|
+| `liveSyncDurationCount` | 3（預設） | **1** | 預設要湊滿 3 個 segment 才播，慢速來源要等 90 秒 |
+| `liveMaxLatencyDurationCount` | 無限 | **10** | 落後太多直接跳到最新位置，不慢慢追 |
+| `maxBufferLength` | 60（預設） | **30** | 限制記憶體用量 |
+| `startFragPrefetch` | false | **true** | manifest 載入中就預載第一個 fragment |
+| `fragLoadPolicy` | 預設 | 失敗重試上限 2 次 | 不無限重試同一來源，讓 failover 生效 |
+
+**UI 回饋：**
+- 載入遮罩顯示「已等待 N 秒」（讓人知道程式還活著）
+- 超過 12 秒說明「此來源傳輸較慢，可能需要 20–30 秒才會出現畫面」
+- 超過 12 秒且還有備援時，提供「換一個來源」按鈕（`skipSource`）
+
+### 6.5 排查陷阱（記錄以免重蹈）
 
 1. **segment 過期 ≠ 代理壞掉。** 央視 segment 只活約 10 秒。
    測試腳本「先抓 manifest 再依序抓 segment」時，第 2 個必然已過期
