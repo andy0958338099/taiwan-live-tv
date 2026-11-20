@@ -58,11 +58,24 @@ async function verifyOnce(url) {
   try {
     res = await get(url);
   } catch (e) {
-    return { ok: false, reason: e.name === 'AbortError' ? '逾時' : e.name };
+    const reason =
+      e.name === 'AbortError'
+        ? '逾時'
+        : e.cause?.code === 'ECONNRESET'
+          ? '連線被重置'
+          : e.name;
+    return { ok: false, reason };
   }
   if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
 
-  const text = await res.text();
+  let text;
+  try {
+    text = await res.text();
+  } catch (e) {
+    const reason =
+      e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
+    return { ok: false, reason: `讀取失敗 (${reason})` };
+  }
   if (!text.trimStart().startsWith('#EXTM3U')) {
     return { ok: false, reason: '非 m3u8' };
   }
@@ -80,10 +93,23 @@ async function verifyOnce(url) {
     try {
       cres = await get(target);
     } catch (e) {
-      return { ok: false, reason: `child ${e.name}` };
+      const reason =
+        e.name === 'AbortError'
+          ? '逾時'
+          : e.cause?.code === 'ECONNRESET'
+            ? '連線被重置'
+            : e.name;
+      return { ok: false, reason: `child ${reason}` };
     }
     if (!cres.ok) return { ok: false, reason: `child HTTP ${cres.status}` };
-    const ctext = await cres.text();
+    let ctext;
+    try {
+      ctext = await cres.text();
+    } catch (e) {
+      const reason =
+        e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
+      return { ok: false, reason: `child 讀取失敗 (${reason})` };
+    }
     if (ctext.includes('#EXT-X-ENDLIST')) return { ok: false, reason: 'child VOD' };
     const csegs = ctext
       .split('\n')
@@ -97,11 +123,24 @@ async function verifyOnce(url) {
   try {
     sres = await get(target, 40000);
   } catch (e) {
-    return { ok: false, reason: `segment ${e.name === 'AbortError' ? '逾時' : e.name}` };
+    const reason =
+      e.name === 'AbortError'
+        ? '逾時'
+        : e.cause?.code === 'ECONNRESET'
+          ? '連線被重置'
+          : e.name;
+    return { ok: false, reason: `segment ${reason}` };
   }
   if (!sres.ok) return { ok: false, reason: `segment HTTP ${sres.status}` };
 
-  const buf = Buffer.from(await sres.arrayBuffer());
+  let buf;
+  try {
+    buf = Buffer.from(await sres.arrayBuffer());
+  } catch (e) {
+    const reason =
+      e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
+    return { ok: false, reason: `segment 讀取失敗 (${reason})` };
+  }
   if (buf.length < 1024) return { ok: false, reason: `segment 過短 ${buf.length}B` };
   return { ok: true };
 }
@@ -195,25 +234,42 @@ async function main() {
     async function worker() {
       while (queue.length) {
         const item = queue.shift();
-        const urls = [
-          item.ch.stream_url,
-          ...(item.ch.playlist_source?.backup_urls ?? []).map((b) => b.url),
-        ].filter(Boolean);
-
         let recovered = null;
-        for (const u of urls) {
-          const r = await verifyOnce(u);
-          if (r.ok) {
-            recovered = { url: u, ...r };
-            break;
+        let errored = false;
+        try {
+          const urls = [
+            item.ch.stream_url,
+            ...(item.ch.playlist_source?.backup_urls ?? []).map((b) => b.url),
+          ].filter(Boolean);
+
+          for (const u of urls) {
+            const r = await verifyOnce(u);
+            if (r.ok) {
+              recovered = { url: u, ...r };
+              break;
+            }
           }
+        } catch (e) {
+          // 二次確認時的意外錯誤 → 標記為「無法確認」，
+          // 不移除該頻道（寧可留著，也不要誤殺）
+          errored = true;
         }
-        confirmed.push({ ...item, recovered });
+        confirmed.push({ ...item, recovered, errored });
       }
     }
     await Promise.all(Array.from({ length: 4 }, worker));
 
     for (const item of confirmed) {
+      // 二次確認時發生例外 → 無法確認是否失效，保守保留
+      if (item.errored) {
+        console.log(
+          `  ? ${item.ch.channel_name} — 二次確認發生例外，保留（不誤殺）`,
+        );
+        item.ch.last_checked = now;
+        kept.push(item.ch);
+        continue;
+      }
+
       if (item.recovered) {
         // 二次確認通過 → 保留，並把可用的網址升為主來源
         console.log(

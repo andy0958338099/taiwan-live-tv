@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-20T16:21:47.139Z",
+  "updated_at": "2026-11-20T16:44:19.928Z",
   "categories": [
     {
       "id": "news",
@@ -67,13 +67,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/龍華經典台.webp",
-      "stream_url": "https://8.fast.hidns.vip/163189/lhjd",
+      "stream_url": "https://cdn.qd.je/163189/lhjd",
       "stream_type": "hls",
       "source_name": "龍華電視（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「龍華經典台」。備援來源 6 個。",
       "tags": [
         "台灣",
@@ -96,11 +96,6 @@
         "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
         "raw_channel_name": "龍華經典台",
         "backup_urls": [
-          {
-            "url": "https://cdn.qd.je/163189/lhjd",
-            "source": "yang",
-            "cors": false
-          },
           {
             "url": "https://cdn.qd.je/163189/lhox",
             "source": "yang",
@@ -125,6 +120,11 @@
             "url": "https://cdn.qd.je/163189/lhkt",
             "source": "yang",
             "cors": false
+          },
+          {
+            "url": "https://8.fast.hidns.vip/163189/lhjd",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -136,13 +136,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/翡翠台.webp",
-      "stream_url": "https://cdn6.cc.cd/163189/fct",
+      "stream_url": "https://cdn.qd.je/163189/fct",
       "stream_type": "hls",
       "source_name": "TVB翡翠台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「翡翠台」。備援來源 4 個。",
       "tags": [
         "台灣",
@@ -164,11 +164,6 @@
         "raw_channel_name": "翡翠台",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/fct",
-            "source": "yang",
-            "cors": false
-          },
-          {
             "url": "https://cdn.qd.je/163189/hlt",
             "source": "yang",
             "cors": false
@@ -182,6 +177,11 @@
             "url": "https://cdn.qd.je/163189/hlfct",
             "source": "yang",
             "cors": false
+          },
+          {
+            "url": "https://cdn6.cc.cd/163189/fct",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -193,13 +193,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/TVBJ1.webp",
-      "stream_url": "https://cdn6.cc.cd/163189/j1",
+      "stream_url": "https://cdn.qd.je/163189/j1",
       "stream_type": "hls",
       "source_name": "TVB系（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「TVBJ1」。備援來源 6 個。",
       "tags": [
         "台灣",
@@ -222,11 +222,6 @@
         "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
         "raw_channel_name": "TVBJ1",
         "backup_urls": [
-          {
-            "url": "https://cdn.qd.je/163189/j1",
-            "source": "yang",
-            "cors": false
-          },
           {
             "url": "https://cdn.qd.je/163189/tvbp",
             "source": "yang",
@@ -251,6 +246,11 @@
             "url": "https://cdn.qd.je/163189/tvbp2",
             "source": "yang",
             "cors": false
+          },
+          {
+            "url": "https://cdn6.cc.cd/163189/j1",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -262,13 +262,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/Now新聞台.webp",
-      "stream_url": "https://fast.hidns.vip/163189/now",
+      "stream_url": "https://cdn.qd.je/163189/now",
       "stream_type": "hls",
       "source_name": "Now TV（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「Now新聞台」。備援來源 1 個。",
       "tags": [
         "台灣",
@@ -287,8 +287,8 @@
         "raw_channel_name": "Now新聞台",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/now",
-            "source": "yang",
+            "url": "https://fast.hidns.vip/163189/now",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -301,13 +301,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/HOY%20TV.webp",
-      "stream_url": "https://fast.hidns.vip/163189/hoy",
+      "stream_url": "https://cdn.qd.je/163189/hoy2",
       "stream_type": "hls",
       "source_name": "HOY TV（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「HOY TV」。備援來源 6 個。",
       "tags": [
         "台灣",
@@ -331,11 +331,6 @@
         "raw_channel_name": "HOY TV",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/hoy2",
-            "source": "yang",
-            "cors": false
-          },
-          {
             "url": "https://cdn.qd.je/163189/hoy78",
             "source": "yang",
             "cors": false
@@ -351,13 +346,13 @@
             "cors": false
           },
           {
-            "url": "https://cdn.qd.je/163189/hoy2",
+            "url": "https://cdn.qd.je/163189/hoy78",
             "source": "kuliao",
             "cors": false
           },
           {
-            "url": "https://cdn.qd.je/163189/hoy78",
-            "source": "kuliao",
+            "url": "https://fast.hidns.vip/163189/hoy",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -370,13 +365,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/澳視澳門.webp",
-      "stream_url": "https://cdn6.cc.cd/163189/asam",
+      "stream_url": "https://cdn.qd.je/163189/asam",
       "stream_type": "hls",
       "source_name": "澳視（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「澳視澳門」。備援來源 1 個。",
       "tags": [
         "台灣",
@@ -395,8 +390,8 @@
         "raw_channel_name": "澳視澳門",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/asam",
-            "source": "yang",
+            "url": "https://cdn6.cc.cd/163189/asam",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -409,13 +404,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://gitee.com/mytv-android/myTVlogo/raw/main/img/天映.png",
-      "stream_url": "https://10.fast.hidns.vip/163189/ccm/video/index.php",
+      "stream_url": "https://cdn.qd.je/163189/ccm",
       "stream_type": "hls",
       "source_name": "天映（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「天映經典「新加坡」」。備援來源 6 個。",
       "tags": [
         "台灣",
@@ -439,11 +434,6 @@
         "raw_channel_name": "天映經典「新加坡」",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/ccm",
-            "source": "yang",
-            "cors": false
-          },
-          {
             "url": "https://cdn.qd.je/163189/typd",
             "source": "yang",
             "cors": false
@@ -464,8 +454,8 @@
             "cors": false
           },
           {
-            "url": "https://cdn.qd.je/163189/ccm",
-            "source": "kuliao",
+            "url": "https://10.fast.hidns.vip/163189/ccm/video/index.php",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -484,7 +474,7 @@
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:38:50.735Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "由 IPTV 播放清單取得之「TVBS Asia」。備援來源 3 個。",
       "tags": [
         "台灣",
@@ -796,7 +786,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.879Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-1 綜合 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -845,7 +835,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-2 財經 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -893,13 +883,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV3.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV3",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0003_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-3 綜藝（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-3 綜藝 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -917,11 +907,6 @@
         "source_label": "Kimentanm APTV 測試源",
         "original_name": "央視-3 綜藝",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0003_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://218.13.170.98:9901/tsfile/live/0003_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -951,6 +936,11 @@
             "url": "http://8.137.121.66:20241/624878271",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV3",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -968,7 +958,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-4 中文國際 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1021,13 +1011,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV5.webp",
-      "stream_url": "http://61.136.172.236:9901/tsfile/live/0005_1.m3u8?key=txiptv&playlive=1&authid=0",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0005_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-5 體育（經 itvlist 聚合源 轉載）",
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-5 體育 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1045,11 +1035,6 @@
         "source_label": "itvlist 聚合源",
         "original_name": "央視-5 體育",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0005_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://120.198.95.220:9901/tsfile/live/1074_1.m3u8?key=txiptv&playlive=1&down=1",
             "source": "itvlist 聚合源",
@@ -1079,6 +1064,11 @@
             "url": "http://8.137.121.66:20241/641886683",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "http://61.136.172.236:9901/tsfile/live/0005_1.m3u8?key=txiptv&playlive=1&authid=0",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -1090,13 +1080,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV5%2B.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV5p",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0018_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-5+ 體育賽事（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-5+ 體育賽事 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1115,11 +1105,6 @@
         "original_name": "央視-5+ 體育賽事",
         "backup_urls": [
           {
-            "url": "http://121.19.134.149:808/tsfile/live/0018_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://61.136.172.236:9901/tsfile/live/0016_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -1127,6 +1112,11 @@
           {
             "url": "http://59.39.89.130:60901/tsfile/live/0016_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
+            "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV5p",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -1139,13 +1129,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV6.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV6",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0006_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-6 電影（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-6 電影 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1163,11 +1153,6 @@
         "source_label": "Kimentanm APTV 測試源",
         "original_name": "央視-6 電影",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0006_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://59.39.89.130:60901/tsfile/live/0006_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -1192,6 +1177,11 @@
             "url": "http://8.137.121.66:20241/624878396",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV6",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -1209,7 +1199,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-7 國防軍事 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1262,13 +1252,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV8.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV8",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0008_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-8 劇集（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-8 劇集 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1286,11 +1276,6 @@
         "source_label": "Kimentanm APTV 測試源",
         "original_name": "央視-8 劇集",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0008_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.199.96:9901/tsfile/live/0008_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -1320,6 +1305,11 @@
             "url": "http://8.137.121.66:20241/624878356",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV8",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -1337,7 +1327,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-9 紀錄 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1390,13 +1380,13 @@
       "category": "education",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV10.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV10",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0010_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-10 教育（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-10 教育 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1414,11 +1404,6 @@
         "source_label": "Kimentanm APTV 測試源",
         "original_name": "央視-10 教育",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0010_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0010_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -1448,6 +1433,11 @@
             "url": "http://8.137.121.66:20241/624878405",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV10",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -1465,7 +1455,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-11 戲曲 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1513,13 +1503,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV12.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV12",
+      "stream_url": "http://101.66.199.96:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "央視-12 社會與法（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-12 社會與法 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1543,11 +1533,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.96:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://101.66.194.88:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -1555,6 +1540,11 @@
           {
             "url": "http://8.137.121.66:20241/673168185",
             "source": "褲佬 清單",
+            "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV12",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -1573,7 +1563,7 @@
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T15:36:40.595Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-13 新聞 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1621,13 +1611,13 @@
       "category": "education",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV14.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV14",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0014_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-14 少兒（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-14 少兒 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1645,11 +1635,6 @@
         "source_label": "Kimentanm APTV 測試源",
         "original_name": "央視-14 少兒",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0014_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0014_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -1674,6 +1659,11 @@
             "url": "http://8.137.121.66:20241/624878440",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV14",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -1685,13 +1675,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV15.webp",
-      "stream_url": "http://61.136.172.236:9901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=1&authid=0",
+      "stream_url": "http://101.66.199.181:9901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "央視-15 音樂（經 itvlist 聚合源 轉載）",
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-15 音樂 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1710,11 +1700,6 @@
         "original_name": "央視-15 音樂",
         "backup_urls": [
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -1727,6 +1712,11 @@
           {
             "url": "http://8.137.121.66:20241/673168223",
             "source": "褲佬 清單",
+            "cors": false
+          },
+          {
+            "url": "http://61.136.172.236:9901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=1&authid=0",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -1745,7 +1735,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-16 奧林匹克 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1772,13 +1762,13 @@
       "category": "life",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV17.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV17",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0017_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-17 農業農村（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "央視-17 農業農村 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1797,11 +1787,6 @@
         "original_name": "央視-17 農業農村",
         "backup_urls": [
           {
-            "url": "http://121.19.134.149:808/tsfile/live/0017_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0017_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -1814,6 +1799,11 @@
           {
             "url": "http://8.137.121.66:20241/673168256",
             "source": "褲佬 清單",
+            "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV17",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -1832,7 +1822,7 @@
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "CGTN 中國環球電視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1995,13 +1985,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/北京卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/bjws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0122_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "北京衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "北京衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2019,11 +2009,6 @@
         "source_label": "褲佬 清單",
         "original_name": "北京衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0122_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.199.96:9901/tsfile/live/0016_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -2058,6 +2043,11 @@
             "url": "http://8.137.121.66:20241/630287636",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/bjws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2069,13 +2059,13 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广东体育.webp",
-      "stream_url": "https://2.fast.hidns.vip/163189/gdty",
+      "stream_url": "https://cdn.qd.je/163189/gdty",
       "stream_type": "hls",
       "source_name": "廣東體育台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廣東體育台 — 中國廣東頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2094,8 +2084,8 @@
         "raw_channel_name": "广东体育",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/gdty",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://2.fast.hidns.vip/163189/gdty",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -2114,7 +2104,7 @@
       "source_website": "https://bit.ly/suxuang-v4",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "江蘇衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2187,13 +2177,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/东方卫视.webp",
-      "stream_url": "http://bp-resource-dfl.bestv.cn/148/3/video.m3u8",
+      "stream_url": "http://bp-resource-dfl.bestv.cn/155/3/video.m3u8",
       "stream_type": "hls",
       "source_name": "東方衛視（經 suxuang 聚合源 轉載）",
       "source_website": "https://bit.ly/suxuang-v4",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "東方衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2211,11 +2201,6 @@
         "source_label": "suxuang 聚合源",
         "original_name": "東方衛視",
         "backup_urls": [
-          {
-            "url": "http://bp-resource-dfl.bestv.cn/155/3/video.m3u8",
-            "source": "suxuang 聚合源",
-            "cors": true
-          },
           {
             "url": "https://yshipin.pages.dev/play/dfws",
             "source": "褲佬 清單",
@@ -2255,6 +2240,11 @@
             "url": "http://8.137.121.66:20241/651632648",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "http://bp-resource-dfl.bestv.cn/148/3/video.m3u8",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2266,13 +2256,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/浙江卫视.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=浙江卫视",
+      "stream_url": "http://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8",
       "stream_type": "hls",
       "source_name": "浙江衛視（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "浙江衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2297,11 +2287,6 @@
           },
           {
             "url": "http://101.35.240.114:88/live.php?id=浙江卫视4K",
-            "source": "suxuang 聚合源",
-            "cors": true
-          },
-          {
-            "url": "http://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8",
             "source": "suxuang 聚合源",
             "cors": true
           },
@@ -2364,6 +2349,11 @@
             "url": "http://101.66.199.181:9901/tsfile/live/0124_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=浙江卫视",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2381,7 +2371,7 @@
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T15:36:40.595Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "湖南衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2454,13 +2444,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/湖北卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/hbws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1025_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "湖北衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "湖北衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2478,11 +2468,6 @@
         "source_label": "褲佬 清單",
         "original_name": "湖北衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1025_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.194.29:9901/tsfile/live/0132_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -2502,6 +2487,11 @@
             "url": "http://218.13.170.98:9901/tsfile/live/1007_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/hbws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2513,13 +2503,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广东卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/gdws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1028_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "廣東衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廣東衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2540,11 +2530,6 @@
           {
             "url": "http://101.35.240.114:88/live.php?id=广东卫视",
             "source": "Kimentanm APTV 測試源",
-            "cors": false
-          },
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1028_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
             "cors": false
           },
           {
@@ -2576,6 +2561,11 @@
             "url": "http://8.137.121.66:20241/608831231",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/gdws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2587,13 +2577,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广西卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/gxws",
+      "stream_url": "http://61.136.172.236:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "廣西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廣西衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2611,11 +2601,6 @@
         "source_label": "褲佬 清單",
         "original_name": "廣西衛視",
         "backup_urls": [
-          {
-            "url": "http://61.136.172.236:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.199.181:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -2640,6 +2625,11 @@
             "url": "http://218.13.170.98:9901/tsfile/live/1019_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/gxws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2651,13 +2641,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/黑龙江卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/hljws",
+      "stream_url": "http://61.136.172.236:9901/tsfile/live/0143_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "黑龍江衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "黑龍江衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2675,11 +2665,6 @@
         "source_label": "褲佬 清單",
         "original_name": "黑龍江衛視",
         "backup_urls": [
-          {
-            "url": "http://61.136.172.236:9901/tsfile/live/0143_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://222.134.245.16:9901/tsfile/live/0143_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -2714,6 +2699,11 @@
             "url": "http://8.137.121.66:20241/738906901",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/hljws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2725,13 +2715,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/海南卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/hainanws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1030_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "海南衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "海南衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2755,11 +2745,6 @@
             "cors": true
           },
           {
-            "url": "http://121.19.134.149:808/tsfile/live/1030_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://218.13.170.98:9901/tsfile/live/1020_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -2773,6 +2758,11 @@
             "url": "http://8.137.121.66:20241/947472502",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/hainanws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2784,13 +2774,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/重庆卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/cqws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1027_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "重慶衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "重慶衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2811,11 +2801,6 @@
           {
             "url": "http://101.35.240.114:88/live.php?id=重庆卫视",
             "source": "Kimentanm APTV 測試源",
-            "cors": false
-          },
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1027_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
             "cors": false
           },
           {
@@ -2847,6 +2832,11 @@
             "url": "http://8.137.121.66:20241/738910914",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/cqws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2858,13 +2848,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/深圳卫视.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=深圳卫视4K",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1024_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "深圳衛視（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "深圳衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2890,11 +2880,6 @@
           {
             "url": "http://101.35.240.114:88/live.php?id=深圳卫视",
             "source": "Kimentanm APTV 測試源",
-            "cors": false
-          },
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1024_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
             "cors": false
           },
           {
@@ -2931,6 +2916,11 @@
             "url": "http://101.35.240.114:88/live.php?id=深圳卫视",
             "source": "suxuang 聚合源",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=深圳卫视4K",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -2942,13 +2932,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/四川卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/scws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1021_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "四川衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "四川衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2966,11 +2956,6 @@
         "source_label": "褲佬 清單",
         "original_name": "四川衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1021_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.194.29:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -2995,6 +2980,11 @@
             "url": "http://101.66.194.88:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/scws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3006,13 +2996,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/河南卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/henanws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1019_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "河南衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "河南衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3030,11 +3020,6 @@
         "source_label": "褲佬 清單",
         "original_name": "河南衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1019_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.194.29:9901/tsfile/live/0139_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -3054,6 +3039,11 @@
             "url": "http://8.137.121.66:20241/790187291",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/henanws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3065,13 +3055,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/东南卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/dnws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1014_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "東南衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "東南衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3089,11 +3079,6 @@
         "source_label": "褲佬 清單",
         "original_name": "東南衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1014_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -3123,6 +3108,11 @@
             "url": "http://101.66.199.96:9901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/dnws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3134,13 +3124,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/贵州卫视.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=贵州卫视",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1023_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "貴州衛視（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "貴州衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3162,11 +3152,6 @@
             "url": "https://yshipin.pages.dev/play/gzws",
             "source": "褲佬 清單",
             "cors": true
-          },
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1023_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
           },
           {
             "url": "http://222.134.245.16:9901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=1&authid=0",
@@ -3197,6 +3182,11 @@
             "url": "http://59.39.89.130:60901/tsfile/live/0125_15.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=贵州卫视",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3208,13 +3198,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/江西卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/jxws",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0138_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "江西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "江西衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3235,11 +3225,6 @@
           {
             "url": "http://101.35.240.114:88/live.php?id=江西卫视",
             "source": "Kimentanm APTV 測試源",
-            "cors": false
-          },
-          {
-            "url": "http://222.134.245.16:9901/tsfile/live/0138_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
             "cors": false
           },
           {
@@ -3271,6 +3256,11 @@
             "url": "http://8.137.121.66:20241/783847495",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/jxws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3282,13 +3272,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/辽宁卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/lnws",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "遼寧衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "遼寧衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3306,11 +3296,6 @@
         "source_label": "褲佬 清單",
         "original_name": "遼寧衛視",
         "backup_urls": [
-          {
-            "url": "http://222.134.245.16:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.194.29:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -3335,6 +3320,11 @@
             "url": "http://59.39.89.130:60901/tsfile/live/0125_13.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/lnws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3346,13 +3336,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/安徽卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/ahws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1013_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "安徽衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "安徽衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3370,11 +3360,6 @@
         "source_label": "褲佬 清單",
         "original_name": "安徽衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1013_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0130_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -3399,6 +3384,11 @@
             "url": "http://101.66.194.88:9901/tsfile/live/0130_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/ahws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3416,7 +3406,7 @@
       "source_website": "https://bit.ly/suxuang-v4",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "河北衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3494,13 +3484,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/山东卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/sdws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1018_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "山東衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "山東衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3518,11 +3508,6 @@
         "source_label": "褲佬 清單",
         "original_name": "山東衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1018_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0131_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -3547,6 +3532,11 @@
             "url": "http://120.198.95.220:9901/tsfile/live/1063_1.m3u8?key=txiptv&playlive=1&down=1",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/sdws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3558,13 +3548,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/天津卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/tjws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "天津衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "天津衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3585,11 +3575,6 @@
           {
             "url": "http://101.35.240.114:88/live.php?id=天津卫视",
             "source": "Kimentanm APTV 測試源",
-            "cors": false
-          },
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
             "cors": false
           },
           {
@@ -3616,6 +3601,11 @@
             "url": "http://36.136.38.87:9901/tsfile/live/0135_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/tjws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3627,13 +3617,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/吉林卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/jlws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1029_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "吉林衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "吉林衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3651,11 +3641,6 @@
         "source_label": "褲佬 清單",
         "original_name": "吉林衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1029_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0116_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -3685,6 +3670,11 @@
             "url": "http://8.137.121.66:20241/947472500",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/jlws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3696,13 +3686,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/陕西卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/saxws",
+      "stream_url": "http://101.66.194.29:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "陝西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "陝西衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3723,11 +3713,6 @@
           {
             "url": "http://101.35.240.114:88/live.php?id=陕西卫视",
             "source": "Kimentanm APTV 測試源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
             "cors": false
           },
           {
@@ -3769,6 +3754,11 @@
             "url": "http://8.137.121.66:20241/738910838",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/saxws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3780,13 +3770,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/宁夏卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/nxws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0112_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "寧夏衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "寧夏衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3805,11 +3795,6 @@
         "original_name": "寧夏衛視",
         "backup_urls": [
           {
-            "url": "http://121.19.134.149:808/tsfile/live/0112_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://218.13.170.98:9901/tsfile/live/0112_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -3823,6 +3808,11 @@
             "url": "http://120.76.248.139/live/bfgd/4200000118.m3u8",
             "source": "suxuang 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/nxws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3834,13 +3824,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/内蒙古卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/nmgws",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0109_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "內蒙古衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "內蒙古衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3859,11 +3849,6 @@
         "original_name": "內蒙古衛視",
         "backup_urls": [
           {
-            "url": "http://222.134.245.16:9901/tsfile/live/0109_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://218.13.170.98:9901/tsfile/live/0109_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -3877,6 +3862,11 @@
             "url": "http://120.76.248.139/live/bfgd/4200000110.m3u8",
             "source": "suxuang 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/nmgws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3888,13 +3878,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/云南卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/ynws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0119_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "雲南衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "雲南衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3912,11 +3902,6 @@
         "source_label": "褲佬 清單",
         "original_name": "雲南衛視",
         "backup_urls": [
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/0119_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.199.181:9901/tsfile/live/0119_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -3946,6 +3931,11 @@
             "url": "http://101.66.194.29:9901/tsfile/live/0119_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/ynws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -3957,13 +3947,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/山西卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/shanxiws",
+      "stream_url": "http://101.66.199.181:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "山西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "山西衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -3981,11 +3971,6 @@
         "source_label": "褲佬 清單",
         "original_name": "山西衛視",
         "backup_urls": [
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://101.66.194.29:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
@@ -4010,6 +3995,11 @@
             "url": "http://101.66.199.96:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/shanxiws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -4021,13 +4011,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/青海卫视.webp",
-      "stream_url": "https://yshipin.pages.dev/play/qhws",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0140_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "青海衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "青海衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4046,11 +4036,6 @@
         "original_name": "青海衛視",
         "backup_urls": [
           {
-            "url": "http://121.19.134.149:808/tsfile/live/0140_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://222.134.245.16:9901/tsfile/live/0140_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -4064,6 +4049,11 @@
             "url": "http://8.137.121.66:20241/947472506",
             "source": "褲佬 清單",
             "cors": false
+          },
+          {
+            "url": "https://yshipin.pages.dev/play/qhws",
+            "source": "原主來源（已失效）",
+            "cors": false
           }
         ]
       }
@@ -4075,13 +4065,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/西藏卫视.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=西藏卫视",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0111_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "西藏衛視（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "西藏衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4105,11 +4095,6 @@
             "cors": true
           },
           {
-            "url": "http://121.19.134.149:808/tsfile/live/0111_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0125_3.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -4122,6 +4107,11 @@
           {
             "url": "http://218.13.170.98:9901/tsfile/live/0111_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
+            "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=西藏卫视",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4140,7 +4130,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "新疆衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4189,7 +4179,7 @@
       "source_website": "https://bit.ly/suxuang-v4",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "鳳凰衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4222,7 +4212,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "兵團衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4254,72 +4244,6 @@
       }
     },
     {
-      "channel_id": "cn-ss",
-      "channel_name": "三沙衛視",
-      "name_en": null,
-      "category": "local",
-      "channel_number": null,
-      "logo": "https://gitee.com/mytv-android/myTVlogo/raw/main/img/三沙卫视.png",
-      "stream_url": "https://hainaniptv.pages.dev/play?id=5",
-      "stream_type": "hls",
-      "source_name": "三沙衛視（經 褲佬 清單 轉載）",
-      "source_website": "https://iptv.445569.xyz/live.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
-      "description": "三沙衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
-      "tags": [
-        "中國",
-        "大陸",
-        "iptv",
-        "kuliao"
-      ],
-      "region": "中國",
-      "cors_enabled": true,
-      "http_user_agent": null,
-      "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
-      "playlist_source": {
-        "source_id": "kuliao",
-        "source_label": "褲佬 清單",
-        "original_name": "三沙衛視",
-        "backup_urls": []
-      }
-    },
-    {
-      "channel_id": "cn-nf",
-      "channel_name": "南方衛視",
-      "name_en": null,
-      "category": "local",
-      "channel_number": null,
-      "logo": "https://gitee.com/mytv-android/myTVlogo/raw/main/img/南方卫视.png",
-      "stream_url": "http://120.198.95.220:9901/tsfile/live/1012_1.m3u8?key=txiptv&playlive=1&down=1",
-      "stream_type": "hls",
-      "source_name": "南方衛視（經 itvlist 聚合源 轉載）",
-      "source_website": "https://bit.ly/itvlist",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
-      "description": "南方衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
-      "tags": [
-        "中國",
-        "大陸",
-        "iptv",
-        "itvlist"
-      ],
-      "region": "中國",
-      "cors_enabled": false,
-      "http_user_agent": null,
-      "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
-      "playlist_source": {
-        "source_id": "itvlist",
-        "source_label": "itvlist 聚合源",
-        "original_name": "南方衛視",
-        "backup_urls": []
-      }
-    },
-    {
       "channel_id": "cn-xm",
       "channel_name": "廈門衛視",
       "name_en": null,
@@ -4332,7 +4256,7 @@
       "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廈門衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4353,52 +4277,19 @@
       }
     },
     {
-      "channel_id": "cn-sh",
-      "channel_name": "上海衛視",
-      "name_en": null,
-      "category": "local",
-      "channel_number": null,
-      "logo": "https://gitee.com/mytv-android/myTVlogo/raw/main/img/上海卫视.png",
-      "stream_url": "http://36.136.38.87:9901/tsfile/live/0107_1.m3u8?key=txiptv&playlive=1&authid=0",
-      "stream_type": "hls",
-      "source_name": "上海衛視（經 itvlist 聚合源 轉載）",
-      "source_website": "https://bit.ly/itvlist",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.882Z",
-      "description": "上海衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
-      "tags": [
-        "中國",
-        "大陸",
-        "iptv",
-        "itvlist"
-      ],
-      "region": "中國",
-      "cors_enabled": false,
-      "http_user_agent": null,
-      "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
-      "playlist_source": {
-        "source_id": "itvlist",
-        "source_label": "itvlist 聚合源",
-        "original_name": "上海衛視",
-        "backup_urls": []
-      }
-    },
-    {
       "channel_id": "cn-fhhk",
       "channel_name": "鳳凰衛視香港台",
       "name_en": null,
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/凤凰香港台.webp",
-      "stream_url": "https://cdn6.cc.cd/163189/fhhk",
+      "stream_url": "https://cdn.qd.je/163189/fhhk",
       "stream_type": "hls",
       "source_name": "鳳凰衛視香港台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "鳳凰衛視香港台 — 中國香港頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4417,8 +4308,8 @@
         "raw_channel_name": "凤凰香港台",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/fhhk",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://cdn6.cc.cd/163189/fhhk",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4431,13 +4322,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/凤凰中文台.webp",
-      "stream_url": "https://cdn6.cc.cd/163189/fhzw",
+      "stream_url": "https://cdn.qd.je/163189/fhzw",
       "stream_type": "hls",
       "source_name": "鳳凰衛視中文台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "鳳凰衛視中文台 — 中國香港頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4456,8 +4347,8 @@
         "raw_channel_name": "凤凰中文台",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/fhzw",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://cdn6.cc.cd/163189/fhzw",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4470,13 +4361,13 @@
       "category": "news",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/凤凰资讯台.webp",
-      "stream_url": "https://cdn6.cc.cd/163189/fhzx",
+      "stream_url": "https://cdn.qd.je/163189/fhzx",
       "stream_type": "hls",
       "source_name": "鳳凰衛視資訊台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "鳳凰衛視資訊台 — 中國香港頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4495,8 +4386,8 @@
         "raw_channel_name": "凤凰资讯台",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/fhzx",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://cdn6.cc.cd/163189/fhzx",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4509,13 +4400,13 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广东珠江.webp",
-      "stream_url": "https://2.fast.hidns.vip/163189/gdzj",
+      "stream_url": "https://cdn.qd.je/163189/gdzj",
       "stream_type": "hls",
       "source_name": "廣東珠江台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廣東珠江台 — 中國廣東頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4534,8 +4425,8 @@
         "raw_channel_name": "广东珠江",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/gdzj",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://2.fast.hidns.vip/163189/gdzj",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4548,13 +4439,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广州综合.webp",
-      "stream_url": "https://168.sryze.cc/163189/gzzh",
+      "stream_url": "https://cdn.qd.je/163189/gzzh",
       "stream_type": "hls",
       "source_name": "廣州綜合台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廣州綜合台 — 中國廣州頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4573,8 +4464,8 @@
         "raw_channel_name": "广州综合",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/gzzh",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://168.sryze.cc/163189/gzzh",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4587,13 +4478,13 @@
       "category": "news",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广州新闻.webp",
-      "stream_url": "https://168.sryze.cc/163189/gzxw",
+      "stream_url": "https://cdn.qd.je/163189/gzxw",
       "stream_type": "hls",
       "source_name": "廣州新聞台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廣州新聞台 — 中國廣州頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4612,8 +4503,8 @@
         "raw_channel_name": "广州新闻",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/gzxw",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://168.sryze.cc/163189/gzxw",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4626,13 +4517,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://gitee.com/suxuang/epglogo/raw/master/guangdong/Guangzhou6.png",
-      "stream_url": "https://cdn15.163189.xyz/163189/ngds",
+      "stream_url": "https://cdn.qd.je/163189/ngds",
       "stream_type": "hls",
       "source_name": "廣州南國都市台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "廣州南國都市台 — 中國廣州頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4651,8 +4542,8 @@
         "raw_channel_name": "广州南国都市",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/ngds",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://cdn15.163189.xyz/163189/ngds",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4665,13 +4556,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/海峡卫视.webp",
-      "stream_url": "https://10.fast.hidns.vip/163189/hxws/video/index.php",
+      "stream_url": "https://cdn.qd.je/163189/hxws",
       "stream_type": "hls",
       "source_name": "海峽衛視（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
+      "last_checked": "2026-11-20T16:34:25.295Z",
       "description": "海峽衛視 — 中國福建頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -4690,8 +4581,8 @@
         "raw_channel_name": "海峡卫视",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/hxws",
-            "source": "Yang IPTV 清單（上游入口）",
+            "url": "https://10.fast.hidns.vip/163189/hxws/video/index.php",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
