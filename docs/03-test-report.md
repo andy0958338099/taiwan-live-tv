@@ -665,6 +665,53 @@ cache-control: public, max-age=300, s-maxage=300
 另見 hls.js PR #7701（1.7.0 納入）：hls.js 會驗證 byte-range 回應的長度，
 不符時發出警告 —— 這是代理端不能亂轉發 Range 的原因之一。
 
+### ⚠️ 快取污染：已過期 segment 的 HTML 錯誤頁（2026-11-21 修正）
+
+實測：**直播 segment 只活約 30 秒**。上游對已過期的 segment 回的是
+
+```
+HTTP 206  Content-Range: bytes 0-162/163  Content-Length: 163
+```
+
+但內容其實是 163 bytes 的 **HTML 404 錯誤頁**：
+
+```
+<!DOCTYPE html><html lang="en"><head>...<title>404</title>...
+```
+
+原本的判斷只看 Content-Range（`bytes 0-162/163` 符合「結尾 == 總長度」）
+→ 誤判成完整內容 → 於是這個 HTML 錯誤頁被回成 **200 + `max-age=300`** 快取起來。
+使用者拿到 HTML 當影片，且被釘住 5 分鐘。
+
+**修正**：改為位元組層級驗證（為了嗅探 manifest 已經讀了第一個 chunk）
+
+- MPEG-TS：第 1 byte 必須是同步位元組 `0x47`
+- fMP4：第 5–8 byte 必須是 `'ftyp'` box
+- 另擋掉以 `<` 開頭的 HTML/XML
+
+不符合 → 不快取，回 **502** 讓播放器改用備援來源。
+
+實測（`scripts/test-proxy-cache-poisoning.mjs`）：
+
+```
+[A] 有效 segment
+    HTTP 200   Cache-Control: public, max-age=300, s-maxage=300
+    第一個 chunk: 6959 bytes，首位元組 0x47
+    判定：✓ 正確（完整 segment 且可快取）
+
+[B] 等待 40 秒讓 segment 過期
+    上游此刻回: HTTP 206 len 163 cr bytes 0-162/163 （已過期：是 ✓）
+
+[C] 代理回應
+    HTTP 502   Cache-Control:（無 max-age → 不可快取）
+    內容: {"error":"來源回應的不是串流內容（可能是已過期的 segment 或錯誤頁）"}
+    判定：✓ 正確（拒絕且不快取）
+```
+
+> **附註**：上游速度是**跳動**的 —— 同一個 5.4 MB segment 實測有時 196ms、
+> 有時 78 秒。測試腳本因此用「只讀第一個 chunk」+ 重試，
+> 不因單次逾時就誤判。
+
 ## 10. 結論
 
 | 測試面向 | 結果 |
