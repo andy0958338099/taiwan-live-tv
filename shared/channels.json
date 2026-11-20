@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-20T16:44:19.928Z",
+  "updated_at": "2026-11-20T16:50:25.674Z",
   "categories": [
     {
       "id": "news",
@@ -2059,7 +2059,7 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广东体育.webp",
-      "stream_url": "https://cdn.qd.je/163189/gdty",
+      "stream_url": "https://2.fast.hidns.vip/163189/gdty",
       "stream_type": "hls",
       "source_name": "廣東體育台（經 YanG IPTV 清單轉載）",
       "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
@@ -2084,8 +2084,8 @@
         "raw_channel_name": "广东体育",
         "backup_urls": [
           {
-            "url": "https://2.fast.hidns.vip/163189/gdty",
-            "source": "原主來源（已失效）",
+            "url": "https://cdn.qd.je/163189/gdty",
+            "source": "原主來源（轉址入口）",
             "cors": false
           }
         ]

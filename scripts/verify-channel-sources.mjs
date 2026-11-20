@@ -79,6 +79,8 @@ async function verify(url) {
       e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
     return { ok: false, reason: `讀取失敗 (${reason})` };
   }
+  /** manifest 本身的長度（用來辨認「轉址入口」vs「真正的串流清單」） */
+  const manifestBytes = Buffer.byteLength(text);
   if (!text.trimStart().startsWith('#EXTM3U')) {
     return { ok: false, reason: '非 m3u8' };
   }
@@ -164,6 +166,7 @@ async function verify(url) {
     cors,
     segBytes: buf.length,
     segMs,
+    manifestBytes,
     kind: isTs ? 'mpegts' : isFmp4 ? 'fmp4' : 'unknown',
   };
 }
@@ -260,6 +263,7 @@ async function main() {
       working_kind: working?.kind ?? null,
       working_ms: working?.segMs ?? null,
       working_bytes: working?.segBytes ?? null,
+      working_manifest_bytes: working?.manifestBytes ?? null,
       needs_swap: !!(working && working.role === 'backup'),
     };
   }

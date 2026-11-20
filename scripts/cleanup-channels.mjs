@@ -167,6 +167,7 @@ async function main() {
 
   const removed = [];
   const promoted = [];
+  const thinPrimary = [];
   const kept = [];
   /** 待二次確認的頻道 */
   const pendingRemoval = [];
@@ -217,6 +218,42 @@ async function main() {
         old: oldPrimary,
         new: v.working_url,
       });
+    }
+
+    /**
+     * 主來源若只是「轉址入口」而非真正的串流清單，也要換掉。
+     *
+     * 實測：`cdn.qd.je/163189/gdty` 回 200 但只有 **80 bytes**
+     * （是一個 child manifest 的轉址），而
+     * `2.fast.hidns.vip/163189/gdty` 有 4918 bytes（真正的清單）。
+     * 用轉址入口當主來源會多繞一層，且該層的 child 可能已失效。
+     *
+     * 判斷：manifest 小於 500 bytes 就視為轉址入口。
+     */
+    if (
+      v.working_manifest_bytes !== null &&
+      v.working_manifest_bytes !== undefined &&
+      v.working_manifest_bytes < 500
+    ) {
+      // 這個頻道的主來源是轉址入口 → 找一個更實在的備援
+      const better = (ch.playlist_source?.backup_urls ?? []).find(
+        (b) => b.url !== ch.stream_url,
+      );
+      if (better) {
+        const thin = ch.stream_url;
+        ch.stream_url = better.url;
+        ch.playlist_source.backup_urls = [
+          ...(ch.playlist_source.backup_urls ?? []).filter(
+            (b) => b.url !== better.url,
+          ),
+          { url: thin, source: '原主來源（轉址入口）', cors: better.cors },
+        ];
+        thinPrimary.push({
+          name: ch.channel_name,
+          old: thin,
+          new: better.url,
+        });
+      }
     }
 
     ch.last_checked = now;
@@ -325,6 +362,15 @@ async function main() {
   if (promoted.length) {
     console.log('\n升級為可用備援：');
     for (const p of promoted) {
+      console.log(`  ↻ ${p.name}`);
+      console.log(`      舊: ${p.old.slice(0, 76)}`);
+      console.log(`      新: ${p.new.slice(0, 76)}`);
+    }
+  }
+
+  if (thinPrimary.length) {
+    console.log('\n主來源原為轉址入口，改用實際串流清單：');
+    for (const p of thinPrimary) {
       console.log(`  ↻ ${p.name}`);
       console.log(`      舊: ${p.old.slice(0, 76)}`);
       console.log(`      新: ${p.new.slice(0, 76)}`);
