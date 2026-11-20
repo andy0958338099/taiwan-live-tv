@@ -60,12 +60,25 @@ async function verify(url) {
   try {
     res = await get(url);
   } catch (e) {
-    return { ok: false, reason: e.name === 'AbortError' ? '逾時' : e.name };
+    const reason =
+      e.name === 'AbortError'
+        ? '逾時'
+        : e.cause?.code === 'ECONNRESET'
+          ? '連線被重置'
+          : e.name;
+    return { ok: false, reason };
   }
   if (!res.ok) return { ok: false, reason: `HTTP ${res.status}` };
 
   const cors = res.headers.get('access-control-allow-origin') !== null;
-  const text = await res.text();
+  let text;
+  try {
+    text = await res.text();
+  } catch (e) {
+    const reason =
+      e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
+    return { ok: false, reason: `讀取失敗 (${reason})` };
+  }
   if (!text.trimStart().startsWith('#EXTM3U')) {
     return { ok: false, reason: '非 m3u8' };
   }
@@ -84,10 +97,23 @@ async function verify(url) {
     try {
       cres = await get(target);
     } catch (e) {
-      return { ok: false, reason: `child ${e.name}` };
+      const reason =
+        e.name === 'AbortError'
+          ? '逾時'
+          : e.cause?.code === 'ECONNRESET'
+            ? '連線被重置'
+            : e.name;
+      return { ok: false, reason: `child ${reason}` };
     }
     if (!cres.ok) return { ok: false, reason: `child HTTP ${cres.status}` };
-    const ctext = await cres.text();
+    let ctext;
+    try {
+      ctext = await cres.text();
+    } catch (e) {
+      const reason =
+        e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
+      return { ok: false, reason: `child 讀取失敗 (${reason})` };
+    }
     if (ctext.includes('#EXT-X-ENDLIST')) return { ok: false, reason: 'child VOD' };
     const csegs = ctext
       .split('\n')
@@ -103,12 +129,26 @@ async function verify(url) {
   try {
     sres = await get(target, 30000);
   } catch (e) {
-    return { ok: false, reason: `segment ${e.name === 'AbortError' ? '逾時' : e.name}` };
+    const reason =
+      e.name === 'AbortError'
+        ? '逾時'
+        : e.cause?.code === 'ECONNRESET'
+          ? '連線被重置'
+          : e.name;
+    return { ok: false, reason: `segment ${reason}` };
   }
   const segMs = Date.now() - t0;
   if (!sres.ok) return { ok: false, reason: `segment HTTP ${sres.status}` };
 
-  const buf = Buffer.from(await sres.arrayBuffer());
+  let buf;
+  try {
+    buf = Buffer.from(await sres.arrayBuffer());
+  } catch (e) {
+    // 下載中途連線被切斷（上游偶發）—— 不能讓整個腳本崩掉
+    const reason =
+      e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
+    return { ok: false, reason: `segment 讀取失敗 (${reason})` };
+  }
   if (buf.length < 1024) return { ok: false, reason: `segment 過短 ${buf.length}B` };
 
   const isTs = buf[0] === 0x47;
@@ -210,7 +250,25 @@ async function main() {
   async function worker() {
     while (queue.length) {
       const ch = queue.shift();
-      const r = await verifyChannel(ch);
+      let r;
+      try {
+        r = await verifyChannel(ch);
+      } catch (e) {
+        // 單一頻道的意外錯誤不能讓整批驗證中斷
+        r = {
+          channel_id: ch.channel_id,
+          channel_name: ch.channel_name,
+          primary_url: ch.stream_url,
+          primary_ok: false,
+          primary_reason: `例外：${e.name ?? '未知'}`,
+          working_url: null,
+          working_role: null,
+          working_kind: null,
+          working_ms: null,
+          working_bytes: null,
+          needs_swap: false,
+        };
+      }
       results.push(r);
       if (doneCount % 5 === 0) {
         process.stdout.write(`  驗證中 ${doneCount}/${targets.length}\r`);
