@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-20T15:22:34.841Z",
+  "updated_at": "2026-11-20T15:37:31.974Z",
   "categories": [
     {
       "id": "news",
@@ -1567,13 +1567,13 @@
       "category": "news",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV13.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=CCTV13",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0013_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "央視-13 新聞（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T15:36:40.595Z",
       "description": "央視-13 新聞 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -1592,11 +1592,6 @@
         "original_name": "央視-13 新聞",
         "backup_urls": [
           {
-            "url": "http://121.19.134.149:808/tsfile/live/0013_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://61.136.172.236:9901/tsfile/live/0013_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -1609,6 +1604,11 @@
           {
             "url": "http://8.137.121.66:20241/608807423",
             "source": "褲佬 清單",
+            "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=CCTV13",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -2063,6 +2063,45 @@
       }
     },
     {
+      "channel_id": "cn-gdty",
+      "channel_name": "廣東體育台",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": null,
+      "logo": "https://iptv.yang-1989.xyz/logo/广东体育.webp",
+      "stream_url": "https://2.fast.hidns.vip/163189/gdty",
+      "stream_type": "hls",
+      "source_name": "廣東體育台（經 YanG IPTV 清單轉載）",
+      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-20T13:33:59.967Z",
+      "description": "廣東體育台 — 中國廣東頻道，來源為使用者提供的 IPTV 清單轉載",
+      "tags": [
+        "中國",
+        "iptv",
+        "yang"
+      ],
+      "region": "中國廣東",
+      "cors_enabled": false,
+      "http_user_agent": null,
+      "http_referrer": null,
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "playlist_source": {
+        "provider": "yang",
+        "provider_label": "YanG IPTV 清單",
+        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
+        "raw_channel_name": "广东体育",
+        "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/gdty",
+            "source": "Yang IPTV 清單（上游入口）",
+            "cors": false
+          }
+        ]
+      }
+    },
+    {
       "channel_id": "cn-js",
       "channel_name": "江蘇衛視",
       "name_en": null,
@@ -2336,13 +2375,13 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/湖南卫视.webp",
-      "stream_url": "http://101.35.240.114:88/live.php?id=湖南卫视",
+      "stream_url": "http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/dWlwPTEyNy4wLjAuMSZ1aWQ9cWluZy1jbXMmbm5fdGltZXpvbmU9OCZjZG5leF9pZD1hbF9obHNfbGR2dCZ1dWlkPTliODY4NmU5ZTM2YzYwMmMmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNWSZGST.m3u8",
       "stream_type": "hls",
       "source_name": "湖南衛視（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-20T13:34:34.881Z",
+      "last_checked": "2026-11-20T15:36:40.595Z",
       "description": "湖南衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2367,11 +2406,6 @@
           },
           {
             "url": "https://yshipin.pages.dev/play/hnws",
-            "source": "褲佬 清單",
-            "cors": true
-          },
-          {
-            "url": "http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/dWlwPTEyNy4wLjAuMSZ1aWQ9cWluZy1jbXMmbm5fdGltZXpvbmU9OCZjZG5leF9pZD1hbF9obHNfbGR2dCZ1dWlkPTliODY4NmU5ZTM2YzYwMmMmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNWSZGST.m3u8",
             "source": "褲佬 清單",
             "cors": true
           },
@@ -2403,6 +2437,11 @@
           {
             "url": "http://120.198.95.220:9901/tsfile/live/1044_1.m3u8?key=txiptv&playlive=1&down=1",
             "source": "itvlist 聚合源",
+            "cors": false
+          },
+          {
+            "url": "http://101.35.240.114:88/live.php?id=湖南卫视",
+            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4457,45 +4496,6 @@
         "backup_urls": [
           {
             "url": "https://cdn.qd.je/163189/fhzx",
-            "source": "Yang IPTV 清單（上游入口）",
-            "cors": false
-          }
-        ]
-      }
-    },
-    {
-      "channel_id": "cn-gdty",
-      "channel_name": "廣東體育台",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": null,
-      "logo": "https://iptv.yang-1989.xyz/logo/广东体育.webp",
-      "stream_url": "https://2.fast.hidns.vip/163189/gdty",
-      "stream_type": "hls",
-      "source_name": "廣東體育台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-20T13:33:59.967Z",
-      "description": "廣東體育台 — 中國廣東頻道，來源為使用者提供的 IPTV 清單轉載",
-      "tags": [
-        "中國",
-        "iptv",
-        "yang"
-      ],
-      "region": "中國廣東",
-      "cors_enabled": false,
-      "http_user_agent": null,
-      "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV 清單",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "广东体育",
-        "backup_urls": [
-          {
-            "url": "https://cdn.qd.je/163189/gdty",
             "source": "Yang IPTV 清單（上游入口）",
             "cors": false
           }
