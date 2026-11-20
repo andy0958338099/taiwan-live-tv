@@ -175,6 +175,12 @@ export default function Home() {
           onVideoMount={player.setVideoEl}
           muted={player.muted}
           onToggleMute={player.toggleMute}
+          elapsedSeconds={player.elapsedSeconds}
+          onSkipSource={player.skipSource}
+          remainingSources={Math.max(
+            0,
+            player.totalSources - player.activeSourceIndex - 1,
+          )}
         />
 
         {selected && (

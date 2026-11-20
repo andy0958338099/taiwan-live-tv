@@ -154,12 +154,41 @@ export function useHlsPlayer(channel: Channel | null) {
   const [videoEl, setVideoElState] = useState<HTMLVideoElement | null>(null);
   const hlsRef = useRef<Hls | null>(null);
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** 載入計時器的 interval handle（顯示已等待秒數） */
+  const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [needsUserGesture, setNeedsUserGesture] = useState(false);
   const [nativeHls, setNativeHls] = useState(false);
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
   const [attemptedUrls, setAttemptedUrls] = useState<string[]>([]);
+
+  /**
+   * handleFailure 的 ref 指標。
+   *
+   * 宣告位置很重要：**必須在 startPlayback 之前**。
+   *
+   * 原因：`startPlayback` 的 useCallback deps 是 `[armWatchdog, teardown]`，
+   * 兩者都穩定（`[]` deps），所以 startPlayback 永遠不會重建，
+   * 它閉包裡的 `handleFailure` 會是「首次渲染時」的那一份 ——
+   * 那時 channel 還是 null，candidateUrls() 回傳 []。
+   *
+   * 結果：錯誤訊息永遠顯示「已嘗試 0 個來源」，
+   * 而且 `nextIndex < urls.length` 永不成立 → 備援 failover 從未生效。
+   *
+   * 用 ref 就能每次拿到當下的 handleFailure。
+   */
+  const handleFailureRef = useRef<
+    ((target: Channel, failedUrl: string, reason: string) => void) | null
+  >(null);
+
+  /**
+   * 載入已等待的秒數。
+   *
+   * 用途：避免「一直轉圈圈」讓使用者以為當機。
+   * 慢速來源首個畫面可能要 10–30 秒，這段時間必須有可見的回饋。
+   */
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
   /**
    * 靜音狀態。
    *
@@ -200,6 +229,10 @@ export function useHlsPlayer(channel: Channel | null) {
     if (watchdogRef.current) {
       clearTimeout(watchdogRef.current);
       watchdogRef.current = null;
+    }
+    if (elapsedTimerRef.current) {
+      clearInterval(elapsedTimerRef.current);
+      elapsedTimerRef.current = null;
     }
     if (hlsRef.current) {
       hlsRef.current.destroy();
@@ -249,6 +282,13 @@ export function useHlsPlayer(channel: Channel | null) {
       setErrorMessage(null);
       setStatus('loading');
       armWatchdog(target, url);
+
+      // 開始計時：顯示已等待秒數，避免「一直轉圈圈」讓人以為當機
+      setElapsedSeconds(0);
+      if (elapsedTimerRef.current) clearInterval(elapsedTimerRef.current);
+      elapsedTimerRef.current = setInterval(() => {
+        setElapsedSeconds((n) => n + 1);
+      }, 1000);
 
       /**
        * 自動播放政策只允許「靜音自動播放」。
@@ -338,6 +378,38 @@ export function useHlsPlayer(channel: Channel | null) {
         startLevel: 2,
         // 限制最高碼率不超過播放器尺寸，避免在低解析度裝置上浪費頻寬
         capLevelToPlayerSize: true,
+        // ─────────────────────────────────────────────────────────
+        // 以下是「避免一直轉圈」的關鍵設定
+        // ─────────────────────────────────────────────────────────
+        //
+        // liveSyncDurationCount：hls.js 預設是 **3**，
+        // 意思是「必須先下載 3 個 segment、湊滿 3 個 targetduration 的
+        // 緩衝才開始播放」。
+        //
+        // 對慢速上游來說這是災難：segment 需 30 秒 → 要等 90 秒才有畫面。
+        // 改成 1 表示「第一個 segment 到就播」，畫面立刻出現。
+        // 代價是開頭可能有一次微小的卡頓（第二個 segment 還在下載），
+        // 對直播來說這個取捨非常划算。
+        liveSyncDurationCount: 1,
+        // 直播的最大允許延遲（以 targetduration 為單位）。
+        // 若播放器落後直播現場超過這個數量，就直接跳到最新位置，
+        // 而不是慢慢追趕 —— 避免「一直轉圈等追上台」。
+        liveMaxLatencyDurationCount: 10,
+        // 緩衝區上限：限制記憶體用量，避免長時間播放後堆積過多。
+        maxBufferLength: 30,
+        maxMaxBufferLength: 60,
+        // 允許在 manifest 載入中就開始準備第一個 fragment（預載）
+        startFragPrefetch: true,
+        // 片段載入失敗時不要無限重試同一個來源，
+        // 直接讓上層的 failover 邏輯換來源。
+        fragLoadPolicy: {
+          default: {
+            maxTimeToFirstByteMs: 30_000,
+            maxLoadTimeMs: 90_000,
+            timeoutRetry: { maxNumRetry: 2, retryDelayMs: 1000, maxRetryDelayMs: 4000 },
+            errorRetry: { maxNumRetry: 2, retryDelayMs: 1000, maxRetryDelayMs: 4000 },
+          },
+        },
       });
       hlsRef.current = hls;
 
@@ -354,10 +426,41 @@ export function useHlsPlayer(channel: Channel | null) {
         });
       });
 
+      /**
+       * 第一個 segment 緩衝完成 → 真的有畫面了。
+       *
+       * 這裡才停止計時器：MANIFEST_PARSED 只代表清單讀到了，
+       * 畫面還沒出現（慢速來源還在下載第一個 segment）。
+       */
+      hls.on(Hls.Events.FRAG_BUFFERED, () => {
+        if (elapsedTimerRef.current) {
+          clearInterval(elapsedTimerRef.current);
+          elapsedTimerRef.current = null;
+        }
+      });
+
       hls.on(
         Hls.Events.ERROR,
         (_event: string, data: { fatal: boolean; type: string; details: string }) => {
           if (!data.fatal) return;
+
+          /**
+           * ⚠️ 必須用 `handleFailureRef.current`，不能直接用 `handleFailure`。
+           *
+           * 原因：`startPlayback` 的 useCallback deps 是 `[armWatchdog, teardown]`，
+           * 兩者都是穩定的（`[]` deps），所以 **startPlayback 永遠不會重建**。
+           * 它閉包裡的 `handleFailure` 因此是「首次渲染時」的那一份 ——
+           * 那時 `channel` 還是 null，`candidateUrls()` 會回傳 `[]`。
+           *
+           * 結果就是：
+           *   · 錯誤訊息永遠顯示「已嘗試 0 個來源」
+           *   · `nextIndex < urls.length` 永遠不成立 → **備援 failover 從未生效**
+           *
+           * ref 的值會隨每次 render 更新（見下方 useEffect），
+           * 因此永遠拿到當下的 channel 與 activeSourceIndex。
+           */
+          const fail = handleFailureRef.current;
+          if (!fail) return;
 
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
@@ -365,18 +468,18 @@ export function useHlsPlayer(channel: Channel | null) {
                 data.details === Hls.ErrorDetails.MANIFEST_LOAD_ERROR ||
                 data.details === Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT
               ) {
-                void handleFailure(
+                void fail(
                   target,
                   url,
                   '無法載入串流清單：來源可能未提供跨網域存取（CORS），或網址已失效',
                 );
               } else {
-                void handleFailure(target, url, '網路錯誤：串流載入失敗');
+                void fail(target, url, '網路錯誤：串流載入失敗');
               }
               break;
 
             case Hls.ErrorTypes.MEDIA_ERROR:
-              void handleFailure(
+              void fail(
                 target,
                 url,
                 '媒體解碼錯誤：此串流的編碼格式可能不受支援',
@@ -384,7 +487,7 @@ export function useHlsPlayer(channel: Channel | null) {
               break;
 
             default:
-              void handleFailure(target, url, `播放失敗（${data.details || data.type}）`);
+              void fail(target, url, `播放失敗（${data.details || data.type}）`);
               break;
           }
         },
@@ -427,8 +530,8 @@ export function useHlsPlayer(channel: Channel | null) {
     [candidateUrls, startPlayback, teardown, activeSourceIndex],
   );
 
-  // handleFailure 的 ref，供 watchdog 使用（避免 useCallback 循環相依）
-  const handleFailureRef = useRef(handleFailure);
+  // handleFailure 的 ref 指標 —— 宣告在上面（startPlayback 之前），
+  // 這裡負責把最新的 handleFailure 同步進去。
   useEffect(() => {
     handleFailureRef.current = handleFailure;
   }, [handleFailure]);
@@ -715,6 +818,24 @@ export function useHlsPlayer(channel: Channel | null) {
     }
   }, []);
 
+  /**
+   * 手動切換到下一個來源。
+   *
+   * 為什麼需要這個：慢速來源可能讓使用者等 30 秒以上才有畫面。
+   * 與其讓使用者乾等，不如給他一個按鈕立刻換來源。
+   */
+  const skipSource = useCallback(() => {
+    if (!channel) return;
+    if (mode === 'iframe') return;
+    const urls = candidateUrls();
+    if (urls.length === 0) return;
+    const nextIndex = activeSourceIndex + 1;
+    if (nextIndex >= urls.length) return;
+    setActiveSourceIndex(nextIndex);
+    setAttemptedUrls([]);
+    void startPlayback(channel, urls[nextIndex]);
+  }, [channel, mode, candidateUrls, activeSourceIndex, startPlayback]);
+
   return {
     videoRef,
     iframeRef,
@@ -733,6 +854,8 @@ export function useHlsPlayer(channel: Channel | null) {
     iframeKey,
     muted,
     toggleMute,
+    elapsedSeconds,
+    skipSource,
   };
 }
 

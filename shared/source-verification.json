@@ -1,0 +1,44 @@
+{
+  "verified_at": "2026-11-20T14:26:48.325Z",
+  "results": [
+    {
+      "channel_id": "playlist-TVBS-tvbs",
+      "channel_name": "TVBS",
+      "primary_url": "https://d2jc41c1shgcol.cloudfront.net/live/tvbsnewsqt/playlist.m3u8",
+      "primary_ok": true,
+      "primary_reason": null,
+      "primary_cors": false,
+      "working_url": "https://d2jc41c1shgcol.cloudfront.net/live/tvbsnewsqt/playlist.m3u8",
+      "working_kind": "mpegts",
+      "working_ms": 159,
+      "working_bytes": 2661704,
+      "needs_swap": false
+    },
+    {
+      "channel_id": "cn-hn",
+      "channel_name": "湖南衛視",
+      "primary_url": "http://101.35.240.114:88/live.php?id=湖南卫视",
+      "primary_ok": false,
+      "primary_reason": "HTTP 404",
+      "primary_cors": null,
+      "working_url": "http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/dWlwPTEyNy4wLjAuMSZ1aWQ9cWluZy1jbXMmbm5fdGltZXpvbmU9OCZjZG5leF9pZD1hbF9obHNfbGR2dCZ1dWlkPTliODY4NmU5ZTM2YzYwMmMmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNWSZGST.m3u8",
+      "working_kind": "mpegts",
+      "working_ms": 1605,
+      "working_bytes": 1053928,
+      "needs_swap": false
+    },
+    {
+      "channel_id": "cn-gdty",
+      "channel_name": "廣東體育台",
+      "primary_url": "https://2.fast.hidns.vip/163189/gdty",
+      "primary_ok": false,
+      "primary_reason": "segment HTTP 400",
+      "primary_cors": null,
+      "working_url": "https://cdn.qd.je/163189/gdty",
+      "working_kind": "mpegts",
+      "working_ms": 320,
+      "working_bytes": 6506116,
+      "needs_swap": false
+    }
+  ]
+}

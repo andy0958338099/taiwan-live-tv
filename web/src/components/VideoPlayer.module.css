@@ -95,6 +95,19 @@
   max-width: 560px;
 }
 
+/**
+ * 載入中的補充訊息（已等待秒數、來源較慢的說明）。
+ *
+ * 目的是讓等待有明確回饋 —— 使用者看到秒數在跳，
+ * 就知道程式還活著，而不是卡死。
+ */
+.loadingHint {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 .playerOverlayHint {
   margin: 0;
   font-size: 0.8rem;

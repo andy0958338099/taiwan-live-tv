@@ -30,6 +30,12 @@ interface VideoPlayerProps {
   muted?: boolean;
   /** 切換靜音 */
   onToggleMute?: () => void;
+  /** 已等待的秒數（載入中顯示，避免使用者以為當機） */
+  elapsedSeconds?: number;
+  /** 是否可切換到下一個來源（載入過久時提供手動切換） */
+  onSkipSource?: () => void;
+  /** 還有幾個備援來源可切換 */
+  remainingSources?: number;
 }
 
 /**
@@ -62,6 +68,9 @@ export function VideoPlayer({
   onVideoMount,
   muted = true,
   onToggleMute,
+  elapsedSeconds,
+  onSkipSource,
+  remainingSources,
 }: VideoPlayerProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const [localIframeKey, setLocalIframeKey] = useState(0);
@@ -160,6 +169,32 @@ export function VideoPlayer({
               ? `連線中…（已切換至備援來源 ${activeSourceIndex + 1}/${totalSources}）`
               : '連線中…'}
           </p>
+          {/*
+           * 載入回饋：避免「一直轉圈圈」讓人以為當機。
+           *
+           * 慢速來源（實測央視 segment 5.2MB / 480KB/s）首個畫面可能要 10–30 秒，
+           * 這期間若只有一個無聲的轉圈圈，使用者無從判斷是「還在載入」還是「壞了」。
+           * 這裡顯示：
+           *   1. 已等待秒數（讓人知道程式還活著）
+           *   2. 超過 12 秒後說明「來源較慢」並提供「換一個來源」按鈕
+           */}
+          {elapsedSeconds !== undefined && elapsedSeconds > 3 && (
+            <p className={styles.loadingHint}>已等待 {elapsedSeconds} 秒</p>
+          )}
+          {elapsedSeconds !== undefined && elapsedSeconds > 12 && (
+            <p className={styles.loadingHint}>
+              此來源傳輸較慢，可能需要 20–30 秒才會出現畫面。
+            </p>
+          )}
+          {onSkipSource && remainingSources !== undefined && remainingSources > 0 && (
+            <button
+              type="button"
+              className={styles.retryBtn}
+              onClick={onSkipSource}
+            >
+              換一個來源（還有 {remainingSources} 個）
+            </button>
+          )}
         </div>
       )}
 
