@@ -769,6 +769,82 @@ playlist-翡翠台-tvb翡翠台 sha=a968d20b293e 是manifest=是 ✓
 > 你以為 query 會進快取鍵，但它可能不會。
 > **要快取就必須把識別資訊放進 path。**
 
+## 9.5 fMP4 位元組驗證只認 ftyp 會誤殺 styp（P0 回歸，2026-11-21）
+
+上一輪為了避免把「已過期 segment 的 HTML 404 錯誤頁」當成影片快取，
+在代理加了位元組層級的驗證 —— 但 fMP4 只接受 `ftyp` box。
+
+結果 **天映頻道整個播不出來**（線上實測 HTTP 502）：
+
+```
+init segment   → box[4:8] = 'ftyp'  ✓ 通過
+media segment  → box[4:8] = 'styp'  ✗ 被誤殺 → 502
+```
+
+### 根因
+
+依 ISO BMFF 規格（W3C「ISO BMFF Byte Stream Format」）：
+
+| 區段 | 結構 |
+|---|---|
+| 初始化區段（`EXT-X-MAP`） | `ftyp` + `moov` |
+| 媒體區段（media segment） | 選用的 `styp` + `moof` + `mdat` |
+
+**`ftyp` 只出現在初始化區段**；真正的影片片段開頭是 `styp` 或 `moof`。
+只認 `ftyp` 等於把幾乎所有 fMP4 媒體區段都殺掉。
+
+> 參考：https://www.w3.org/TR/2016/NOTE-mse-byte-stream-format-isobmff-20161004/
+
+### 修正
+
+1. 改用 `ISO_BMFF_BOX_TYPES` 白名單，接受所有合法頂層 box 型別：
+   `ftyp` / `styp` / `moof` / `mdat` / `moov` / `sidx` / `emsg` / `prft` /
+   `pdin` / `free` / `skip`
+
+2. 新增 `startsAtBeginning` 判斷：
+   byte-range playlist（`#EXT-X-BYTERANGE`）會讓 hls.js 送
+   `Range: bytes=100-200`，回應的第一個位元組不是檔案開頭，
+   位元組驗證在此不成立。原本會被誤判成錯誤頁而回 502。
+   現在只有「從頭開始」才做位元組驗證，中途片段維持 206 + `no-store`。
+
+3. `rangeCoversWhole` 改為明確檢查起始位元組為 0。
+
+### 線上實測（修正後）
+
+```
+init segment   HTTP 200  box=ftyp  len=734
+media segment  HTTP 200  box=styp  len=3023420
+                Cache-Control: public,max-age=300
+MPEG-TS segment HTTP 200  first=0x47  cc=public,max-age=300
+```
+
+### 過期 segment 仍被正確拒絕（原始 bug 未回歸）
+
+上游對已過期 segment 回 `206 + Content-Range: bytes 0-162/163` + HTML 404 頁：
+
+```
+有效 segment  → HTTP 200  cc=public, max-age=300, s-maxage=300  first=0x47
+過期 segment  → HTTP 502  cc=null（不可快取）✓
+```
+
+### 自動化測試
+
+新增 `scripts/test-proxy-segment-validation.mjs`：
+
+- 位元組判斷規則單元測試（19 項，含 `styp` 回歸測試）
+- 線上 fMP4 頻道實測（天映：master → 子 manifest → init → media segment）
+- 線上 MPEG-TS 頻道實測（GOOD TV 綜合台）
+- 非允許清單網址仍被 403 拒絕
+
+```
+node scripts/test-proxy-segment-validation.mjs --base https://taiwan-live-tv.netlify.app
+✓ 全部通過
+```
+
+> **教訓**：位元組層級的格式判斷不能只認「最常見的那一種」。
+> `ftyp` 是初始化區段的標記，`styp` 才是媒體區段的標記 ——
+> 驗證規則要涵蓋整個規格允許的集合。
+
 ## 10. 結論
 
 | 測試面向 | 結果 |
@@ -786,5 +862,7 @@ playlist-翡翠台-tvb翡翠台 sha=a968d20b293e 是manifest=是 ✓
 | 響應式版面 | ✅ 通過（3 種尺寸皆無水平溢出） |
 | APK 內容與 Launcher 入口 | ✅ 通過 |
 | 來源揭露頁 | ✅ 通過（/privacy 列出 83 頻道 + 15 個轉載清單） |
+| 代理位元組驗證（fMP4 styp / MPEG-TS） | ✅ 通過（線上 19 項單元測試 + fMP4/MPEG-TS 實測） |
+| 過期 segment 不被快取（HTML 錯誤頁） | ✅ 通過（502 + 不可快取） |
 | **真實電視盒實測** | ⏳ **待設備** |
-| **全部 83 個頻道的逐一播放驗證** | ⏳ **進行中**（`verify-channel-sources.mjs`） |
+| **全部 90 個頻道的逐一播放驗證** | ✅ 通過（deep probe：78/80 可播，6 需改用備援，2 失效） |
