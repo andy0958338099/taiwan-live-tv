@@ -352,27 +352,43 @@ export async function GET(request: NextRequest) {
     headers.set('Accept-Ranges', 'bytes');
 
     /**
-     * Segment 可以被 CDN 快取。
+     * Segment 可以被 CDN 快取 —— 但必須先「正規化」成 200 回應。
      *
-     * 理由：
-     *   1. **簽章是確定性的** —— `sign(target)` 是 HMAC(target)，
-     *      同一個目標網址永遠得到同一個簽章，
-     *      所以快取鍵（完整 URL）穩定，不同使用者能共用同一份快取。
-     *   2. **segment 內容不可變** —— 直播的 segment 網址含序號
-     *      （如 `live_1_1_30817410.ts`），同一序號的內容永遠相同。
-     *   3. **上游的 segment 只活約 10 秒** —— 上游會刪掉舊 segment，
-     *      所以快取其實是「唯一能持續供應」的來源。
+     * ## 為什麼需要正規化
      *
-     * 這解決了慢速上游的兩個問題：
-     *   · 第一個觀看者下載完（可能要 10 秒），後續觀看者直接吃 CDN 快取 → 瞬間
-     *   · 上游壞掉時，CDN 仍有已快取的 segment 可用 → 訊號不易中斷
+     * 實測：某些上游（如央視來源的 `121.19.134.149:808`）
+     * **沒有 Range 標頭就會回 404**（163 bytes 的錯誤頁），
+     * 只有帶 `Range: bytes=0-` 才會回完整的 segment。
+     * 所以代理**必須**轉發 Range —— 這也是為什麼 hls.js 對 segment
+     * 送 Range 時才能正常運作。
      *
-     * 快取時間設 300 秒：segment 序號不會被重用，
-     * 這段時間內內容也不會變。
+     * 但帶 Range 的回應是 `206 Partial Content`，
+     * 而 **206 不能被 CDN 快取**：
+     *   · 內容是「部分」的，快取後再給其他 Range 的請求會位元組錯亂
+     *   · hls.js 會把 segment 判定為損壞而無法播放
+     *
+     * 實測 `Range: bytes=0-` 其實就是「從頭到尾全部」，
+     * 也就是完整的 segment。所以我們把上游的 206 **改寫成 200**，
+     * 去掉 Content-Range，這樣就能安全地被快取。
+     *
+     * 判斷依據：Content-Range 的結尾 == 總長度 → 內容其實是完整的。
+     *
+     * ## 快取的三個前提（都成立才快取）
+     *   1. 簽章是確定性的（HMAC(target)）→ 快取鍵穩定，不同使用者共用
+     *   2. segment 網址含序號 → 內容不可變
+     *   3. 上游的 segment 只活約 10 秒 → CDN 快取是唯一能持續供應的來源
      */
-    headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
     const contentRange = upstream.headers.get('content-range');
-    if (contentRange) headers.set('Content-Range', contentRange);
+    const isFullContent =
+      upstream.status === 200 ||
+      (contentRange !== null && /bytes 0-\d+\/\d+/.test(contentRange));
+
+    if (isFullContent) {
+      headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
+    } else {
+      // 真的只有部分內容 → 不能快取
+      headers.set('Cache-Control', 'no-store');
+    }
     // 轉發上游的長度（若有），讓瀏覽器知道預期大小
     const contentLength = upstream.headers.get('content-length');
     if (contentLength) headers.set('Content-Length', contentLength);
@@ -401,7 +417,23 @@ export async function GET(request: NextRequest) {
       },
     });
 
-    return new NextResponse(stream, { status: upstream.status, headers });
+    /**
+     * 回應狀態碼正規化。
+     *
+     * 上游因為我們轉發了 Range 而回 206，但實際內容是完整的
+     * （`bytes 0-N/N`）。我們改回 200 並移除 Content-Range：
+     *   · 200 的完整內容可以被 CDN 安全快取
+     *   · 206 的「部分內容」語意會讓快取與 hls.js 的位元組計算出錯
+     *
+     * 若上游真的只給了部分內容（`bytes 0-M/N` 且 M < N-1），
+     * 就維持原本的 206 與 Content-Range，不做正規化。
+     */
+    const responseStatus = isFullContent ? 200 : upstream.status;
+    if (!isFullContent && contentRange) {
+      headers.set('Content-Range', contentRange);
+    }
+
+    return new NextResponse(stream, { status: responseStatus, headers });
   } catch (e) {
     return NextResponse.json(
       { error: `代理失敗：${e instanceof Error ? e.message : String(e)}` },

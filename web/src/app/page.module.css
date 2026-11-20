@@ -1,4 +1,184 @@
 /* ============================================================
+   下方頻道選擇抽屜（可隱藏式）
+   ------------------------------------------------------------
+   設計目標：
+   - 觀看時完全隱藏，不佔畫面、不影響觀賞體驗
+   - 需要換台時才浮出（由下往上滑入）
+   - 選好頻道後自動收起，回到純觀看畫面
+   ============================================================ */
+
+/* 浮動的「選擇頻道」把手 —— 觀看時唯一可見的元素 */
+.drawerHandle {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.18));
+  border-radius: 999px;
+  background: rgba(18, 20, 26, 0.92);
+  backdrop-filter: blur(8px);
+  color: var(--text-primary, #fff);
+  font-size: 0.9rem;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  transition:
+    transform 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.drawerHandle:hover,
+.drawerHandle:focus-visible {
+  transform: translateX(-50%) translateY(-2px);
+  border-color: var(--accent, #4f9cff);
+}
+
+/* 抽屜展開時，把手淡出（避免重疊） */
+.drawerHandleHidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(12px);
+}
+
+/* 背景遮罩 */
+.drawerScrim {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgba(0, 0, 0, 0.5);
+  animation: drawerFade 0.2s ease;
+}
+
+@keyframes drawerFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* 抽屜本體 —— 從下方滑入 */
+.drawer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  max-height: min(72vh, 620px);
+  display: flex;
+  flex-direction: column;
+  background: #14161c;
+  border-top: 1px solid var(--border, rgba(255, 255, 255, 0.16));
+  border-radius: 18px 18px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+  transform: translateY(100%);
+  transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.drawerOpen {
+  transform: translateY(0);
+}
+
+.drawerHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex: 0 0 auto;
+}
+
+.drawerTitle {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.drawerClose {
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary, #fff);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.drawerClose:hover {
+  border-color: var(--accent, #4f9cff);
+}
+
+/* 抽屜內的捲動區 */
+.drawerBody {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 12px 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+/* 抽屜內的搜尋列 */
+.drawerSearch {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #14161c;
+  padding-bottom: 4px;
+}
+
+/* 抽屜內的頻道網格 */
+.drawerGrid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.drawerEmpty {
+  color: var(--text-muted, #9aa0aa);
+  font-size: 0.9rem;
+  padding: 18px 0;
+  text-align: center;
+}
+
+/* 桌機：抽屜改為右側側邊式（與其他版本一致） */
+@media (min-width: 900px) {
+  .drawer {
+    left: auto;
+    top: 0;
+    bottom: 0;
+    width: 400px;
+    max-height: none;
+    border-radius: 0;
+    border-top: none;
+    border-left: 1px solid var(--border, rgba(255, 255, 255, 0.16));
+    transform: translateX(100%);
+    transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+
+  .drawerOpen {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 899px) {
+  .drawerGrid {
+    grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  }
+}
+
+/* ============================================================
    頁面樣式（CSS Modules）
    設計原則：
    - 深色為主（貼合電視播放情境）

@@ -16,6 +16,13 @@
     <dimen name="channel_card_height">124dp</dimen>
     <dimen name="channel_card_spacing">12dp</dimen>
 
+    <!--
+      頻道選擇側邊面板寬度。
+      960dp 的電視寬度下取 420dp，約佔 44% ——
+      足以容納頻道卡（220dp）與分類列，又不會遮住太多畫面。
+    -->
+    <dimen name="channel_panel_width">420dp</dimen>
+
     <!-- 文字 -->
     <dimen name="text_channel_name">18sp</dimen>
     <dimen name="text_channel_meta">13sp</dimen>

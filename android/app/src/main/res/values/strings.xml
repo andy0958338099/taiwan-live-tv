@@ -5,6 +5,9 @@
     <!-- 主畫面 -->
     <string name="title_tv_live">台灣電視直播</string>
     <string name="action_search">搜尋頻道</string>
+    <string name="action_close">收起</string>
+    <!-- 開啟頻道選擇側邊面板 -->
+    <string name="action_channel_list">選擇頻道</string>
     <string name="action_favorites">我的最愛</string>
     <string name="action_recent">最近觀看</string>
     <string name="action_all_channels">全部頻道</string>

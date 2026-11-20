@@ -50,36 +50,26 @@
             android:textStyle="bold"
             android:layout_marginEnd="32dp" />
 
-        <!-- 分頁：頻道 / 最愛 / 最近 -->
-        <LinearLayout
-            android:id="@+id/tabBar"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/tabChannels"
-                style="@style/ChannelTab"
-                android:text="@string/tab_channels" />
-
-            <TextView
-                android:id="@+id/tabFavorites"
-                style="@style/ChannelTab"
-                android:text="@string/tab_favorites" />
-
-            <TextView
-                android:id="@+id/tabRecent"
-                style="@style/ChannelTab"
-                android:text="@string/tab_recent" />
-        </LinearLayout>
+        <!--
+          分頁（頻道 / 最愛 / 最近）已移入側邊面板 ——
+          觀看時整個版面只留播放器與頻道資訊。
+        -->
 
         <!-- 搜尋按鈕 -->
         <TextView
             android:id="@+id/btnSearch"
             style="@style/ChannelTab"
             android:text="@string/action_search"
+            android:layout_marginStart="16dp" />
+
+        <!--
+          開啟頻道選擇側邊面板。
+          面板預設隱藏，觀看時只有這個入口 —— 不影響觀賞體驗。
+        -->
+        <TextView
+            android:id="@+id/btnChannelList"
+            style="@style/ChannelTab"
+            android:text="@string/action_channel_list"
             android:layout_marginStart="16dp" />
 
     </LinearLayout>
@@ -227,57 +217,145 @@
 
     </LinearLayout>
 
-    <!-- ===== 分類列 ===== -->
-    <HorizontalScrollView
-        android:id="@+id/categoryBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:paddingStart="@dimen/safe_margin_horizontal"
-        android:paddingEnd="@dimen/safe_margin_horizontal"
-        app:layout_constraintBottom_toTopOf="@id/channelListBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+    <!-- ============================================================
+         頻道選擇側邊面板（可隱藏式）
+         ============================================================
 
-        <LinearLayout
-            android:id="@+id/categoryContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal" />
-    </HorizontalScrollView>
+         設計意圖：觀看時完全隱藏，不佔畫面、不影響觀賞體驗。
+         需要換台時才從右側滑出，選完自動收起。
 
-    <!-- ===== 頻道列 ===== -->
-    <FrameLayout
-        android:id="@+id/channelListBar"
+         面板疊在播放器之上（overlay），不是把版面切一半，
+         這樣收合時播放器可以維持全尺寸。
+         ============================================================ -->
+
+    <!-- 背景遮罩：面板展開時擋住播放器，避免誤觸 -->
+    <View
+        android:id="@+id/panelScrim"
         android:layout_width="0dp"
-        android:layout_height="@dimen/channel_card_height"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="@dimen/safe_margin_vertical"
+        android:layout_height="0dp"
+        android:background="@color/tv_scrim"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="false"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- 側邊面板本體 -->
+    <LinearLayout
+        android:id="@+id/channelPanel"
+        android:layout_width="@dimen/channel_panel_width"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:background="@color/tv_panel_background"
+        android:elevation="12dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/channelRecycler"
+        <!-- 面板標題列 -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/safe_margin_horizontal"
+            android:paddingEnd="@dimen/safe_margin_horizontal"
+            android:paddingTop="@dimen/safe_margin_vertical_compact"
+            android:paddingBottom="@dimen/safe_margin_vertical_compact">
+
+            <TextView
+                android:id="@+id/panelTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/tab_channels"
+                android:textColor="@color/tv_text_primary"
+                android:textSize="@dimen/text_status"
+                android:textStyle="bold" />
+
+            <!-- 收起按鈕 -->
+            <TextView
+                android:id="@+id/btnClosePanel"
+                style="@style/ChannelTab"
+                android:text="@string/action_close" />
+        </LinearLayout>
+
+        <!-- ===== 分頁：頻道 / 最愛 / 最近 ===== -->
+        <LinearLayout
+            android:id="@+id/tabBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:paddingStart="@dimen/safe_margin_horizontal_compact"
             android:paddingEnd="@dimen/safe_margin_horizontal_compact"
-            android:scrollbars="none"
-            android:focusable="true"
-            android:focusableInTouchMode="true" />
+            android:paddingBottom="@dimen/safe_margin_vertical_compact">
 
-        <TextView
-            android:id="@+id/emptyStateText"
+            <TextView
+                android:id="@+id/tabChannels"
+                style="@style/ChannelTab"
+                android:text="@string/tab_channels" />
+
+            <TextView
+                android:id="@+id/tabFavorites"
+                style="@style/ChannelTab"
+                android:text="@string/tab_favorites" />
+
+            <TextView
+                android:id="@+id/tabRecent"
+                style="@style/ChannelTab"
+                android:text="@string/tab_recent" />
+        </LinearLayout>
+
+        <!-- ===== 分類列 ===== -->
+        <HorizontalScrollView
+            android:id="@+id/categoryBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@color/tv_text_muted"
-            android:textSize="@dimen/text_status"
-            android:visibility="gone"
-            tools:text="尚未收藏任何頻道" />
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:paddingStart="@dimen/safe_margin_horizontal_compact"
+            android:paddingEnd="@dimen/safe_margin_horizontal_compact">
 
-    </FrameLayout>
+            <LinearLayout
+                android:id="@+id/categoryContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" />
+        </HorizontalScrollView>
+
+        <!-- ===== 頻道列 ===== -->
+        <FrameLayout
+            android:id="@+id/channelListBar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginTop="10dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/channelRecycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/safe_margin_horizontal_compact"
+                android:paddingEnd="@dimen/safe_margin_horizontal_compact"
+                android:scrollbars="none"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <TextView
+                android:id="@+id/emptyStateText"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textColor="@color/tv_text_muted"
+                android:textSize="@dimen/text_status"
+                android:visibility="gone"
+                tools:text="尚未收藏任何頻道" />
+
+        </FrameLayout>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -82,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         setupCategoryBar()
         setupSearchButton()
         setupRetryButton()
+        setupChannelPanel()
 
         loadCatalog()
         restoreLastChannel()
@@ -176,6 +177,99 @@ class MainActivity : AppCompatActivity() {
         binding.btnSearch.setOnClickListener { showSearchDialog() }
     }
 
+    // ===== 頻道選擇側邊面板 =====
+
+    /**
+     * 頻道選擇側邊面板的開關。
+     *
+     * 設計意圖：**觀看時完全隱藏**，不影響觀賞體驗。
+     * 需要換台時才從右側滑出，選完頻道自動收起。
+     *
+     * 面板疊在播放器之上（overlay），不是切分版面 ——
+     * 收合時播放器維持全尺寸，展開時才被覆蓋一部分。
+     */
+    private fun setupChannelPanel() {
+        binding.btnChannelList.setOnClickListener { openChannelPanel() }
+        binding.btnClosePanel.setOnClickListener { closeChannelPanel() }
+        binding.panelScrim.setOnClickListener { closeChannelPanel() }
+    }
+
+    /** 展開頻道選擇面板（從右側滑入） */
+    private fun openChannelPanel() {
+        if (binding.channelPanel.visibility == View.VISIBLE) return
+
+        binding.channelPanel.visibility = View.VISIBLE
+        binding.panelScrim.visibility = View.VISIBLE
+
+        // 分類列要重新建立（面板是後來才出現的，寬度與之前不同）
+        setupCategoryBar()
+        updatePanelTitle()
+
+        // 從右側滑入
+        binding.channelPanel.translationX = binding.channelPanel.width.toFloat().takeIf { it > 0f }
+            ?: resources.getDimensionPixelSize(R.dimen.channel_panel_width).toFloat()
+        binding.channelPanel.animate()
+            .translationX(0f)
+            .setDuration(220)
+            .start()
+
+        binding.panelScrim.alpha = 0f
+        binding.panelScrim.animate().alpha(1f).setDuration(220).start()
+
+        // 焦點移入面板，遙控器可以直接操作
+        binding.channelRecycler.requestFocus()
+    }
+
+    /** 收起頻道選擇面板（滑回右側） */
+    private fun closeChannelPanel() {
+        if (binding.channelPanel.visibility != View.VISIBLE) return
+
+        val target = resources.getDimensionPixelSize(R.dimen.channel_panel_width).toFloat()
+
+        binding.channelPanel.animate()
+            .translationX(target)
+            .setDuration(200)
+            .withEndAction {
+                binding.channelPanel.visibility = View.GONE
+                binding.channelPanel.translationX = 0f
+            }
+            .start()
+
+        binding.panelScrim.animate()
+            .alpha(0f)
+            .setDuration(200)
+            .withEndAction { binding.panelScrim.visibility = View.GONE }
+            .start()
+
+        // 焦點回到入口按鈕，遙控器使用者知道可以再按一次
+        binding.btnChannelList.requestFocus()
+    }
+
+    /** 依目前分頁更新面板標題 */
+    private fun updatePanelTitle() {
+        binding.panelTitle.text = when (activeTab) {
+            Tab.FAVORITES -> getString(R.string.action_favorites)
+            Tab.RECENT -> getString(R.string.action_recent)
+            Tab.CHANNELS -> getString(R.string.action_all_channels)
+        }
+    }
+
+    /**
+     * 返回鍵：若面板已展開，先收起面板。
+     *
+     * Android TV 的使用者預期「返回」是逐層退出，
+     * 而不是直接離開應用程式。
+     */
+    @Deprecated("以 OnBackPressedDispatcher 取代；此處保留以支援舊系統")
+    override fun onBackPressed() {
+        if (binding.channelPanel.visibility == View.VISIBLE) {
+            closeChannelPanel()
+            return
+        }
+        @Suppress("DEPRECATION")
+        super.onBackPressed()
+    }
+
     private fun setupRetryButton() {
         binding.btnRetry.setOnClickListener {
             binding.errorPanel.visibility = View.GONE
@@ -205,6 +299,11 @@ class MainActivity : AppCompatActivity() {
         categoryAdapter.setSelected(ALL_CATEGORY)
         updateTabSelection()
         applyFilters()
+        // 分頁在側邊面板內 → 切換分頁時面板必須是展開的
+        updatePanelTitle()
+        if (binding.channelPanel.visibility != View.VISIBLE) {
+            openChannelPanel()
+        }
     }
 
     private fun updateTabSelection() {
@@ -273,6 +372,9 @@ class MainActivity : AppCompatActivity() {
         binding.errorPanel.visibility = View.GONE
         prefs.lastChannelId = channel.channelId
         prefs.recordWatched(channel.channelId)
+
+        // 選好頻道 → 收起側邊面板，回到純觀看畫面
+        closeChannelPanel()
 
         // 兩種播放模式互斥切換：
         //   - embed 頻道 → WebView 載入官方播放器（官方頁面本身即以 iframe 內嵌）

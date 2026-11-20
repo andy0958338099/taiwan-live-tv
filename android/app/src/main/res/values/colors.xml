@@ -18,4 +18,7 @@
 
     <color name="tv_scrim">#CC000000</color>
     <color name="tv_overlay_panel">#F01A1A22</color>
+
+    <!-- 頻道選擇側邊面板背景（比 surface 更深，讓面板與播放器明確區隔） -->
+    <color name="tv_panel_background">#F0121319</color>
 </resources>

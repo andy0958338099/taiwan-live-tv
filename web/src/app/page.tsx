@@ -17,6 +17,15 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Channel | null>(null);
   const [showInfo, setShowInfo] = useState(false);
+  /**
+   * 頻道選擇抽屜是否展開。
+   *
+   * 設計意圖：**觀看時完全隱藏**。
+   * 網頁版預設只顯示播放器 + 頻道資訊，
+   * 頻道清單收在抽屜裡，只有需要換台時才滑出來，
+   * 選完就自動收起 —— 不影響觀賞體驗。
+   */
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // --- 載入頻道資料 ---
   useEffect(() => {
@@ -49,9 +58,32 @@ export default function Home() {
   }, [catalog, browser.lastChannelId, browser, restoredRef]);
 
   const handleSelect = (channel: Channel) => {
+    /**
+     * ⚠️ 必須在點擊手勢內同步呼叫。
+     *
+     * 頻道切換會走 `setSelected()` → React 渲染 → useEffect → startPlayback，
+     * 而 useEffect 是在 paint 之後才跑的，已經離開使用者的點擊手勢時間窗。
+     *
+     * Chrome 的自動播放政策要求「媒體變成有聲的那一刻，使用者手勢必須仍有效」，
+     * 所以這裡先把手勢記下並解除靜音，後續的 useEffect 就不會把音量關回去。
+     * 少了這一步，慢速來源會讓使用者靜靜聽 50 秒的靜音。
+     */
+    player.prepareForChannelSwitch();
     setSelected(channel);
     browser.markWatched(channel.channel_id);
+    // 選好頻道 → 自動收起抽屜，回到純觀看畫面
+    setDrawerOpen(false);
   };
+
+  // --- Esc 關閉抽屜 ---
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDrawerOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [drawerOpen]);
 
   const categoryName = useMemo(() => {
     if (!selected) return '';
@@ -109,52 +141,6 @@ export default function Home() {
           />
         </div>
       </header>
-
-      {/* 檢視模式 */}
-      <nav className={styles.viewTabs} aria-label="檢視模式">
-        {(
-          [
-            ['all', '全部頻道'],
-            ['favorites', '我的最愛'],
-            ['recent', '最近觀看'],
-          ] as [ViewMode, string][]
-        ).map(([mode, label]) => (
-          <button
-            key={mode}
-            type="button"
-            className={`${styles.tab} ${browser.viewMode === mode ? styles.tabActive : ''}`}
-            onClick={() => browser.setViewMode(mode)}
-            aria-pressed={browser.viewMode === mode}
-          >
-            {label}
-          </button>
-        ))}
-      </nav>
-
-      {/* 分類 */}
-      <nav className={styles.categoryBar} aria-label="頻道分類">
-        <button
-          type="button"
-          className={`${styles.categoryChip} ${
-            browser.categoryFilter === ALL_CATEGORY ? styles.categoryChipActive : ''
-          }`}
-          onClick={() => browser.setCategoryFilter(ALL_CATEGORY)}
-        >
-          全部
-        </button>
-        {catalog.categories.map((cat) => (
-          <button
-            key={cat.id}
-            type="button"
-            className={`${styles.categoryChip} ${
-              browser.categoryFilter === cat.id ? styles.categoryChipActive : ''
-            }`}
-            onClick={() => browser.setCategoryFilter(cat.id as CategoryFilter)}
-          >
-            {cat.name}
-          </button>
-        ))}
-      </nav>
 
       {/* 播放區 */}
       <section className={styles.playerSection}>
@@ -216,65 +202,170 @@ export default function Home() {
         onClose={() => setShowInfo(false)}
       />
 
-      {/* 頻道列表 */}
-      <section className={styles.channelSection}>
-        <h2 className={styles.sectionTitle}>
-          {browser.viewMode === 'favorites'
-            ? '我的最愛'
-            : browser.viewMode === 'recent'
-              ? '最近觀看'
-              : '頻道列表'}
-          <span className={styles.countBadge}>{browser.visibleChannels.length}</span>
-        </h2>
+      {/* ======================================================
+          頻道選擇抽屜（可隱藏式）
+          ------------------------------------------------------------
+          觀看時只有右下角的「選擇頻道」把手，
+          頻道清單完全收在抽屜裡，不佔觀看畫面。
+          ====================================================== */}
 
-        {browser.visibleChannels.length === 0 ? (
-          <p className={styles.emptyState}>{emptyMessage(browser.viewMode, browser.query)}</p>
-        ) : (
-          <ul className={styles.channelGrid}>
-            {browser.visibleChannels.map((channel) => (
-              <li key={channel.channel_id}>
-                <button
-                  type="button"
-                  className={`${styles.channelCard} ${
-                    selected?.channel_id === channel.channel_id ? styles.channelCardActive : ''
-                  }`}
-                  onClick={() => handleSelect(channel)}
-                  aria-pressed={selected?.channel_id === channel.channel_id}
-                >
-                  <span className={styles.cardLogoWrap}>
-                    {channel.logo ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={channel.logo}
-                        alt=""
-                        className={styles.cardLogo}
-                        loading="lazy"
-                        onError={(e) => {
-                          (e.currentTarget as HTMLImageElement).style.display = 'none';
-                        }}
-                      />
-                    ) : (
-                      <span className={styles.cardPlaceholder}>
-                        {channel.channel_name.slice(0, 1)}
+      {/* 浮動把手 —— 觀看時的唯一入口 */}
+      <button
+        type="button"
+        className={`${styles.drawerHandle} ${drawerOpen ? styles.drawerHandleHidden : ''}`}
+        onClick={() => setDrawerOpen(true)}
+        aria-label="選擇頻道"
+        aria-expanded={drawerOpen}
+      >
+        <span aria-hidden="true">📺</span>
+        <span>選擇頻道</span>
+      </button>
+
+      {/* 背景遮罩 —— 點擊即收起 */}
+      {drawerOpen && (
+        <div
+          className={styles.drawerScrim}
+          onClick={() => setDrawerOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* 抽屜本體 */}
+      <aside
+        className={`${styles.drawer} ${drawerOpen ? styles.drawerOpen : ''}`}
+        aria-label="頻道選擇"
+        aria-hidden={!drawerOpen}
+      >
+        <div className={styles.drawerHead}>
+          <h2 className={styles.drawerTitle}>
+            {browser.viewMode === 'favorites'
+              ? '我的最愛'
+              : browser.viewMode === 'recent'
+                ? '最近觀看'
+                : '頻道列表'}
+            <span className={styles.countBadge}>{browser.visibleChannels.length}</span>
+          </h2>
+          <button
+            type="button"
+            className={styles.drawerClose}
+            onClick={() => setDrawerOpen(false)}
+            aria-label="收起頻道選擇"
+          >
+            收起
+          </button>
+        </div>
+
+        <div className={styles.drawerBody}>
+          {/* 檢視模式 */}
+          <nav className={styles.viewTabs} aria-label="檢視模式">
+            {(
+              [
+                ['all', '全部頻道'],
+                ['favorites', '我的最愛'],
+                ['recent', '最近觀看'],
+              ] as [ViewMode, string][]
+            ).map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                className={`${styles.tab} ${browser.viewMode === mode ? styles.tabActive : ''}`}
+                onClick={() => browser.setViewMode(mode)}
+                aria-pressed={browser.viewMode === mode}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+
+          {/* 分類 */}
+          <nav className={styles.categoryBar} aria-label="頻道分類">
+            <button
+              type="button"
+              className={`${styles.categoryChip} ${
+                browser.categoryFilter === ALL_CATEGORY ? styles.categoryChipActive : ''
+              }`}
+              onClick={() => browser.setCategoryFilter(ALL_CATEGORY)}
+            >
+              全部
+            </button>
+            {catalog.categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`${styles.categoryChip} ${
+                  browser.categoryFilter === cat.id ? styles.categoryChipActive : ''
+                }`}
+                onClick={() => browser.setCategoryFilter(cat.id as CategoryFilter)}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </nav>
+
+          {/* 搜尋（抽屜內另有一個，觀看時不佔版面） */}
+          <div className={styles.drawerSearch}>
+            <label htmlFor="drawer-channel-search" className={styles.srOnly}>
+              搜尋頻道
+            </label>
+            <input
+              id="drawer-channel-search"
+              type="search"
+              className={styles.searchInput}
+              placeholder="搜尋頻道名稱或關鍵字"
+              value={browser.query}
+              onChange={(e) => browser.setQuery(e.target.value)}
+            />
+          </div>
+
+          {browser.visibleChannels.length === 0 ? (
+            <p className={styles.drawerEmpty}>{emptyMessage(browser.viewMode, browser.query)}</p>
+          ) : (
+            <ul className={styles.drawerGrid}>
+              {browser.visibleChannels.map((channel) => (
+                <li key={channel.channel_id}>
+                  <button
+                    type="button"
+                    className={`${styles.channelCard} ${
+                      selected?.channel_id === channel.channel_id ? styles.channelCardActive : ''
+                    }`}
+                    onClick={() => handleSelect(channel)}
+                    aria-pressed={selected?.channel_id === channel.channel_id}
+                  >
+                    <span className={styles.cardLogoWrap}>
+                      {channel.logo ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={channel.logo}
+                          alt=""
+                          className={styles.cardLogo}
+                          loading="lazy"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = 'none';
+                          }}
+                        />
+                      ) : (
+                        <span className={styles.cardPlaceholder}>
+                          {channel.channel_name.slice(0, 1)}
+                        </span>
+                      )}
+                    </span>
+                    <span className={styles.cardName}>{channel.channel_name}</span>
+                    <span className={styles.cardCategory}>
+                      {catalog.categories.find((c) => c.id === channel.category)?.name ??
+                        channel.category}
+                    </span>
+                    {browser.favorites.includes(channel.channel_id) && (
+                      <span className={styles.favBadge} aria-label="已收藏">
+                        ★
                       </span>
                     )}
-                  </span>
-                  <span className={styles.cardName}>{channel.channel_name}</span>
-                  <span className={styles.cardCategory}>
-                    {catalog.categories.find((c) => c.id === channel.category)?.name ??
-                      channel.category}
-                  </span>
-                  {browser.favorites.includes(channel.channel_id) && (
-                    <span className={styles.favBadge} aria-label="已收藏">
-                      ★
-                    </span>
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </aside>
 
       <footer className={styles.footer}>
         <p>

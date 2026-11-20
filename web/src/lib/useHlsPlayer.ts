@@ -162,6 +162,23 @@ export function useHlsPlayer(channel: Channel | null) {
   const channelRef = useRef<Channel | null>(null);
   /** 目前播放中的來源網址 ref */
   const activeUrlRef = useRef<string | null>(null);
+  /**
+   * 待處理的使用者手勢旗標。
+   *
+   * 問題：頻道切換是透過 `setSelected()` → React 渲染 → useEffect 觸發
+   * `startPlayback`。但 **useEffect 在 paint 之後才跑**，
+   * 已經離開了點擊手勢的有效時間窗。
+   *
+   * Chrome 的自動播放政策要求「媒體變成有聲的那一刻，使用者手勢必須仍有效」。
+   * 若在 useEffect 裡才解除靜音：
+   *   · 手勢已失效 → Chrome 會自動暫停媒體（實測停在 t=10）
+   *   · 慢速來源還要等 50 秒才有畫面 → 使用者靜靜聽 50 秒
+   *
+   * 解法：在**點擊處理器內**（手勢還有效時）同步解除靜音並呼叫 play()，
+   * 同時用這個 ref 記下「這次切換有手勢」，
+   * 讓後續的 useEffect 知道不該再把音量關掉。
+   */
+  const userGestureRef = useRef(false);
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [needsUserGesture, setNeedsUserGesture] = useState(false);
@@ -284,7 +301,19 @@ export function useHlsPlayer(channel: Channel | null) {
   );
 
   const startPlayback = useCallback(
-    async (target: Channel, url: string) => {
+    async (
+      target: Channel,
+      url: string,
+      /**
+       * 是否在使用者手勢內被呼叫。
+       *
+       * true  → 使用者主動切換頻道／點擊重試
+       *         → 立刻以有聲方式啟動（Chrome 允許，因為手勢仍有效）
+       * false → 自動 failover、自動恢復上次頻道
+       *         → 先靜音啟動，等 playing 事件再解除
+       */
+      hasUserGesture = false,
+    ) => {
       const video = videoRef.current;
       if (!video) return;
 
@@ -305,17 +334,34 @@ export function useHlsPlayer(channel: Channel | null) {
       activeUrlRef.current = url;
 
       /**
-       * 自動播放政策只允許「靜音自動播放」。
-       * 所以啟動時一定要先設 muted = true，
-       * 等 playing 事件觸發後再取消靜音（見 unmuteAndResume）。
+       * 靜音狀態的決定。
        *
-       * 使用者若已手動選擇靜音，就維持靜音不再自動取消。
+       * 三種情況：
+       *   · 使用者主動切換頻道 + 使用者從未手動靜音
+       *     → **立刻有聲**（muted = false）
+       *       Chrome 的自動播放政策要求「媒體變成有聲的那一刻，
+       *       使用者手勢必須仍有效」。切換頻道的點擊手勢此刻還有效，
+       *       所以此時解除靜音是允許的，而且這正是使用者要的：
+       *       切換頻道後立刻有聲，不必等畫面出來。
+       *
+       *   · 使用者主動切換頻道，但先前手動按過靜音
+       *     → 維持靜音（尊重使用者的明確選擇）
+       *
+       *   · 自動 failover / 自動恢復上次頻道（無使用者手勢）
+       *     → 先靜音啟動（不然 play() 會被拒絕），
+       *       等 playing 事件觸發後再解除
+       *
+       * ⚠️ 為什麼「等 playing 事件」對慢速來源不可行：
+       *   實測央視來源的 segment 需 50 秒以上才下載完，
+       *   playing 事件那時才觸發 → 使用者要靜靜地聽 50 秒空白。
+       *   而 Chrome 的使用者手勢早已失效，那時再解除靜音還會被 Chrome
+       *   自動暫停（實測會停在 t=10）。所以必須在手勢內就解除。
        */
-      video.muted = true;
+      const startMuted = !hasUserGesture || userMutedRef.current;
+      video.muted = startMuted;
       video.volume = 1;
-      setMuted(true);
-      // 新頻道：尚未嘗試取消靜音
-      wantUnmutedRef.current = false;
+      setMuted(startMuted);
+      wantUnmutedRef.current = !startMuted;
       /**
        * 立刻呼叫 play()（此時仍是靜音）。
        *
@@ -493,6 +539,19 @@ export function useHlsPlayer(channel: Channel | null) {
           const fail = handleFailureRef.current;
           if (!fail) return;
 
+          /**
+           * 把 hls.js 的原始錯誤細節記錄下來。
+           *
+           * 為什麼需要：`data.details` 才真正說明是哪一環失敗
+           * （FRAG_LOAD_ERROR / FRAG_LOAD_TIMEOUT / LEVEL_LOAD_ERROR…），
+           * 但顯示給使用者的訊息是簡化過的。
+           * 沒有這行 log，排查時只能靠猜。
+           */
+          console.error(
+            `[播放器] 「${target.channel_name}」hls.js 錯誤：` +
+              `type=${data.type} details=${data.details} fatal=${data.fatal}`,
+          );
+
           switch (data.type) {
             case Hls.ErrorTypes.NETWORK_ERROR:
               if (
@@ -504,8 +563,22 @@ export function useHlsPlayer(channel: Channel | null) {
                   url,
                   '無法載入串流清單：來源可能未提供跨網域存取（CORS），或網址已失效',
                 );
+              } else if (
+                data.details === Hls.ErrorDetails.FRAG_LOAD_ERROR ||
+                data.details === Hls.ErrorDetails.FRAG_LOAD_TIMEOUT
+              ) {
+                // Segment 載入失敗 —— 這是慢速/失效上游最常見的錯誤
+                void fail(
+                  target,
+                  url,
+                  '串流片段載入失敗：來源供應過慢或已中斷',
+                );
               } else {
-                void fail(target, url, '網路錯誤：串流載入失敗');
+                void fail(
+                  target,
+                  url,
+                  `網路錯誤：串流載入失敗（${data.details || '未知'}）`,
+                );
               }
               break;
 
@@ -675,6 +748,43 @@ export function useHlsPlayer(channel: Channel | null) {
     void unmuteAndResume();
   }, [mode, embedUrl, iframeMounted, unmuteAndResume]);
 
+  /**
+   * 在**點擊處理器內**準備切換頻道（必須由使用者的 click 事件同步呼叫）。
+   *
+   * 這是「頻道更換後立即解除靜音」的關鍵。
+   *
+   * 為什麼需要這個函式：
+   *   頻道切換的流程是 `setSelected()` → React 渲染 → useEffect → startPlayback。
+   *   useEffect 是在 paint 之後才執行的，**已經離開使用者的點擊手勢時間窗**。
+   *   Chrome 的自動播放政策要求「媒體變成有聲的那一刻，使用者手勢必須仍有效」，
+   *   所以在手勢內（也就是點擊處理器裡）就必須先把聲音打開。
+   *
+   * 實測 Chrome 157 的兩個症狀都源於此：
+   *   · 慢速來源要等 50 秒才有畫面 → 使用者靜靜聽 50 秒的靜音
+   *   · 手勢失效後才解除靜音 → Chrome 自動暫停媒體（停在 t=10）
+   *
+   * 這個函式做兩件事：
+   *   1. 同步解除靜音並呼叫 play()（手勢仍有效 → Chrome 允許）
+   *   2. 記下 userGestureRef，讓後續 useEffect 的 startPlayback
+   *      不會又把音量關回去
+   */
+  const prepareForChannelSwitch = useCallback(() => {
+    userGestureRef.current = true;
+
+    const video = videoRef.current;
+    if (!video) return;
+    if (userMutedRef.current) return; // 使用者明確選了靜音 → 尊重
+
+    video.muted = false;
+    video.volume = 1;
+    wantUnmutedRef.current = true;
+    setMuted(false);
+    // 手勢內 play() → Chrome 允許有聲播放
+    void video.play().catch(() => {
+      // 若因尚未載入新來源而失敗，startPlayback 會再試一次
+    });
+  }, []);
+
   /** 手動切換靜音 */
   const toggleMute = useCallback(() => {
     if (muted) {
@@ -721,7 +831,12 @@ export function useHlsPlayer(channel: Channel | null) {
     setActiveSourceIndex(0);
     setAttemptedUrls([]);
     if (urls.length > 0) {
-      void startPlayback(channel, urls[0]);
+      // 讀取（並清除）手勢旗標：
+      //   · 使用者點擊切換 → hasUserGesture = true → 立即有聲
+      //   · 自動恢復上次頻道 → hasUserGesture = false → 先靜音
+      const hasUserGesture = userGestureRef.current;
+      userGestureRef.current = false;
+      void startPlayback(channel, urls[0], hasUserGesture);
     }
     return () => teardown();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -877,7 +992,8 @@ export function useHlsPlayer(channel: Channel | null) {
     // 重試時從第一個來源重新開始
     setActiveSourceIndex(0);
     setAttemptedUrls([]);
-    void startPlayback(channel, urls[0]);
+    // 「重試」是使用者點擊按鈕 → 有手勢 → 立即有聲
+    void startPlayback(channel, urls[0], true);
   }, [channel, candidateUrls, startPlayback, mode]);
 
   const resumeFromUserGesture = useCallback(async () => {
@@ -911,7 +1027,8 @@ export function useHlsPlayer(channel: Channel | null) {
     if (nextIndex >= urls.length) return;
     setActiveSourceIndex(nextIndex);
     setAttemptedUrls([]);
-    void startPlayback(channel, urls[nextIndex]);
+    // 「換來源」是使用者點擊按鈕 → 有手勢 → 立即有聲
+    void startPlayback(channel, urls[nextIndex], true);
   }, [channel, mode, candidateUrls, activeSourceIndex, startPlayback]);
 
   return {
@@ -925,6 +1042,7 @@ export function useHlsPlayer(channel: Channel | null) {
     nativeHls,
     retry,
     resumeFromUserGesture,
+    prepareForChannelSwitch,
     activeSourceIndex,
     totalSources: candidateUrls().length,
     mode,
