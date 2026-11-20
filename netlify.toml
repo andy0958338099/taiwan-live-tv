@@ -51,11 +51,19 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
-# 代理端點：不可快取（直播內容即時性）
-[[headers]]
-  for = "/api/proxy"
-  [headers.values]
-    Cache-Control = "no-store"
+# 代理端點：不可在這裡設定快取
+#
+# ⚠️ **不要用 `[[headers]]` 對 `/api/proxy` 設 Cache-Control** ——
+# 這會覆蓋掉程式碼裡設定的 header。
+#
+# 快取策略必須由程式碼依「回應的是 manifest 還是 segment」分別決定：
+#   · manifest → `no-store`（一直指向最新 segment，快取會卡住）
+#   · segment  → `public, max-age=300, s-maxage=300`
+#     （簽章是確定性的 → 快取鍵穩定，不同使用者共用同一份；
+#       segment 序號不會被重用 → 內容不可變；
+#       上游只保留約 10 秒 → CDN 快取是唯一能持續供應的來源）
+#
+# 見 web/src/app/api/proxy/route.ts
 
 # 隱私權政策頁面不可快取
 [[headers]]

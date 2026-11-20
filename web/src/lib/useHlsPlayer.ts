@@ -156,6 +156,12 @@ export function useHlsPlayer(channel: Channel | null) {
   const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   /** 載入計時器的 interval handle（顯示已等待秒數） */
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** 卡頓 watchdog（緩衝持續耗盡時觸發 failover） */
+  const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** 目前頻道的 ref（供事件監聽器讀取當下值，避免過期閉包） */
+  const channelRef = useRef<Channel | null>(null);
+  /** 目前播放中的來源網址 ref */
+  const activeUrlRef = useRef<string | null>(null);
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [needsUserGesture, setNeedsUserGesture] = useState(false);
@@ -234,6 +240,10 @@ export function useHlsPlayer(channel: Channel | null) {
       clearInterval(elapsedTimerRef.current);
       elapsedTimerRef.current = null;
     }
+    if (stallTimerRef.current) {
+      clearTimeout(stallTimerRef.current);
+      stallTimerRef.current = null;
+    }
     if (hlsRef.current) {
       hlsRef.current.destroy();
       hlsRef.current = null;
@@ -289,6 +299,10 @@ export function useHlsPlayer(channel: Channel | null) {
       elapsedTimerRef.current = setInterval(() => {
         setElapsedSeconds((n) => n + 1);
       }, 1000);
+
+      // 記錄當下的頻道與來源網址（供卡頓 watchdog 使用）
+      channelRef.current = target;
+      activeUrlRef.current = url;
 
       /**
        * 自動播放政策只允許「靜音自動播放」。
@@ -356,7 +370,6 @@ export function useHlsPlayer(channel: Channel | null) {
       const hls = new Hls({
         enableWorker: true,
         lowLatencyMode: false,
-        backBufferLength: 30,
         // ⚠️ 逾時值需要配合「上游實際速度」設定。
         //
         // 實測央視來源的 segment 為 5.2 MB，但上游傳輸速度只有約 480 KB/s，
@@ -379,7 +392,7 @@ export function useHlsPlayer(channel: Channel | null) {
         // 限制最高碼率不超過播放器尺寸，避免在低解析度裝置上浪費頻寬
         capLevelToPlayerSize: true,
         // ─────────────────────────────────────────────────────────
-        // 以下是「避免一直轉圈」的關鍵設定
+        // 以下是「避免一直轉圈圈」的關鍵設定
         // ─────────────────────────────────────────────────────────
         //
         // liveSyncDurationCount：hls.js 預設是 **3**，
@@ -395,9 +408,27 @@ export function useHlsPlayer(channel: Channel | null) {
         // 若播放器落後直播現場超過這個數量，就直接跳到最新位置，
         // 而不是慢慢追趕 —— 避免「一直轉圈等追上台」。
         liveMaxLatencyDurationCount: 10,
-        // 緩衝區上限：限制記憶體用量，避免長時間播放後堆積過多。
-        maxBufferLength: 30,
-        maxMaxBufferLength: 60,
+        //
+        // 緩衝區大小 —— 直接影響「中途訊號斷掉」的耐受度。
+        //
+        // maxBufferLength：向前緩衝的最大長度（秒）。
+        // 播放器會維持這麼多秒的已下載內容，網路短暫中斷時
+        // 可以從緩衝繼續播，不會立刻停頓。
+        //
+        // 實測：央視來源的 segment 是 5.2 MB / 6 秒內容 ≈ 6.9 Mbps，
+        // 而慢速上游只有約 480 KB/s（3.8 Mbps）—— **供不應求**，
+        // 緩衝只會持續流失，加長 maxBufferLength 對這類來源沒有用。
+        // 但對「上游夠快」的來源（TVBS 65ms 下載 5.2MB），
+        // 30 秒緩衝足以吸收數秒的網路抖动。
+        //
+        // 這裡從 30 提高到 60：讓快速來源有更厚的安全餘裕，
+        // 而慢速來源不會因此變慢（它本來就受上游速度限制）。
+        maxBufferLength: 60,
+        // maxMaxBufferLength：即使使用者暫停也要保留的上限。
+        // 拉高避免「暫停一下就把緩衝清空」。
+        maxMaxBufferLength: 120,
+        // 後向緩衝（回看用的已播放內容）。
+        backBufferLength: 60,
         // 允許在 manifest 載入中就開始準備第一個 fragment（預載）
         startFragPrefetch: true,
         // 片段載入失敗時不要無限重試同一個來源，
@@ -710,6 +741,11 @@ export function useHlsPlayer(channel: Channel | null) {
         clearTimeout(watchdogRef.current);
         watchdogRef.current = null;
       }
+      // 恢復播放 → 取消卡頓 watchdog（剛才是短暫卡頓，不是供應不足）
+      if (stallTimerRef.current) {
+        clearTimeout(stallTimerRef.current);
+        stallTimerRef.current = null;
+      }
       setStatus('playing');
       setErrorMessage(null);
 
@@ -742,7 +778,49 @@ export function useHlsPlayer(channel: Channel | null) {
         }
       }
     };
-    const onWaiting = () => setStatus('loading');
+    /**
+     * 緩衝耗盡（卡頓）的處理。
+     *
+     * `waiting` 事件 = 播放器的緩衝空了，必須等下一個 segment。
+     * 短暫卡頓是正常的（緩衝會補上），但**連續卡頓**代表這個來源
+     * 的供應速度跟不上消耗速度 —— 再怎麼等也補不回來。
+     *
+     * 這裡的做法：
+     *   1. 每次 waiting 記錄時間戳，並啟動一個 stall watchdog
+     *   2. 若 watchdog 期限到了仍在 waiting（= 緩衝一直補不上），
+     *      就觸發 failover 換來源
+     *   3. 若中途恢復播放（playing），就取消 watchdog
+     *
+     * 這對「慢速上游」特別重要：央視來源的 segment 是 5.2 MB / 6 秒內容，
+     * 而上游只有 480 KB/s —— 永遠補不回來。
+     * 與其讓使用者盯著轉圈圈，不如自動換到快一點的備援來源。
+     */
+    const onWaiting = () => {
+      setStatus('loading');
+
+      if (stallTimerRef.current) return; // 已在計時中
+
+      const target = channelRef.current;
+      const url = activeUrlRef.current;
+      if (!target || !url) return;
+
+      stallTimerRef.current = setTimeout(() => {
+        stallTimerRef.current = null;
+        const v = videoRef.current;
+        // 已經恢復播放 → 不是真的卡住
+        if (!v || v.paused === false) return;
+        if (v.readyState >= 3) return;
+
+        console.warn(
+          `[播放器] 「${target.channel_name}」緩衝持續耗盡 ${STALL_TIMEOUT_MS}ms，改用備援來源`,
+        );
+        void handleFailureRef.current?.(
+          target,
+          url,
+          '此來源供應速度不足，播放持續卡頓',
+        );
+      }, STALL_TIMEOUT_MS);
+    };
 
     /**
      * Chrome 的自動暫停處理。
@@ -869,3 +947,16 @@ export function useHlsPlayer(channel: Channel | null) {
  * 又不會讓使用者無限等待（超過後會自動改用備援來源）。
  */
 const LOAD_TIMEOUT_MS = 60_000;
+
+/**
+ * 卡頓 watchdog 逾時。
+ *
+ * 這是「緩衝持續耗盡」的判定時間，不是網路抖動的容忍度。
+ *
+ * 設定依據：慢速來源的 segment 下載需 10–30 秒，
+ * 若給太短（例如 5 秒）會把正常的短暫等待誤判成卡死，
+ * 導致頻繁切換來源反而更不順。
+ * 25 秒足以讓「segment 剛好下載完」的情況正常恢復，
+ * 又能在來源真的供不應求時及早切換。
+ */
+const STALL_TIMEOUT_MS = 25_000;

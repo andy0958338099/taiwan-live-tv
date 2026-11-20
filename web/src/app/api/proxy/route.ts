@@ -339,6 +339,8 @@ export async function GET(request: NextRequest) {
         headers: {
           ...CORS_HEADERS,
           'Content-Type': 'application/vnd.apple.mpegurl',
+          // Manifest 必須即時 —— 它一直指向最新的 segment。
+          // 快取它會讓播放器拿到過期的 segment 清單而卡住。
           'Cache-Control': 'no-store',
         },
       });
@@ -348,7 +350,27 @@ export async function GET(request: NextRequest) {
     const headers = new Headers(CORS_HEADERS);
     headers.set('Content-Type', contentType || 'application/octet-stream');
     headers.set('Accept-Ranges', 'bytes');
-    headers.set('Cache-Control', 'no-store');
+
+    /**
+     * Segment 可以被 CDN 快取。
+     *
+     * 理由：
+     *   1. **簽章是確定性的** —— `sign(target)` 是 HMAC(target)，
+     *      同一個目標網址永遠得到同一個簽章，
+     *      所以快取鍵（完整 URL）穩定，不同使用者能共用同一份快取。
+     *   2. **segment 內容不可變** —— 直播的 segment 網址含序號
+     *      （如 `live_1_1_30817410.ts`），同一序號的內容永遠相同。
+     *   3. **上游的 segment 只活約 10 秒** —— 上游會刪掉舊 segment，
+     *      所以快取其實是「唯一能持續供應」的來源。
+     *
+     * 這解決了慢速上游的兩個問題：
+     *   · 第一個觀看者下載完（可能要 10 秒），後續觀看者直接吃 CDN 快取 → 瞬間
+     *   · 上游壞掉時，CDN 仍有已快取的 segment 可用 → 訊號不易中斷
+     *
+     * 快取時間設 300 秒：segment 序號不會被重用，
+     * 這段時間內內容也不會變。
+     */
+    headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
     const contentRange = upstream.headers.get('content-range');
     if (contentRange) headers.set('Content-Range', contentRange);
     // 轉發上游的長度（若有），讓瀏覽器知道預期大小
