@@ -36,8 +36,12 @@ android/app/src/main/assets/channels.json
 # TypeScript 增量建置快取
 *.tsbuildinfo
 
+# 探測暫存結果
+*.probe-result.json
+
+# Netlify CLI
+.netlify/
+
 # Logs
 *.log
 /logs
-shared/.probe-result.json
-*.probe-result.json

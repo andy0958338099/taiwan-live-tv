@@ -1,0 +1,17 @@
+{
+  "name": "taiwan-live-tv",
+  "version": "1.0.0",
+  "private": true,
+  "description": "台灣電視直播平台 — Android TV APK 與網頁版",
+  "scripts": {
+    "check": "node scripts/run-all-checks.mjs",
+    "sync": "node scripts/sync-channels.mjs",
+    "validate": "node scripts/validate-channels.mjs",
+    "probe": "node scripts/probe-streams.mjs",
+    "deploy": "netlify deploy --prod --dir=web/.next && netlify deploy --prod --functions=web/.netlify/functions-internal",
+    "env:set": "netlify env:set"
+  },
+  "devDependencies": {
+    "netlify-cli": "^27.20.1"
+  }
+}

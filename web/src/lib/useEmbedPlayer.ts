@@ -79,6 +79,33 @@ export function postYouTubeCommand(
 }
 
 /**
+ * 對 litv 播放器取消靜音。
+ *
+ * litv 播放器（player.svc.litv.tv）沒有公開的 API 可以下指令，
+ * 但它的 video 元素在同一個 frame 內 —— 我們可以在自己的頁面裡
+ * 用 `postMessage` 讓它自己執行 unMute。
+ *
+ * 做法：把一段 JS 以 `text/javascript` 的形式送給 iframe？
+ * 不行 —— 跨網域無法直接操作對方的 DOM。
+ *
+ * 實際可行的做法：litv 播放器的音量控制是靠它的 videojs player 實例，
+ * 而 ppnio.js 會在 `window` 上暴露播放器。我們無法從外部呼叫。
+ *
+ * → 因此對 litv 改用「重新載入播放器並移除靜音參數」的方式。
+ *   litv 的 ppnif.html 沒有 mute 參數，但它的 config 裡有
+ *   `auto_play_rate` 與廣告設定，預設就是有聲的。
+ *   實測：litv 播放器預設以靜音啟動（為了自動播放政策），
+ *   播放開始後可以在 iframe 內部觸發 unMute ——
+ *   這需要在 iframe 內執行 JS，跨網域做不到。
+ *
+ *   → 結論：litv 播放器在 Web 版維持靜音，並在 UI 上明確告知。
+ *   Android 版用原生 ExoPlayer 直接播 HLS，不受此限制。
+ */
+export function isLitvEmbed(url: string | null | undefined): boolean {
+  return !!url && url.startsWith(LITV_ORIGIN);
+}
+
+/**
  * 為嵌入播放器掛上必要的整合處理。
  *
  * @param iframe 播放器 iframe 元素
