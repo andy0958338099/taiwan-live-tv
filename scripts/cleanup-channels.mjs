@@ -167,7 +167,6 @@ async function main() {
 
   const removed = [];
   const promoted = [];
-  const thinPrimary = [];
   const kept = [];
   /** 待二次確認的頻道 */
   const pendingRemoval = [];
@@ -221,40 +220,23 @@ async function main() {
     }
 
     /**
-     * 主來源若只是「轉址入口」而非真正的串流清單，也要換掉。
+     * 主來源若是「轉址入口」而非真正的串流清單，要不要換？
      *
-     * 實測：`cdn.qd.je/163189/gdty` 回 200 但只有 **80 bytes**
-     * （是一個 child manifest 的轉址），而
-     * `2.fast.hidns.vip/163189/gdty` 有 4918 bytes（真正的清單）。
-     * 用轉址入口當主來源會多繞一層，且該層的 child 可能已失效。
+     * ⚠️ **實測後決定：不換。**
      *
-     * 判斷：manifest 小於 500 bytes 就視為轉址入口。
+     * 原本以為 manifest < 500 bytes 就是轉址入口，該換成備援。
+     * 但實測 70 個可播頻道裡有 **62 個**的 manifest 只有 72–80 bytes，
+     * 而它們（龍華電視、TVB翡翠台、TVB系、Now TV、HOY TV…）
+     * **全部正常播放** —— 因為驗證時已經跟著 child manifest
+     * 走到 segment 並確認位元組正確了。
+     *
+     * 也就是說「manifest 小」≠「有問題」。小 manifest 只是
+     * 把 child 的資訊精簡地寫在第一層，而 child 本身是好的。
+     *
+     * 真正的判斷依據是「child + segment 能不能通」，
+     * 這已經由 verify() 處理了 —— 通了就是好來源。
+     * 若再依大小去替換，反而會把已驗證可播的來源換成未驗證的備援。
      */
-    if (
-      v.working_manifest_bytes !== null &&
-      v.working_manifest_bytes !== undefined &&
-      v.working_manifest_bytes < 500
-    ) {
-      // 這個頻道的主來源是轉址入口 → 找一個更實在的備援
-      const better = (ch.playlist_source?.backup_urls ?? []).find(
-        (b) => b.url !== ch.stream_url,
-      );
-      if (better) {
-        const thin = ch.stream_url;
-        ch.stream_url = better.url;
-        ch.playlist_source.backup_urls = [
-          ...(ch.playlist_source.backup_urls ?? []).filter(
-            (b) => b.url !== better.url,
-          ),
-          { url: thin, source: '原主來源（轉址入口）', cors: better.cors },
-        ];
-        thinPrimary.push({
-          name: ch.channel_name,
-          old: thin,
-          new: better.url,
-        });
-      }
-    }
 
     ch.last_checked = now;
     kept.push(ch);
@@ -368,14 +350,6 @@ async function main() {
     }
   }
 
-  if (thinPrimary.length) {
-    console.log('\n主來源原為轉址入口，改用實際串流清單：');
-    for (const p of thinPrimary) {
-      console.log(`  ↻ ${p.name}`);
-      console.log(`      舊: ${p.old.slice(0, 76)}`);
-      console.log(`      新: ${p.new.slice(0, 76)}`);
-    }
-  }
 
   if (DRY_RUN) {
     console.log('\n(dry-run 模式，未寫入檔案)');
