@@ -101,7 +101,7 @@ async function verify(url) {
   const t0 = Date.now();
   let sres;
   try {
-    sres = await get(target, 45000);
+    sres = await get(target, 30000);
   } catch (e) {
     return { ok: false, reason: `segment ${e.name === 'AbortError' ? '逾時' : e.name}` };
   }
