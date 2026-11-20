@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-20T21:43:05.658Z",
+  "updated_at": "2026-11-20T21:53:55.008Z",
   "categories": [
     {
       "id": "news",
@@ -4688,10 +4688,10 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://jiotvimages.cdn.jio.com/dare_images/images/Taiwan_Plus.png",
-      "stream_url": "https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8",
+      "stream_url": "https://amg01868-amg01868c3-tvbanywhere-us-4491.playouts.now.amagi.tv/playlist/amg01868-tvbusa-tvbvietnam-tvbanywhereus/playlist.m3u8",
       "stream_type": "hls",
-      "source_name": "TaiwanPlus（Akamai HD 帳號）",
-      "source_website": "https://bcovlive-a.akamaihd.net/",
+      "source_name": "TaiwanPlus（now.amagi.tv 派送）",
+      "source_website": "https://taiwanplus.com/",
       "authorization_status": "public_official",
       "is_active": true,
       "last_checked": "2026-11-20T21:42:03.320Z",
@@ -4709,7 +4709,13 @@
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
         "raw_channel_name": "Taiwan Plus TV",
-        "backup_urls": []
+        "backup_urls": [
+          {
+            "url": "https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8",
+            "source": "TaiwanPlus（Akamai HD，路徑綁定 token 會過期）",
+            "cors": false
+          }
+        ]
       }
     },
     {

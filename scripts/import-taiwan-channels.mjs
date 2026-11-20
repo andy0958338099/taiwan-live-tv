@@ -74,13 +74,27 @@ const CANDIDATES = [
   {
     id: 'tw-taiwan-plus',
     name: 'Taiwan Plus TV',
-    url: 'https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8',
+    url: 'https://amg01868-amg01868c3-tvbanywhere-us-4491.playouts.now.amagi.tv/playlist/amg01868-tvbusa-tvbvietnam-tvbanywhereus/playlist.m3u8',
     category: 'general',
     logo: 'https://jiotvimages.cdn.jio.com/dare_images/images/Taiwan_Plus.png',
-    source: 'TaiwanPlus（Akamai HD 帳號）',
-    website: 'https://bcovlive-a.akamaihd.net/',
+    source: 'TaiwanPlus（now.amagi.tv 派送）',
+    website: 'https://taiwanplus.com/',
     auth: 'public_official',
     cors: true,
+    /**
+     * 備援：Akamai HD 帳號。
+     *
+     * ⚠️ 這個 URL 的路徑綁定 token 會**過期**（實測回 HTTP 400
+     * "Invalid URL"），所以只能當備援，不能當主來源。
+     * 留著是因為它的 token 偶爾會更新。
+     */
+    backup: [
+      {
+        url: 'https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8',
+        source: 'TaiwanPlus（Akamai HD，路徑綁定 token 會過期）',
+        cors: false,
+      },
+    ],
   },
   {
     id: 'tw-beautiful-life',
@@ -209,7 +223,11 @@ async function main() {
         provider_label: 'GitHub 公開清單',
         provider_url: 'https://github.com/limajj2021/taiwan-iptv',
         raw_channel_name: cand.name,
-        backup_urls: [],
+        backup_urls: (cand.backup ?? []).map((b) => ({
+          url: b.url,
+          source: b.source,
+          cors: b.cors,
+        })),
       },
     };
 
