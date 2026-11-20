@@ -140,19 +140,37 @@ async function main() {
 
   const results = [];
 
-  for (const ch of targets) {
+  // ── 並行驗證所有頻道 ──
+  // 逐一個驗證太慢（83 個頻道 × 每個數十秒）。
+  // 每個頻道彼此獨立，所以並行處理；單一頻道內部仍依序試主來源與備援。
+  const CONC = 8;
+  let doneCount = 0;
+
+  async function verifyChannel(ch) {
     const candidates = [
-      { url: ch.stream_url, kind: 'primary' },
+      { url: ch.stream_url, role: 'primary' },
       ...(ch.playlist_source?.backup_urls ?? []).map((b) => ({
         url: b.url,
-        kind: 'backup',
+        role: 'backup',
       })),
     ];
 
     const found = [];
     for (const cand of candidates) {
       if (!cand.url) continue;
-      const r = await verify(cand.url);
+      let r = await verify(cand.url);
+
+      // 逾時／網路錯誤可能是上游偶發壅塞，而不是真的失效。
+      // 對「逾時」與 AbortError 重試一次，避免誤殺可用頻道。
+      if (!r.ok && /逾時|AbortError/.test(r.reason)) {
+        await new Promise((res) => setTimeout(res, 1500));
+        const retry = await verify(cand.url);
+        if (retry.ok) r = retry;
+      }
+
+      // 注意：r 裡有 kind（媒體格式），cand 裡有 role（來源角色），
+      // 兩者不可共用同一個欄位名 —— 否則 role 會被 kind 蓋掉，
+      // 導致 needs_swap 判斷錯誤。
       found.push({ ...cand, ...r });
       if (r.ok) break; // 找到可用的就停
     }
@@ -168,10 +186,11 @@ async function main() {
 
     console.log(
       `  ${status} ${ch.channel_name.padEnd(18)} ` +
-        `${working && working !== primary ? '備援可用 ' : ''}${detail}`,
+        `${working && working.role === 'backup' ? '備援可用 ' : ''}${detail}`,
     );
 
-    results.push({
+    doneCount++;
+    return {
       channel_id: ch.channel_id,
       channel_name: ch.channel_name,
       primary_url: ch.stream_url,
@@ -179,12 +198,31 @@ async function main() {
       primary_reason: primary?.reason ?? null,
       primary_cors: primary?.cors ?? null,
       working_url: working?.url ?? null,
+      working_role: working?.role ?? null,
       working_kind: working?.kind ?? null,
       working_ms: working?.segMs ?? null,
       working_bytes: working?.segBytes ?? null,
-      needs_swap: !!(working && working.kind === 'backup'),
-    });
+      needs_swap: !!(working && working.role === 'backup'),
+    };
   }
+
+  const queue = [...targets];
+  async function worker() {
+    while (queue.length) {
+      const ch = queue.shift();
+      const r = await verifyChannel(ch);
+      results.push(r);
+      if (doneCount % 5 === 0) {
+        process.stdout.write(`  驗證中 ${doneCount}/${targets.length}\r`);
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: CONC }, worker));
+  process.stdout.write(' '.repeat(40) + '\r');
+
+  // 依原始順序排列，輸出較好閱讀
+  const order = new Map(targets.map((c, i) => [c.channel_id, i]));
+  results.sort((a, b) => (order.get(a.channel_id) ?? 0) - (order.get(b.channel_id) ?? 0));
 
   const ok = results.filter((r) => r.working_url).length;
   const needSwap = results.filter((r) => r.needs_swap).length;
