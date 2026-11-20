@@ -100,6 +100,8 @@ function collectLogos(fileId) {
  * 為什麼需要：央視系列在本專案顯示為「央視-1 綜合」，
  * 但清單裡是「CCTV1」／「央视1」之類，模糊比對對不上。
  * 省衛視則是「湖南衛視」vs 清單的「湖南卫视」，簡繁轉換可解決。
+ *
+ * 值為「別名陣列」：依序嘗試，找到第一個「驗證可下載」的即採用。
  */
 const MANUAL_ALIAS = {
   '央視-1 綜合': ['CCTV1', '央视1', '央视综合', 'CCTV-1'],
@@ -120,18 +122,23 @@ const MANUAL_ALIAS = {
   '央視-15 音樂': ['CCTV15', '央视15', 'CCTV-15'],
   '央視-16 奧林匹克': ['CCTV16', '央视16', 'CCTV-16'],
   '央視-17 農業農村': ['CCTV17', '央视17', 'CCTV-17'],
-  'CGTN 中國環球電視': ['CGTN', 'CGTN中文', ' CGTN'],
+  'CGTN 中國環球電視': ['CGTN', 'CGTN中文', 'CGTN Documentary'],
   '海峽衛視': ['海峡卫视', '海峽衛視', 'HTV'],
-  '客家電視台': ['客家電視', '客家电视', 'HakkaTV'],
-  '大愛電視（全球）': ['大愛電視', '大爱电视', 'DaAiTV'],
-  '公視網路直播': ['公視', '公視頻道', 'PTS'],
+  '客家電視台': ['客家電視', '客家电视', 'HakkaTV', '客家综合'],
+  '大愛電視（全球）': ['大愛電視', '大爱电视', 'DaAiTV', '大爱1台'],
+  '公視網路直播': ['公視', '公視頻道', 'PTS', '公视3台'],
   '寰宇新聞台灣台': ['寰宇新聞', '寰宇新闻', 'GlobalNews'],
-  '華視新聞 CH52': ['華視新聞', '华视新闻', 'CTS新聞'],
-  '中天新聞 CH52': ['中天新聞', '中天新闻', 'CTi新聞'],
-  '鏡新聞 24H': ['鏡新聞', '镜新闻', 'Mnews'],
-  '中視新聞台': ['中視新聞', '中视新闻', 'CTV新聞'],
-  '東森新聞 CH51': ['東森新聞', '东森新闻', 'EBC新聞'],
-  '三立新聞台 CH54': ['三立新聞', '三立新闻', 'SETN'],
+  '華視新聞 CH52': ['華視新聞', '华视新闻', 'CTS新聞', '华视新闻HD'],
+  '中天新聞 CH52': ['中天新聞', '中天新闻', 'CTi新聞', '中天新闻台'],
+  '鏡新聞 24H': ['鏡新聞', '镜新闻', 'Mnews', '鏡新聞24H'],
+  '中視新聞台': ['中視新聞', '中视新闻', 'CTV新聞', '中视新闻HD'],
+  '東森新聞 CH51': ['東森新聞', '东森新闻', 'EBC新聞', '东森新闻CH51'],
+  '三立新聞台 CH54': ['三立新聞', '三立新闻', 'SETN', '三立新闻台'],
+  '鳳凰衛視': ['凤凰卫视', '凤凰衛視', 'PhoenixInfo'],
+  '鳳凰衛視香港台': ['凤凰香港台', '凤凰香港', 'PhoenixHK'],
+  '鳳凰衛視中文台': ['凤凰中文台', '凤凰中文', 'PhoenixChinese'],
+  '鳳凰衛視資訊台': ['凤凰资讯台', '凤凰资讯', 'PhoenixInfo'],
+  '廣州南國都市台': ['广州南国都市', '南国都市', '南国都市4K'],
 };
 
 /**
@@ -187,28 +194,34 @@ async function validateLogo(url) {
 }
 
 /**
- * 找同頻道的其他 logo 候選。
+ * 找同頻道的所有 logo 候選（依優先序）。
  *
- * 當某個 logo 失效時，同一個頻道在別的清單裡可能有別的網址可用。
+ * 為什麼要收集「所有」而不是第一個：
+ *   同一個頻道名稱在不同清單裡會對應到不同的 logo 網址，
+ *   而其中相當比例是 404。例如「凤凰中文」有 4 個候選網址，
+ *   必須全部驗證後才能挑到真正可用的那一個。
  */
-function findLogoCandidates(name, norm, byExact, byNorm) {
+function findLogoCandidates(name, norm, byExact, byNorm, byNameAll) {
   const candidates = [];
 
+  // 1) 手動對照表（優先序最高）
   for (const alias of MANUAL_ALIAS[name] ?? []) {
-    const l = byExact.get(alias) ?? byNorm.get(normalize(alias));
-    if (l) candidates.push(l);
+    for (const l of byNameAll.get(alias) ?? []) candidates.push(l);
   }
-  const exact = byExact.get(name);
-  if (exact) candidates.push(exact);
-  const normalized = byNorm.get(norm);
-  if (normalized) candidates.push(normalized);
 
-  // 包含關係
-  for (const [k, v] of byNorm) {
+  // 2) 原名完全相同
+  for (const l of byNameAll.get(name) ?? []) candidates.push(l);
+
+  // 3) 簡繁轉換後正規化相同
+  for (const l of byNorm.get(norm) ?? []) candidates.push(l);
+
+  // 4) 包含關係（雙向）
+  for (const [k, list] of byNorm) {
     if (!k || k.length < 2) continue;
-    if (norm.includes(k) || k.includes(norm)) candidates.push(v);
+    if (norm.includes(k) || k.includes(norm)) candidates.push(...list);
   }
 
+  // 5) 官方站台台標
   const off = OFFICIAL_LOGOS[name];
   if (off) candidates.push(off);
 
@@ -228,15 +241,27 @@ async function main() {
     console.log(`  ${p}: ${list.length} 筆帶 logo`);
   }
 
-  // 建立索引
-  const byExact = new Map(); // 原名
-  const byNorm = new Map(); // 正規化名
+  // 建立索引（每個名稱對應「所有」logo 網址）
+  const byExact = new Map(); // 原名 → [logo...]
+  const byNorm = new Map(); // 正規化名 → [logo...]
+  const byNameAll = new Map(); // 原名 → [logo...]（與 byExact 同義，供候選收集用）
   for (const item of all) {
-    if (item.logo && !byExact.has(item.name)) byExact.set(item.name, item.logo);
+    if (!item.logo) continue;
+    if (!byExact.has(item.name)) byExact.set(item.name, []);
+    byExact.get(item.name).push(item.logo);
+    if (!byNameAll.has(item.name)) byNameAll.set(item.name, []);
+    byNameAll.get(item.name).push(item.logo);
+
     const n = normalize(item.name);
-    if (n && !byNorm.has(n)) byNorm.set(n, item.logo);
+    if (n) {
+      if (!byNorm.has(n)) byNorm.set(n, []);
+      byNorm.get(n).push(item.logo);
+    }
   }
-  console.log(`\n索引：${byExact.size} 個原名 / ${byNorm.size} 個正規化名\n`);
+  console.log(
+    `\n索引：${byExact.size} 個原名 / ${byNorm.size} 個正規化名` +
+      `（${all.length} 筆 logo）\n`,
+  );
 
   // ── 對應到頻道 ──
   const catalog = JSON.parse(readFileSync(CHANNELS_PATH, 'utf8'));
@@ -249,7 +274,13 @@ async function main() {
   const toValidate = new Map(); // url → true
   for (const ch of catalog.channels) {
     const norm = normalize(ch.channel_name);
-    const candidates = findLogoCandidates(ch.channel_name, norm, byExact, byNorm);
+    const candidates = findLogoCandidates(
+      ch.channel_name,
+      norm,
+      byExact,
+      byNorm,
+      byNameAll,
+    );
     ch._candidates = candidates;
     for (const c of candidates) toValidate.set(c, true);
   }
