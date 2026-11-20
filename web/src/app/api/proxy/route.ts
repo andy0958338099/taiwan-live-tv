@@ -371,17 +371,65 @@ export async function GET(request: NextRequest) {
      * 也就是完整的 segment。所以我們把上游的 206 **改寫成 200**，
      * 去掉 Content-Range，這樣就能安全地被快取。
      *
-     * 判斷依據：Content-Range 的結尾 == 總長度 → 內容其實是完整的。
+     * ## ⚠️ 判斷「內容完整」不能只看 Content-Range
      *
-     * ## 快取的三個前提（都成立才快取）
-     *   1. 簽章是確定性的（HMAC(target)）→ 快取鍵穩定，不同使用者共用
-     *   2. segment 網址含序號 → 內容不可變
-     *   3. 上游的 segment 只活約 10 秒 → CDN 快取是唯一能持續供應的來源
+     * 實測：直播 segment 只活約 **30 秒**。上游對已過期的 segment
+     * 回的是 **HTTP 206 + `Content-Range: bytes 0-162/163`**，
+     * 而內容其實是一個 163 bytes 的 **HTML 404 錯誤頁**：
+     *
+     *   <!DOCTYPE html>...<title>404</title>...
+     *
+     * 單看 `bytes 0-162/163`（結尾 == 總長度）會誤判成「完整內容」，
+     * 於是把這個 HTML 錯誤頁當成 segment 回 200 + `max-age=300` 快取起來 ——
+     * 使用者就會拿到 HTML 當影片，且被釘住 5 分鐘。
+     *
+     * 所以判斷必須加上**位元組層級**的驗證：
+     *   · MPEG-TS：第 1 byte 是同步位元組 0x47
+     *   · fMP4：第 5–8 byte 是 'ftyp' box
+     * 不符合 → 視為錯誤回應，**不快取**，並回 502 讓播放器換來源。
      */
     const contentRange = upstream.headers.get('content-range');
+    const rangeMatch = contentRange ? /bytes 0-(\d+)\/(\d+)/.exec(contentRange) : null;
+
+    /**
+     * 位元組層級的「這是有效串流內容」判定。
+     *
+     * 我們已經讀了第一個 chunk（為了嗅探 manifest），
+     * 所以可以直接檢查它的開頭。
+     */
+    const looksLikeStream =
+      firstChunk.length > 0 &&
+      (firstChunk[0] === 0x47 || // MPEG-TS 同步位元組
+        // fMP4：'ftyp' box（4 bytes 長度 + 4 bytes 型別）
+        (firstChunk.length >= 8 &&
+          firstChunk[4] === 0x66 &&
+          firstChunk[5] === 0x74 &&
+          firstChunk[6] === 0x79 &&
+          firstChunk[7] === 0x70)); // 'f','t','y','p'
+
+    // Content-Range 宣稱「從頭到尾全部」
+    const rangeCoversWhole =
+      rangeMatch !== null && Number(rangeMatch[1]) + 1 === Number(rangeMatch[2]);
+
+    // 必須同時滿足：位元組看起來是串流 + Range 涵蓋全部 + HTTP 200
     const isFullContent =
-      upstream.status === 200 ||
-      (contentRange !== null && /bytes 0-\d+\/\d+/.test(contentRange));
+      looksLikeStream &&
+      (upstream.status === 200 || rangeCoversWhole) &&
+      // 排除 HTML/XML 錯誤頁（它們不會通過 0x47 / ftyp 檢查，
+      //  但這裡再明確擋一次，萬一上游把錯誤頁包成合法的 MP4 容器）
+      !/^\s*</.test(new TextDecoder().decode(firstChunk.slice(0, 16)));
+
+    if (!isFullContent && !looksLikeStream) {
+      // 上游回的不是串流內容（多半是 HTML 錯誤頁或已過期的 segment）
+      console.warn(
+        `[代理] 上游回應不是串流內容（status=${upstream.status} ` +
+          `content-range=${contentRange ?? '無'}）→ 不快取，回 502`,
+      );
+      return NextResponse.json(
+        { error: '來源回應的不是串流內容（可能是已過期的 segment 或錯誤頁）' },
+        { status: 502 },
+      );
+    }
 
     if (isFullContent) {
       headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
