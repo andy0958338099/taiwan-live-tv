@@ -61,6 +61,14 @@ export interface Channel {
   region?: string | null;
   cors_enabled?: boolean;
   http_referrer?: string | null;
+  /**
+   * 來源要求特定的 User-Agent 才能取得串流。
+   *
+   * 部分 IPTV 轉載站會檢查 UA（例如 4K 來源要求 `AptvPlayer-UA`），
+   * 帶錯時會回 403 或空清單。Web 版由代理轉送此標頭；
+   * Android 版在建立 ExoPlayer 時設定。
+   */
+  http_user_agent?: string | null;
   notes?: string | null;
   playlist_source?: PlaylistSource;
   /**

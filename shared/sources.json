@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-19T12:30:00Z",
+  "updated_at": "2026-11-20T13:43:42.077Z",
   "_comment": "外部播放清單來源註冊表。新增來源只要在此加一筆，再執行 scripts/import-playlists.mjs 即可。",
   "sources": [
     {
@@ -42,6 +42,51 @@
       "enabled": true,
       "priority": 5,
       "notes": "央視 IPV4 為主，台灣頻道少。"
+    },
+    {
+      "id": "yang-live",
+      "label": "YanG 直播聚合源",
+      "url": "https://live.yang-1989.eu.org/Live.m3u",
+      "enabled": true,
+      "priority": 6,
+      "kind": "live_streams",
+      "notes": "抖音／斗魚／B站／YY／SOOP／Twitch 聚合。840 筆，含提示用的 .mp4 需排除。"
+    },
+    {
+      "id": "huya",
+      "label": "Kimentanm 虎牙源",
+      "url": "https://cdn.jsdelivr.net/gh/Kimentanm/aptv@master/m3u/ya.m3u",
+      "enabled": true,
+      "priority": 7,
+      "kind": "live_streams",
+      "notes": "虎牙直播清單，約 5000 筆，全部經同一個轉載代理節點。"
+    },
+    {
+      "id": "huya-yqk",
+      "label": "Kimentanm 虎牙一起看",
+      "url": "https://cdn.jsdelivr.net/gh/Kimentanm/aptv@refs/heads/master/m3u/yqk.m3u",
+      "enabled": true,
+      "priority": 8,
+      "kind": "live_streams",
+      "notes": "虎牙「一起看」房間清單，約 810 筆。"
+    },
+    {
+      "id": "douyu",
+      "label": "Kimentanm 斗魚源",
+      "url": "https://cdn.jsdelivr.net/gh/Kimentanm/aptv@master/m3u/yu.m3u",
+      "enabled": true,
+      "priority": 9,
+      "kind": "live_streams",
+      "notes": "斗魚直播清單，約 5000 筆。"
+    },
+    {
+      "id": "bilibili",
+      "label": "Kimentanm B站源",
+      "url": "https://cdn.jsdelivr.net/gh/Kimentanm/aptv@master/m3u/bi.m3u",
+      "enabled": true,
+      "priority": 10,
+      "kind": "live_streams",
+      "notes": "Bilibili 直播清單，約 5000 筆。"
     }
   ],
   "import_rules": {
@@ -330,5 +375,9 @@
       "removed_at": "2026-11-20T12:54:56.688Z",
       "removed_reason": "所有來源皆為 10 秒 VOD 預覽片段（非直播），已從上線清單移除"
     }
-  ]
+  ],
+  "source_kinds": {
+    "iptv_channels": "IPTV 電視台清單 —— 頻道固定存在，適合放進 shared/channels.json（APK 與 Web 共用）。",
+    "live_streams": "主播直播間清單 —— 隨時離線、數量浮動，不適合放進共用頻道資料；由 scripts/probe-live-sources.mjs 定期深層探測後另外維護。"
+  }
 }

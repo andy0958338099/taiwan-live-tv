@@ -275,7 +275,10 @@ export default function Home() {
           所有頻道均標註來源與授權狀態。未經授權的來源不會出現在本清單中。
         </p>
         <p className={styles.footerMeta}>
-          schema v{catalog.schema_version} · APK 與網頁讀取同一份頻道資料
+          schema v{catalog.schema_version} · APK 與網頁讀取同一份頻道資料 ·{' '}
+          <a href="/privacy" className={styles.footerLink}>
+            來源揭露與授權說明
+          </a>
         </p>
       </footer>
     </main>

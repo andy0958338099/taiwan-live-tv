@@ -187,7 +187,85 @@ node scripts/validate-channels.mjs && node scripts/sync-channels.mjs
 
 若新來源使用不同的台灣頻道命名，在 `import_rules.channel_map` 補上對應即可。
 
-## 9. 已知限制
+## 9. 中國大陸頻道（新增）
+
+### 9.1 匯入方式
+
+中國大陸頻道與台灣頻道分開處理，因為過濾規則與命名慣例完全不同：
+
+| | 台灣 | 中國 |
+|---|---|---|
+| 匯入腳本 | `scripts/import-playlists.mjs` | `scripts/import-china-channels.mjs` |
+| 過濾依據 | `group-title` 含「台灣」 | 名稱含 CCTV／央視／衛視／卫视 |
+| 命名 | 繁體 | **簡體**（清單提供者的慣例） |
+| 對照表 | `shared/sources.json` 的 `channel_map` | 腳本內 `CHINA_CHANNEL_MAP` + `PROVINCE_MAP` |
+
+```bash
+node scripts/import-china-channels.mjs --dry-run   # 先看會匯入什麼
+node scripts/import-china-channels.mjs              # 實際匯入
+```
+
+### 9.2 簡繁轉換的必要處
+
+清單中的省衛視名稱使用**簡體**（`湖南卫视`），而專案顯示名稱使用繁體（`湖南衛視`）。
+`import-china-channels.mjs` 內的 `SIMPLIFIED_TO_TRADITIONAL` 對照表做逐字轉換後比對。
+
+> ⚠️ **踩過的坑**：`channel_id` 必須是 ASCII。
+> 早期用 `cn-${key.replace(/[^a-zA-Z0-9]+/g, '-')}` 產生 id，
+> 中文 key 會全部折成單一破折號 → 34 個省衛視撞成同一個 `cn--`。
+> 現在 `PROVINCE_MAP` 的 key 改為 ASCII slug（`hn` = 湖南、`sx2` = 陝西）。
+> `scripts/normalize-channel-ids.mjs` 負責把既有的壞 id 改名。
+
+### 9.3 4K 來源的特殊處理
+
+`group-title="4K频道"` **不是**要排除的群組 —— 那是正規的省份衛視 4K 版本。
+排除清單只針對非電視台內容（快手、斗鱼、YY直播、直播秀、酒店、组播、主播、賽事）。
+
+部分 4K 來源需要特定 User-Agent 才能取得串流：
+```
+#EXTINF:-1 ... http-user-agent="AptvPlayer-UA" ...,湖南卫视4K
+```
+因此 `http_user_agent` 欄位會被記錄下來，Web 版由代理轉送、Android 版在
+建立 ExoPlayer 時設定。
+
+## 10. Deep probe：為什麼「manifest 可讀」不代表「能播」
+
+這批 IPTV 來源是**三層結構**：
+
+```
+cdn.qd.je/163189/lhjd          ← 第一層：入口 manifest（永遠回 200）
+  └─ https://8.fast.hidns.vip/163189/lhjd   ← 第二層：child manifest（真正的串流）
+       └─ .../segment0.ts      ← 第三層：實際媒體分段
+```
+
+**只看第一層會嚴重誤判。** 實測結果（`scripts/probe-cdn-paths.mjs`，98 條路徑）：
+
+| 失效階段 | 數量 | 症狀 |
+|---|---|---|
+| `child:HTTP 502` | 10 | 第一層 200，但 child host 整批掛掉 |
+| `segment:HTTP 502` | 9 | child 可讀，但分段取不到 |
+| `child:AbortError` | 7 | child host 無回應 |
+| `child:VOD` | 4 | child 是點播檔（有 `#EXT-X-ENDLIST`） |
+| `manifest:HTTP 404` | 4 | 入口就不存在 |
+
+**64/98 條路徑真正可播。** 失效的 34 條裡，10 條全部指向同一個 host
+`smt.1678520.xyz` —— 該 host 整批失效，且已確認沒有其他可用的替代 host。
+
+因此：
+- 緯來（`wlxj` / `wlty`）與龍祥（`lxsd`）**已下架**（`scripts/apply-verified-sources.mjs`）
+- 有效頻道的主來源改為**直接指向驗證過的 child manifest**，
+  避免每次播放都要多繞一層入口
+
+### 探測腳本
+
+| 腳本 | 用途 |
+|---|---|
+| `scripts/probe-cdn-paths.mjs` | 深度探測 `cdn.qd.je/163189/*` 全部路徑 → `shared/cdn-paths.json` |
+| `scripts/apply-verified-sources.mjs` | 套用探測結果：移除失效、更新網址、補上漏掉的頻道 |
+| `scripts/probe-live-sources.mjs` | 深度探測直播聚合源（抖音／斗魚／B站／虎牙等） |
+| `scripts/import-china-channels.mjs` | 中國頻道匯入（含直播性與 VOD 檢查） |
+
+## 11. 已知限制
 
 1. **來源 IP 位址會失效**：`kuliao` / `suxuang` 有大量 `IP:port` 直連來源
    （例如 `http://121.199.48.54/...`），這些節點時常失效。

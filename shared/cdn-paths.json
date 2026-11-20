@@ -1,0 +1,854 @@
+{
+  "probed_at": "2026-11-20T13:33:59.967Z",
+  "host": "cdn.qd.je",
+  "total": 98,
+  "working": 64,
+  "paths": [
+    {
+      "path": "amlh",
+      "name": "澳門蓮花",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/amlh",
+      "child_url": "https://cdn6.cc.cd/163189/amlh",
+      "kind": "mpegts",
+      "bytes": 2202984,
+      "cors": false
+    },
+    {
+      "path": "amty",
+      "name": "澳門體育",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/amty",
+      "child_url": "https://cdn6.cc.cd/163189/amty",
+      "kind": "mpegts",
+      "bytes": 3637612,
+      "cors": false
+    },
+    {
+      "path": "amzy",
+      "name": "澳門綜藝",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/amzy",
+      "child_url": "https://cdn6.cc.cd/163189/amzy",
+      "kind": "mpegts",
+      "bytes": 3239616,
+      "cors": false
+    },
+    {
+      "path": "aod",
+      "name": "Astro AOD",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/aod",
+      "child_url": "https://cdn3.indevs.in/stream/live/aod/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4895332,
+      "cors": false
+    },
+    {
+      "path": "as",
+      "name": "澳門Macau",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/as",
+      "child_url": "https://cdn6.cc.cd/163189/as",
+      "kind": "mpegts",
+      "bytes": 3588732,
+      "cors": false
+    },
+    {
+      "path": "asam",
+      "name": "澳視澳門",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/asam",
+      "child_url": "https://cdn6.cc.cd/163189/asam",
+      "kind": "mpegts",
+      "bytes": 3418216,
+      "cors": false
+    },
+    {
+      "path": "ccm",
+      "name": "天映經典「新加坡」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/ccm",
+      "child_url": "https://10.fast.hidns.vip/163189/ccm/video/index.php",
+      "kind": "unknown",
+      "bytes": 3023420,
+      "cors": false
+    },
+    {
+      "path": "ccm2",
+      "name": "天映經典「馬來西亞」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/ccm2",
+      "child_url": "https://cdn3.indevs.in/stream/live/ccm/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=1129404149",
+      "kind": "mpegts",
+      "bytes": 1453052,
+      "cors": false
+    },
+    {
+      "path": "cctv16",
+      "name": "CCTV16",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/cctv16",
+      "child_url": "https://168.sryze.cc/163189/cctv16",
+      "kind": "mpegts",
+      "bytes": 4775952,
+      "cors": false
+    },
+    {
+      "path": "cctv5",
+      "name": "CCTV5",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/cctv5",
+      "child_url": "https://168.sryze.cc/163189/cctv5",
+      "kind": "mpegts",
+      "bytes": 3550380,
+      "cors": false
+    },
+    {
+      "path": "cctv5p",
+      "name": "CCTV5+",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/cctv5p",
+      "child_url": "https://168.sryze.cc/163189/cctv5p",
+      "kind": "mpegts",
+      "bytes": 4096520,
+      "cors": false
+    },
+    {
+      "path": "ch8",
+      "name": "Channel 8",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/ch8",
+      "child_url": "https://cdn6.cc.cd/163189/ch8",
+      "kind": "mpegts",
+      "bytes": 4696428,
+      "cors": false
+    },
+    {
+      "path": "chu",
+      "name": "Channel U",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/chu",
+      "child_url": "https://cdn6.cc.cd/163189/chu",
+      "kind": "mpegts",
+      "bytes": 4669920,
+      "cors": false
+    },
+    {
+      "path": "cwjd",
+      "name": "重温经典",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/cwjd",
+      "child_url": "https://cdn6.cc.cd/163189/cwjd",
+      "kind": "mpegts",
+      "bytes": 2769616,
+      "cors": false
+    },
+    {
+      "path": "cwjd2",
+      "name": "重温经典",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/cwjd2",
+      "child_url": "https://168.sryze.cc/163189/cwjd",
+      "kind": "mpegts",
+      "bytes": 1870224,
+      "cors": false
+    },
+    {
+      "path": "fct",
+      "name": "翡翠台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/fct",
+      "child_url": "https://cdn6.cc.cd/163189/fct",
+      "kind": "mpegts",
+      "bytes": 8739556,
+      "cors": false
+    },
+    {
+      "path": "fct2",
+      "name": "翡翠台「字幕」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/fct2",
+      "child_url": "https://cdn3.indevs.in/stream/tvb/fct/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4398636,
+      "cors": false
+    },
+    {
+      "path": "fctvtt",
+      "name": "翡翠台「WebVTT字幕」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/fctvtt",
+      "child_url": "https://10.fast.hidns.vip/163189/fct/video/index.php",
+      "kind": "unknown",
+      "bytes": 4934885,
+      "cors": false
+    },
+    {
+      "path": "fhhk",
+      "name": "凤凰香港台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/fhhk",
+      "child_url": "https://cdn6.cc.cd/163189/fhhk",
+      "kind": "mpegts",
+      "bytes": 4283768,
+      "cors": false
+    },
+    {
+      "path": "fhzw",
+      "name": "凤凰中文台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/fhzw",
+      "child_url": "https://cdn6.cc.cd/163189/fhzw",
+      "kind": "mpegts",
+      "bytes": 4601112,
+      "cors": false
+    },
+    {
+      "path": "fhzx",
+      "name": "凤凰资讯台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/fhzx",
+      "child_url": "https://cdn6.cc.cd/163189/fhzx",
+      "kind": "mpegts",
+      "bytes": 4549224,
+      "cors": false
+    },
+    {
+      "path": "gdty",
+      "name": "广东体育",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/gdty",
+      "child_url": "https://2.fast.hidns.vip/163189/gdty",
+      "kind": "mpegts",
+      "bytes": 7393100,
+      "cors": false
+    },
+    {
+      "path": "gdzj",
+      "name": "广东珠江",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/gdzj",
+      "child_url": "https://2.fast.hidns.vip/163189/gdzj",
+      "kind": "mpegts",
+      "bytes": 3483828,
+      "cors": false
+    },
+    {
+      "path": "gzxw",
+      "name": "广州新闻",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/gzxw",
+      "child_url": "https://168.sryze.cc/163189/gzxw",
+      "kind": "mpegts",
+      "bytes": 689772,
+      "cors": false
+    },
+    {
+      "path": "gzzh",
+      "name": "广州综合",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/gzzh",
+      "child_url": "https://168.sryze.cc/163189/gzzh",
+      "kind": "mpegts",
+      "bytes": 1284792,
+      "cors": false
+    },
+    {
+      "path": "hjhjt",
+      "name": "黃金華劇台「WebVTT字幕」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hjhjt",
+      "child_url": "https://10.fast.hidns.vip/163189/hjhjt/video/index.php",
+      "kind": "unknown",
+      "bytes": 3902285,
+      "cors": false
+    },
+    {
+      "path": "hlfct",
+      "name": "华丽翡翠台「新加坡」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hlfct",
+      "child_url": "https://cdn6.cc.cd/163189/hlfct",
+      "kind": "mpegts",
+      "bytes": 2722428,
+      "cors": false
+    },
+    {
+      "path": "hlt",
+      "name": "华丽翡翠台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hlt",
+      "child_url": "https://cdn3.indevs.in/stream/live/hlt/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4543960,
+      "cors": false
+    },
+    {
+      "path": "hoy2",
+      "name": "HOY TV",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hoy2",
+      "child_url": "https://fast.hidns.vip/163189/hoy",
+      "kind": "mpegts",
+      "bytes": 2926784,
+      "cors": false
+    },
+    {
+      "path": "hoy76",
+      "name": "HOY 國際財經台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hoy76",
+      "child_url": "https://cdn11.163189.xyz/163189/hoy76/sf593cf578c9665b8",
+      "kind": "unknown",
+      "bytes": 1673392,
+      "cors": false
+    },
+    {
+      "path": "hoy78",
+      "name": "HOY 資訊台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hoy78",
+      "child_url": "https://fast.hidns.vip/163189/hoy78",
+      "kind": "mpegts",
+      "bytes": 3097676,
+      "cors": false
+    },
+    {
+      "path": "hxt",
+      "name": "Astro 歡喜台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hxt",
+      "child_url": "https://cdn3.indevs.in/stream/live/hxt/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4351824,
+      "cors": false
+    },
+    {
+      "path": "hxws",
+      "name": "海峡卫视",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hxws",
+      "child_url": "https://10.fast.hidns.vip/163189/hxws/video/index.php",
+      "kind": "mpegts",
+      "bytes": 2332704,
+      "cors": false
+    },
+    {
+      "path": "hxws2",
+      "name": "海峡卫视",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/hxws2",
+      "child_url": "https://168.sryze.cc/163189/hxws",
+      "kind": "mpegts",
+      "bytes": 9921700,
+      "cors": false
+    },
+    {
+      "path": "iqiyi",
+      "name": "iQIYI",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/iqiyi",
+      "child_url": "https://cdn3.indevs.in/stream/live/iqiyi/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4693044,
+      "cors": false
+    },
+    {
+      "path": "j1",
+      "name": "TVBJ1",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/j1",
+      "child_url": "https://cdn6.cc.cd/163189/j1",
+      "kind": "mpegts",
+      "bytes": 5231100,
+      "cors": false
+    },
+    {
+      "path": "jtdy",
+      "name": "靖天電影台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/jtdy",
+      "child_url": "https://cdn12.178.indevs.in/163189/jtdy",
+      "kind": "mpegts",
+      "bytes": 1751032,
+      "cors": false
+    },
+    {
+      "path": "lhdy",
+      "name": "龍華電影台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/lhdy",
+      "child_url": "https://8.fast.hidns.vip/163189/lhdy",
+      "kind": "mpegts",
+      "bytes": 3152760,
+      "cors": false
+    },
+    {
+      "path": "lhjd",
+      "name": "龍華經典台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/lhjd",
+      "child_url": "https://8.fast.hidns.vip/163189/lhjd",
+      "kind": "mpegts",
+      "bytes": 3056504,
+      "cors": false
+    },
+    {
+      "path": "lhox",
+      "name": "龍華偶像台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/lhox",
+      "child_url": "https://8.fast.hidns.vip/163189/lhox",
+      "kind": "mpegts",
+      "bytes": 3363320,
+      "cors": false
+    },
+    {
+      "path": "lhrh",
+      "name": "龍華日韓台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/lhrh",
+      "child_url": "https://8.fast.hidns.vip/163189/lhrh",
+      "kind": "mpegts",
+      "bytes": 3333240,
+      "cors": false
+    },
+    {
+      "path": "lhxj",
+      "name": "龍華戲劇台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/lhxj",
+      "child_url": "https://8.fast.hidns.vip/163189/lhxj",
+      "kind": "mpegts",
+      "bytes": 3119672,
+      "cors": false
+    },
+    {
+      "path": "lhyp",
+      "name": "龍華洋片台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/lhyp",
+      "child_url": "https://8.fast.hidns.vip/163189/lhyp",
+      "kind": "mpegts",
+      "bytes": 2731640,
+      "cors": false
+    },
+    {
+      "path": "mztvtt",
+      "name": "明珠台「WebVTT字幕」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/mztvtt",
+      "child_url": "https://10.fast.hidns.vip/163189/mzt/video/index.php",
+      "kind": "unknown",
+      "bytes": 2350772,
+      "cors": false
+    },
+    {
+      "path": "ngds",
+      "name": "广州南国都市",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/ngds",
+      "child_url": "https://cdn15.163189.xyz/163189/ngds",
+      "kind": "mpegts",
+      "bytes": 1160148,
+      "cors": false
+    },
+    {
+      "path": "now",
+      "name": "Now新聞台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/now",
+      "child_url": "https://fast.hidns.vip/163189/now",
+      "kind": "mpegts",
+      "bytes": 6002088,
+      "cors": false
+    },
+    {
+      "path": "rthk31",
+      "name": "RTHK31",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/rthk31",
+      "child_url": "https://fast.hidns.vip/163189/rthk31",
+      "kind": "mpegts",
+      "bytes": 6935884,
+      "cors": false
+    },
+    {
+      "path": "rthk32",
+      "name": "RTHK32",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/rthk32",
+      "child_url": "https://fast.hidns.vip/163189/rthk32",
+      "kind": "mpegts",
+      "bytes": 7068236,
+      "cors": false
+    },
+    {
+      "path": "rthk33",
+      "name": "RTHK33",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/rthk33",
+      "child_url": "https://cdn6.cc.cd/163189/cctv1",
+      "kind": "mpegts",
+      "bytes": 4066628,
+      "cors": false
+    },
+    {
+      "path": "tvb1",
+      "name": "TVB1",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/tvb1",
+      "child_url": "https://cdn6.cc.cd/163189/tvb1",
+      "kind": "mpegts",
+      "bytes": 1971932,
+      "cors": false
+    },
+    {
+      "path": "tvbc",
+      "name": "千禧經典台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/tvbc",
+      "child_url": "https://cdn3.indevs.in/stream/live/tvbc/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4351824,
+      "cors": false
+    },
+    {
+      "path": "tvbd",
+      "name": "TVB Drama",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/tvbd",
+      "child_url": "https://cdn6.cc.cd/163189/tvbd",
+      "kind": "mpegts",
+      "bytes": 5250276,
+      "cors": false
+    },
+    {
+      "path": "tvbp",
+      "name": "TVB Plus「字幕」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/tvbp",
+      "child_url": "https://cdn3.indevs.in/stream/tvb/tvbp/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4317044,
+      "cors": false
+    },
+    {
+      "path": "tvbpvtt",
+      "name": "TVB Plus「WebVTT字幕」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/tvbpvtt",
+      "child_url": "https://10.fast.hidns.vip/163189/tvbp/video/index.php",
+      "kind": "unknown",
+      "bytes": 4958327,
+      "cors": false
+    },
+    {
+      "path": "tvbxh",
+      "name": "TVB 星河台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/tvbxh",
+      "child_url": "https://cdn6.cc.cd/163189/tvbxh",
+      "kind": "mpegts",
+      "bytes": 2653996,
+      "cors": false
+    },
+    {
+      "path": "tvbxh2",
+      "name": "TVB 星河台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/tvbxh2",
+      "child_url": "https://cdn3.indevs.in/stream/live/tvbxh/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 4498840,
+      "cors": false
+    },
+    {
+      "path": "typd",
+      "name": "天映頻道「新加坡」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/typd",
+      "child_url": "https://10.fast.hidns.vip/163189/typd/video/index.php",
+      "kind": "unknown",
+      "bytes": 3917956,
+      "cors": false
+    },
+    {
+      "path": "typd2",
+      "name": "天映頻道「馬來西亞」",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/typd2",
+      "child_url": "https://cdn3.indevs.in/stream/live/typd/stream_0.php?u=admin&p=69fe3eb1f0b037bc2479cb4fbd56551848343f071f939422ef250f04f68b4cee&uid=",
+      "kind": "mpegts",
+      "bytes": 5105704,
+      "cors": false
+    },
+    {
+      "path": "viu",
+      "name": "ViuTV",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/viu",
+      "child_url": "https://10.fast.hidns.vip/163189/viu/video/index.php",
+      "kind": "unknown",
+      "bytes": 4718369,
+      "cors": false
+    },
+    {
+      "path": "viu6",
+      "name": "ViuTVsix",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/viu6",
+      "child_url": "https://10.fast.hidns.vip/163189/viu6/video/index.php",
+      "kind": "unknown",
+      "bytes": 4563193,
+      "cors": false
+    },
+    {
+      "path": "wxxwt",
+      "name": "無綫新聞台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/wxxwt",
+      "child_url": "https://cdn6.cc.cd/163189/wxxwt",
+      "kind": "mpegts",
+      "bytes": 2786912,
+      "cors": false
+    },
+    {
+      "path": "xinghe",
+      "name": "TVB 星河台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/xinghe",
+      "child_url": "https://10.fast.hidns.vip/163189/xinghe/video/index.php",
+      "kind": "unknown",
+      "bytes": 4007267,
+      "cors": false
+    },
+    {
+      "path": "ylxw",
+      "name": "娛樂新聞台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/ylxw",
+      "child_url": "https://cdn6.cc.cd/163189/ylxw",
+      "kind": "mpegts",
+      "bytes": 4662776,
+      "cors": false
+    },
+    {
+      "path": "yzwx",
+      "name": "TVB 功夫台",
+      "group": "•港澳台「Juli」",
+      "url": "https://cdn.qd.je/163189/yzwx",
+      "child_url": "https://cdn6.cc.cd/163189/yzwx",
+      "kind": "mpegts",
+      "bytes": 2763036,
+      "cors": false
+    }
+  ],
+  "failed": [
+    {
+      "path": "wxxw",
+      "name": "無綫新聞台",
+      "stage": "child",
+      "reason": "VOD"
+    },
+    {
+      "path": "tvbp2",
+      "name": "TVB Plus",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "mzt",
+      "name": "明珠台「字幕」",
+      "stage": "manifest",
+      "reason": "HTTP 404"
+    },
+    {
+      "path": "fct4k",
+      "name": "翡翠台 4K「字幕」",
+      "stage": "manifest",
+      "reason": "HTTP 404"
+    },
+    {
+      "path": "jade",
+      "name": "华丽翡翠台「硬字幕」",
+      "stage": "child",
+      "reason": "VOD"
+    },
+    {
+      "path": "jade2",
+      "name": "华丽翡翠台「新加坡」",
+      "stage": "manifest",
+      "reason": "HTTP 404"
+    },
+    {
+      "path": "8tv",
+      "name": "八度空間",
+      "stage": "child",
+      "reason": "VOD"
+    },
+    {
+      "path": "ch5",
+      "name": "Channel 5",
+      "stage": "child",
+      "reason": "VOD"
+    },
+    {
+      "path": "cctv13",
+      "name": "CCTV13",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "wxty",
+      "name": "五星体育",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "lhkt",
+      "name": "龍華卡通台",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "jgbdx",
+      "name": "金光布袋戲",
+      "stage": "manifest",
+      "reason": "HTTP 404"
+    },
+    {
+      "path": "jyxj",
+      "name": "靖洋戲劇台",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "jtyh",
+      "name": "靖天映畫",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "jtxj",
+      "name": "靖天戲劇台",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "jgbdx2",
+      "name": "金光布袋戲",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "msyj",
+      "name": "民視影劇台",
+      "stage": "child",
+      "reason": "AbortError"
+    },
+    {
+      "path": "gsxj",
+      "name": "公視戲劇",
+      "stage": "child",
+      "reason": "AbortError"
+    },
+    {
+      "path": "ccyj",
+      "name": "采昌影劇台",
+      "stage": "child",
+      "reason": "AbortError"
+    },
+    {
+      "path": "mce",
+      "name": "MCE 我的歐洲電影",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "cmusic",
+      "name": "電影原聲台CMusic",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "wldy",
+      "name": "緯來電影台",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "dreamworks",
+      "name": "DreamWorks 夢工廠動畫",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "jxdmt",
+      "name": "精選動漫台",
+      "stage": "segment",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "ymswdyt",
+      "name": "影迷數位電影台",
+      "stage": "child",
+      "reason": "AbortError"
+    },
+    {
+      "path": "amc",
+      "name": "amc電影台",
+      "stage": "child",
+      "reason": "AbortError"
+    },
+    {
+      "path": "wlxj",
+      "name": "緯來戲劇台",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "cinemaworld",
+      "name": "CinemaWorld",
+      "stage": "child",
+      "reason": "AbortError"
+    },
+    {
+      "path": "jddyt",
+      "name": "經典電影台",
+      "stage": "child",
+      "reason": "AbortError"
+    },
+    {
+      "path": "lxsd",
+      "name": "龍祥時代",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "wlty",
+      "name": "緯來體育台",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "dsyp",
+      "name": "東森洋片台",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "dsxj",
+      "name": "東森戲劇台",
+      "stage": "child",
+      "reason": "HTTP 502"
+    },
+    {
+      "path": "dsdy",
+      "name": "東森電影台",
+      "stage": "child",
+      "reason": "HTTP 502"
+    }
+  ]
+}

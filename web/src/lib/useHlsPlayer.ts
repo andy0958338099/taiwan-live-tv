@@ -32,29 +32,62 @@ export interface BackupSource {
 /**
  * 取得應該使用的串流網址。
  *
- * 若來源不支援 CORS（`cors_enabled === false`），改走本站的代理路由。
- * 代理會驗證目標網址確實在已授權的頻道清單中，不是開放代理。
+ * 三種情況需要走代理：
  *
- * 注意：代理會為 manifest 內的子資源加上簽章（`sig` 參數），
+ *  1. `cors_enabled === false` —— 來源不回傳 CORS 標頭，
+ *     瀏覽器的同源政策會擋下 manifest 與 segment。
+ *
+ *  2. 來源是 **http://**（非 TLS）—— 站台本身是 https，
+ *     瀏覽器會以「混合內容（mixed content）」直接封鎖該請求，
+ *     而且連錯誤訊息都不會顯示。
+ *     這是 TVBS 這類來源的實際情況（http://38.64.72.148/...）。
+ *     走代理後由伺服器端發出請求，就沒有混合內容問題。
+ *
+ *  3. 來源是 **IP 位址** —— 部分來源直接用 IP，
+ *     同樣透過代理避免瀏覽器的其他限制。
+ *
+ * 注意：代理會驗證目標網址確實在已授權的頻道清單中，不是開放代理。
+ *
+ * 代理會為 manifest 內的子資源加上簽章（`sig` 參數），
  * 那些簽章由代理端自行產生並驗證，前端不需要處理。
  */
 export function resolveStreamUrl(channel: Channel): string {
-  if (channel.cors_enabled !== false) return channel.stream_url;
-  return `/api/proxy?url=${encodeURIComponent(channel.stream_url)}`;
+  if (needsProxy(channel)) {
+    return `/api/proxy?url=${encodeURIComponent(channel.stream_url)}`;
+  }
+  return channel.stream_url;
+}
+
+/**
+ * 該頻道的串流是否必須經由代理。
+ *
+ * 抽出成獨立函式，讓主網址與備援網址用同一套判斷規則。
+ */
+export function needsProxy(channel: Channel): boolean {
+  if (channel.cors_enabled === false) return true;
+  const url = channel.stream_url;
+  if (!url) return false;
+  // 非 TLS → 混合內容封鎖
+  if (url.startsWith('http://')) return true;
+  return false;
 }
 
 /**
  * 取得應該使用的備援來源網址（同樣套用代理規則）。
  */
 export function resolveBackupUrls(channel: Channel): string[] {
-  return (channel.playlist_source?.backup_urls ?? [])
+  const backups = channel.playlist_source?.backup_urls ?? [];
+  return backups
     .map((b) => b.url)
     .filter(Boolean)
-    .map((url) =>
-      channel.cors_enabled === false
+    .map((url) => {
+      // 備援來源同樣可能是 http:// 或需要代理
+      const needsIt =
+        channel.cors_enabled === false || url.startsWith('http://');
+      return needsIt
         ? `/api/proxy?url=${encodeURIComponent(url)}`
-        : url,
-    );
+        : url;
+    });
 }
 
 /** 頻道是否應使用 iframe 播放 */

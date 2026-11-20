@@ -412,6 +412,15 @@
   color: #4a4a55;
 }
 
+.footerLink {
+  color: #3d8bff;
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
 /* ---------- 響應式 ---------- */
 
 /* 平板 */
