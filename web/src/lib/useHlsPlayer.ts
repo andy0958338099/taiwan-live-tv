@@ -30,6 +30,32 @@ export interface BackupSource {
 }
 
 /**
+ * 把目標網址編碼成代理的 path segment。
+ *
+ * ⚠️ **目標網址必須放在 path，不能放 query string**。
+ *
+ * 實測（2026-11-21 線上故障）：Netlify 的 Next.js runtime 用
+ * `netlify-vary: query=__nextDataReq|_rsc` 決定 CDN 快取鍵 ——
+ * 一般的 query 參數**不在鍵裡**。
+ *
+ * 結果：所有頻道共用同一個快取項目。實測 6 個不同頻道拿到的
+ * manifest sha256 完全相同，而且 manifest 請求會拿到某個 segment 的
+ * 位元組（0x47 MPEG-TS）→ 頻道完全播不出來。
+ *
+ * 快取鍵**一定**包含 path，所以把目標網址 base64url 編碼後
+ * 放進 path，每個目標網址就各有自己的快取項目。
+ *
+ * base64url 的字元集是 `A–Z a–z 0–9 - _`，不含 `/`、`?`、`&`，
+ * 可以安全地當成單一 path segment。
+ */
+export function encodeProxyTarget(target: string): string {
+  const bytes = new TextEncoder().encode(target);
+  let binary = '';
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+/**
  * 取得應該使用的串流網址。
  *
  * 三種情況需要走代理：
@@ -53,7 +79,7 @@ export interface BackupSource {
  */
 export function resolveStreamUrl(channel: Channel): string {
   if (needsProxy(channel)) {
-    return `/api/proxy?url=${encodeURIComponent(channel.stream_url)}`;
+    return `/api/proxy/${encodeProxyTarget(channel.stream_url)}`;
   }
   return channel.stream_url;
 }
@@ -85,7 +111,7 @@ export function resolveBackupUrls(channel: Channel): string[] {
       const needsIt =
         channel.cors_enabled === false || url.startsWith('http://');
       return needsIt
-        ? `/api/proxy?url=${encodeURIComponent(url)}`
+        ? `/api/proxy/${encodeProxyTarget(url)}`
         : url;
     });
 }

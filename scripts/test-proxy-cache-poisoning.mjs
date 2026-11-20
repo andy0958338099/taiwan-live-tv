@@ -182,19 +182,47 @@ async function main() {
   }
 
   // ── 情境 C：代理面對過期 segment ──
-  console.log('[C] 代理回應（應為 502 且不可快取）');
+  //
+  // ⚠️ 這裡有**兩種都正確**的結果，取決於 CDN 有沒有快取到：
+  //
+  //   (a) CDN 已快取到有效 segment（本地測試、或正式站上 A 情境剛存取過）
+  //       → 代理/直接回 CDN 快取的**有效 MPEG-TS**（0x47）
+  //       → 這正是快取的設計目的：上游的 segment 只活 30 秒，
+  //         CDN 是唯一能持續供應的來源。
+  //
+  //   (b) CDN 沒有快取（上游真的已過期）
+  //       → 代理必須回 **502 且不快取**，讓播放器改用備援來源。
+  //
+  // **兩種情況下唯一不可接受的結果是：把 HTML 錯誤頁當成影片回應。**
+  // 所以斷言聚焦在這一點。
+  console.log('[C] 代理回應（不可接受：HTML 錯誤頁被當成影片）');
   const c = await fetchHead(segUrl, { headers: { Range: 'bytes=0-' } }, 30_000);
   const cCc = c.cacheControl;
   console.log(`    HTTP ${c.status}`);
   console.log(`    Cache-Control: ${cCc}`);
   console.log(`    第一個 chunk: ${c.size} bytes，首位元組 0x${c.firstByte?.toString(16)}`);
-  console.log(`    內容前 80 bytes: ${JSON.stringify(c.firstBytes)}`);
+  console.log(`    內容前 60 bytes: ${JSON.stringify(c.firstBytes.slice(0, 60))}`);
 
-  const cOk =
-    c.status === 502 &&
-    !/max-age=[1-9]/.test(cCc) &&
-    !c.firstBytes.includes('<!DOCTYPE html');
-  console.log(`    判定：${cOk ? '✓ 正確（拒絕且不快取）' : '✗ 不符預期'}`);
+  const isHtmlContent = c.firstBytes.trimStart().startsWith('<');
+  const isValidStream = c.firstByte === 0x47;
+  const hasCacheableMaxAge = /max-age=[1-9]/.test(cCc);
+
+  let cVerdict;
+  if (isHtmlContent) {
+    // ❌ HTML 錯誤頁被當成影片回應 → 快取污染
+    cVerdict = `✗ HTML 錯誤頁被當成影片（status=${c.status}）`;
+  } else if (isValidStream && c.status === 200) {
+    // ✅ CDN 快取命中 → 回有效 segment（預期行為）
+    cVerdict = '✓ CDN 快取命中，回有效 segment（0x47）—— 這是預期的保護效果';
+  } else if (c.status === 502 && !hasCacheableMaxAge) {
+    // ✅ 沒有 CDN 快取 → 拒絕且不快取
+    cVerdict = '✓ 無 CDN 快取 → 502 且不快取（拒絕過期 segment）';
+  } else {
+    cVerdict = `✗ 不符預期（status=${c.status} firstByte=0x${c.firstByte?.toString(16)}）`;
+  }
+  console.log(`    判定：${cVerdict}`);
+
+  const cOk = isValidStream || (c.status === 502 && !hasCacheableMaxAge);
 
   console.log('\n' + '═'.repeat(66));
   const pass = aOk && cOk;
