@@ -1365,3 +1365,61 @@ segment（台視的是 `m3u8/ttvnews.m3u8`），誤判台視失效。
   可考慮放寬以讓「慢但可用」的來源多撐 35 秒。**本輪未實作**：
   放寬預算會讓「被平台中途切斷的截斷內容」有被快取的風險，
   必須先量測各來源的實際下載時間分佈才能決定安全值。
+
+### 12.7 修正：探測腳本誤判「好頻道失效」（4 個頻道）
+
+deep probe 首輪結果是 **81/85 可播、4 個完全失效**。逐一查證後發現
+**這 4 個都是探測腳本的誤判**，不是頻道真的壞了。兩個獨立原因：
+
+#### 原因 A：驗證時取「最舊」的 segment（直播清單的舊 segment 會過期）
+
+`verify-channel-sources.mjs` 原本取 `segs[0]`。但直播清單的 segment 條目
+是**由舊到新**排列，舊的很快過期。
+
+實測 **Dali TV**（官方來源 `www.dalitv.com.tw:4568`）：
+
+```
+manifest 有 30 條 segment
+  segs[0]  （331124.ts）→ 404  ← 已過期
+  segs[29] （331153.ts）→ 200，4835924 bytes，0x47 有效 MPEG-TS
+```
+
+修法：優先取**最新**的 segment，並逐一試多個候選（最新 + 前 3 條）。
+
+#### 原因 B：下載中途斷線沒有重試
+
+重試條件原本只有 `/逾時|AbortError/`，但**下載中途連線被切斷**
+（`ECONNRESET` / `UND_ERR_SOCKET` / `TypeError`）同樣是上游偶發狀況。
+
+實測 **四川衛視**（`121.19.134.149:808`）：
+
+```
+attempt 1  ERR TypeError terminated UND_ERR_SOCKET
+attempt 2  status 404 len 163 b0=0x3c   ← 錯誤頁（HTML）
+```
+
+重試後立刻成功拿到 5.2 MB / 0.2s 的有效 segment。不重試會讓 `needs_swap`
+建議「把好頻道換掉」—— 那會把可用的官方來源換成品質較差的備援。
+
+#### 修正後重測（同一組 4 個先前失敗的頻道）
+
+```
+✓ Dali TV      mpegts 4.2MB 0.0s CORS
+✓ 河南衛視      mpegts 5.2MB 0.5s 需代理
+✓ 廣東珠江台     mpegts 5.2MB 0.1s 需代理
+✓ 四川衛視      mpegts 5.2MB 0.2s 需代理
+
+可播 4/4｜需改用備援 0｜完全失效 0
+```
+
+線上播放實測確認 Dali TV 真的可播（不是探測腳本說了算）：
+
+```
+✓ Dali TV  currentTime=233.05 paused=false muted=false size=1280x720
+結果：1/1 個頻道播放成功
+```
+
+> ⚠️ 這個誤判有實質危害：`needs_swap` 會把「主來源失效」寫進
+> `shared/source-verification.json`，後續的 `repair-dead-backups.mjs` /
+> `assign-backups.mjs` 可能據此**把好頻道的主來源換掉**。
+> 探測腳本的假失敗不只是數字不好看 —— 會造成資料劣化。
