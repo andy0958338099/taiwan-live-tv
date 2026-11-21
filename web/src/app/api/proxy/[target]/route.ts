@@ -535,15 +535,23 @@ export async function GET(
       let projectedMs = 0;
 
       if (upstreamTotalBytes !== null) {
-        /** 第一個 chunk 的到達時間 —— TTFB 的結束點 */
+        /**
+         * 第一個 chunk 的到達時間 —— 量測窗口的起點。
+         * 這之後收到的位元組才對應到「真實頻寬」。
+         */
         const firstChunkAt = Date.now();
 
-        let sampleBytes = 0;
-        let sampleMs = 0;
+        /** 量測窗口內收到的位元組總數（含第一個 chunk） */
+        let sampleBytes = firstChunk.byteLength;
+        /** 量測窗口的真實經過時間 */
+        let windowMs = 0;
 
         // 累積樣本，直到位元組數足夠或時間到上限
-        while (sampleBytes < SAMPLE_MIN_BYTES && sampleMs < SAMPLE_MAX_WAIT_MS) {
-          const remainingWait = SAMPLE_MAX_WAIT_MS - sampleMs;
+        while (
+          sampleBytes < SAMPLE_MIN_BYTES &&
+          Date.now() - firstChunkAt < SAMPLE_MAX_WAIT_MS
+        ) {
+          const remainingWait = SAMPLE_MAX_WAIT_MS - (Date.now() - firstChunkAt);
           const next = await Promise.race([
             reader.read(),
             new Promise<null>((resolve) => setTimeout(() => resolve(null), remainingWait)),
@@ -553,30 +561,23 @@ export async function GET(
           if (!next || !('value' in next) || !next.value) break;
 
           sampleBytes += next.value.byteLength;
-          sampleMs = Date.now() - firstChunkAt;
           // 量測期間讀到的 chunk 不能丟掉 —— 要在串流時一併送出
           pendingChunks.push(next.value);
         }
 
+        // ⚠️ 必須用「真的經過多久」，不是「最後一個 chunk 什麼時候到」。
+        //
+        // 上游停頓時兩者差很多：上游可能送完前幾個 chunk 就停住，
+        // 最後一個 chunk 的到達時間會**遠早於**我們真正停止取樣的時間。
+        // 用錯的話會把速率高估好幾倍 → 又變成誤殺健康來源。
+        windowMs = Math.max(1, Date.now() - firstChunkAt);
+
         projectedMs = estimateSegmentTransferMs({
           totalBytes: upstreamTotalBytes,
           sampleBytes,
-          sampleMs,
+          windowMs,
           ttfbMs: firstChunkAt - headersAt,
         });
-
-        // ⚠️ **讀不到足夠的樣本 = 沒有證據說它慢 → 放行。**
-        //
-        // 實測：上游常常只送第一個 chunk 就停頓（TCP 視窗未開滿、
-        // 或上游自己在讀磁碟）。這種情況下 sampleBytes 會是 0，
-        // 此時估算無法成立 —— 寧可放行也不要誤殺。
-        // 真正的保護由底層的 `UPSTREAM_TIMEOUT_MS` 與串流完整性檢查負責。
-        if (sampleBytes === 0) {
-          console.warn(
-            `[代理] 取樣期間上游未再送資料 → 無法估算速度 → 放行`,
-          );
-          projectedMs = 0;
-        }
       }
 
       /**

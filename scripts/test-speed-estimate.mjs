@@ -73,19 +73,24 @@ if (rows.length === 0) {
 /**
  * 重現代理的取樣過程：
  * 從第一個 chunk 之後開始累積，累積到 SAMPLE_MIN_BYTES 或 SAMPLE_MAX_WAIT_MS 為止。
+ *
+ * ⚠️ windowMs 用「真的經過多久」—— 這與 route.ts 的實作一致。
  */
 const sampleLikeProxy = (chunks) => {
   const first = chunks[0];
   const ttfbMs = first.at; // headers → 第一個 chunk
-  let sampleBytes = 0;
-  let sampleMs = 0;
+  let sampleBytes = first.size;
+  let windowMs = 0;
   for (let i = 1; i < chunks.length; i++) {
     const c = chunks[i];
     sampleBytes += c.size;
-    sampleMs = c.at - first.at;
-    if (sampleBytes >= SAMPLE_MIN_BYTES || sampleMs >= SAMPLE_MAX_WAIT_MS) break;
+    windowMs = c.at - first.at;
+    if (sampleBytes >= SAMPLE_MIN_BYTES || windowMs >= SAMPLE_MAX_WAIT_MS) break;
   }
-  return { sampleBytes, sampleMs, ttfbMs };
+  // 取樣停止時的真實經過時間（可能比最後一個 chunk 的到達時間晚）
+  if (windowMs >= SAMPLE_MAX_WAIT_MS) windowMs = SAMPLE_MAX_WAIT_MS;
+  else windowMs = Math.max(windowMs, 1);
+  return { sampleBytes, windowMs, ttfbMs };
 };
 
 console.log('═'.repeat(96));
@@ -119,7 +124,7 @@ for (const r of rows) {
   const projected = estimateSegmentTransferMs({
     totalBytes: r.total,
     sampleBytes: s.sampleBytes,
-    sampleMs: s.sampleMs,
+    windowMs: s.windowMs,
     ttfbMs: s.ttfbMs,
   });
   const isSlow = slow.includes(r);
@@ -141,7 +146,7 @@ for (const r of rows) {
       (isSlow ? '太慢' : '健康').padStart(8) +
       String(Math.round(projected)).padStart(11) +
       String(Math.round(s.sampleBytes / 1024)).padStart(9) +
-      String(Math.round(s.sampleMs)).padStart(9) +
+      String(Math.round(s.windowMs)).padStart(9) +
       '  ' +
       verdict,
   );

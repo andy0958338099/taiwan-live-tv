@@ -29,15 +29,16 @@
  *   2. **TTFB（第一個 chunk 之前的等待）被算進分母** ——
  *      那 200–500ms 沒有任何頻寬被使用，卻讓速率被嚴重低估。
  *
- * 線上實測更直接：`diagnose-502.mjs` 量到 TVB翡翠台被回
+ * 線上實測更直接：`scripts/diagnose-502.mjs` 量到 TVB翡翠台被回
  * 「預估 34855ms → 回 502」，但同一個 segment 實際下載只要 1.3 秒。
  *
  * ## 本模組的做法
  *
- *   · 先**累積足夠的位元組**（預設 256KB）再估算 ——
+ *   · **累積足夠的位元組**（預設 256KB）再估算 ——
  *     抽樣誤差會隨累積量收斂
- *   · 速率**只算扣掉 TTFB 之後**的那一段
- *   · 剩餘位元組 ÷ 這個速率 = 剩餘時間，再加上 TTFB
+ *   · 速率用「扣掉 TTFB 之後」的**真實經過時間**來算 ——
+ *     不是「最後一個 chunk 的到達時間」（那會低估停頓的影響）
+ *   · 剩下��位元組 ÷ 這個速率 = 剩餘時間，再加上 TTFB
  *
  * ## 實測驗證（`scripts/eval-estimator.mjs`）
  *
@@ -56,10 +57,19 @@ export const SAMPLE_MAX_WAIT_MS = 800;
 export interface SpeedEstimateInput {
   /** segment 完整長度（Content-Length）；null = 未知 */
   totalBytes: number | null;
-  /** 第一個 chunk 之後收到的位元組數 */
+  /**
+   * 量測窗口內收到的位元組總數（**包含**第一個 chunk）。
+   *
+   * 第一個 chunk 一定要算進來 —— 它也是上游實際送出的位元組。
+   */
   sampleBytes: number;
-  /** 第一個 chunk 之後經過的毫秒數 */
-  sampleMs: number;
+  /**
+   * 量測窗口的**真實經過時間**（毫秒），從第一個 chunk 到達算起。
+   *
+   * ⚠️ 必須是「真的經過多久」，不是「最後一個 chunk 什麼時候到」——
+   * 上游停頓時兩者差很多，用錯會嚴重高估速率。
+   */
+  windowMs: number;
   /** TTFB：headers 到達 → 第一個 chunk 到達 */
   ttfbMs: number;
 }
@@ -72,16 +82,16 @@ export interface SpeedEstimateInput {
  * —— 誤殺會直接讓使用者看到切台，影響更立即且更明顯。
  */
 export function estimateSegmentTransferMs(input: SpeedEstimateInput): number {
-  const { totalBytes, sampleBytes, sampleMs, ttfbMs } = input;
+  const { totalBytes, sampleBytes, windowMs, ttfbMs } = input;
 
   // 沒有完整長度 → 無法外推
   if (totalBytes === null || !Number.isFinite(totalBytes) || totalBytes <= 0) return 0;
 
   // 樣本不足 → 無法判斷速率
-  if (sampleBytes <= 0 || sampleMs <= 0) return 0;
+  if (sampleBytes <= 0 || windowMs <= 0) return 0;
 
-  // 速率（bytes / ms），只取扣掉 TTFB 之後的那一段
-  const rate = sampleBytes / sampleMs;
+  // 速率（bytes / ms）
+  const rate = sampleBytes / windowMs;
   if (!Number.isFinite(rate) || rate <= 0) return 0;
 
   const remainingBytes = Math.max(0, totalBytes - sampleBytes);
