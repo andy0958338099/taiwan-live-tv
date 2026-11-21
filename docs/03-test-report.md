@@ -1745,3 +1745,37 @@ hls.js 的 live 清單輪詢間隔（`computeReloadInterval`）：
 | Commit | 內容 |
 |---|---|
 | （本輪） | 播放器啟用 `liveMaxUnchangedPlaylistRefresh` + 處理 `PLAYLIST_UNCHANGED_ERROR`；deep probe 加停播檢查；新增 11 支量測腳本 |
+
+### 14.7 部署後線上驗證（正式站 `taiwan-live-tv.netlify.app`）
+
+部署：`1a8da07` → Netlify deploy `6b01f5bb0c4bc2154c1ba402`（live）
+
+**停播頻道（Now TV）—— 修正已在線上生效：**
+
+```
+[播放器] 「Now TV」hls.js 錯誤：type=networkError details=playlistUnchangedError fatal=false
+[播放器] 「Now TV」來源失敗（此來源已停止播送（串流清單長時間沒有更新）），改用備援來源 2/2
+```
+
+60 秒後頁面狀態：
+
+```json
+{"pageError":"播放失敗此來源已停止播送（串流清單長時間沒有更新）。已嘗試 2 個來源（含備援）皆無法播放。…"}
+```
+
+**正常頻道 —— 確認沒有誤殺（持續觀察 100 秒）：**
+
+| 頻道 | 結果 |
+|---|---|
+| GOOD TV 綜合台 | ✓ 持續前進（48.0s → 134.1s）　`muted=false`　1920x1080 |
+| Dali TV | ✓ 持續前進（237.4s → 327.4s）　`muted=false`　1280x720 |
+| TVB翡翠台 | ✓ 持續前進（232.2s → 320.2s）　`muted=false`　1280x720 |
+
+**其他回歸測試（線上）全部通過：**
+
+| 測試 | 結果 |
+|---|---|
+| `verify-cdn-key.mjs` | ✓ 6 個頻道 → 6 份不同 manifest |
+| `test-proxy-cache-poisoning.mjs` | ✓ 4 個情境全過（含 Range 隔離） |
+| `test-drawer.mjs` | ✓ 抽屜三項行為全過 |
+| `run-all-checks.mjs` | ✓ 8/8（型別／Web 建置／Android APK／資料一致性） |
