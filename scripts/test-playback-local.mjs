@@ -157,14 +157,30 @@ async function main() {
     await sleep(3000);
 
     // 找到目標頻道的卡片按鈕並點擊
-    // 頻道卡片是 button，其內含 .cardName（channel_name）。
-    // 點擊後 handleSelect 會 setSelected，播放器隨即載入該頻道。
+    //
+    // ⚠️ 頻道清單現在在**抽屜**裡（可隱藏式選頻道器），
+    // 所以必須先打開抽屜，卡片才會在 DOM 裡可點。
+    // 抽屜內的卡片 class 是 drawerCard，名稱元素是 drawerCardName。
+    const opened = await s('Runtime.evaluate', {
+      expression: `(() => {
+        const handle = document.querySelector('button[aria-label="選擇頻道"]');
+        if (!handle) return 'no-handle';
+        handle.click();
+        return 'clicked';
+      })()`,
+      returnByValue: true,
+    });
+    if (opened.result.value === 'no-handle') {
+      console.log('  ✗ 找不到「選擇頻道」把手');
+    }
+    await sleep(900);
+
     const clicked = await s('Runtime.evaluate', {
       expression: `(() => {
         const want = ${JSON.stringify(ch.channel_name)};
         const btns = [...document.querySelectorAll('button')];
         const hit = btns.find(b => {
-          const n = b.querySelector('[class*="cardName"]');
+          const n = b.querySelector('[class*="drawerCardName"], [class*="cardName"]');
           return n && (n.textContent || '').trim() === want;
         });
         if (hit) { hit.scrollIntoView(); hit.click(); return want; }
