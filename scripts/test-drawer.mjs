@@ -149,7 +149,14 @@ const drawerState = (cdp) =>
       handleVisible: handle ? !handle.className.includes('Hidden') : false,
       channelCards: channelCards.length,
       // 頁面上「不屬於抽屜」的頻道卡片數量（應該是 0 —— 全部收在抽屜裡）
-      cardsOutsideDrawer: Array.from(document.querySelectorAll('main > section button[class*="channelCard"]')).length,
+      //
+      // ⚠️ 這裡必須用 data-channel-name，不能用 [class*="channelCard"]。
+      // 抽屜重設計（commit 8095269）把 .channelCard 改成 .drawerCard，
+      // 舊選擇器永遠匹配 0 個 → 這個檢查**永遠回報 0（假通過）**，
+      // 就算真的有頻道卡片漏在抽屜外也抓不到。
+      cardsOutsideDrawer: Array.from(
+        document.querySelectorAll('main > section button[data-channel-name]'),
+      ).length,
     };
   })()`);
 

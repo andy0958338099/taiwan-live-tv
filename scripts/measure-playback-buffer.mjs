@@ -53,11 +53,10 @@ await sleep(2500);
 await evaluate(`document.querySelector('button[aria-label="選擇頻道"]')?.click()`);
 await sleep(1200);
 const clicked = await evaluate(`(() => {
-  const btns = [...document.querySelectorAll('button')];
-  const hit = btns.find(b => {
-    const n = b.querySelector('[class*="drawerCardName"]');
-    return n && (n.textContent||'').trim() === ${JSON.stringify(CHANNEL)};
-  });
+  // ⭐ 用 data-channel-name，不要用 [class*="drawerCardName"]。
+  // CSS module 改名後子字串選擇器會匹配不到（見 test-embed-channels.mjs 的說明）。
+  const btns = [...document.querySelectorAll('button[data-channel-name]')];
+  const hit = btns.find(b => b.getAttribute('data-channel-name') === ${JSON.stringify(CHANNEL)});
   if (!hit) return 'not-found';
   hit.click();
   return 'clicked';

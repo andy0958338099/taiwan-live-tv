@@ -178,11 +178,10 @@ async function main() {
     const clicked = await s('Runtime.evaluate', {
       expression: `(() => {
         const want = ${JSON.stringify(ch.channel_name)};
-        const btns = [...document.querySelectorAll('button')];
-        const hit = btns.find(b => {
-          const n = b.querySelector('[class*="drawerCardName"], [class*="cardName"]');
-          return n && (n.textContent || '').trim() === want;
-        });
+        // ⭐ 用 data-channel-name，不要用 [class*="drawerCardName"] / [class*="cardName"]。
+        // CSS module 改名後子字串選擇器會匹配不到（見 test-embed-channels.mjs 的說明）。
+        const btns = [...document.querySelectorAll('button[data-channel-name]')];
+        const hit = btns.find(b => b.getAttribute('data-channel-name') === want);
         if (hit) { hit.scrollIntoView(); hit.click(); return want; }
         return null;
       })()`,
