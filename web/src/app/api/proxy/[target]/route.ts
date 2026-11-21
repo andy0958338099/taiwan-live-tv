@@ -788,6 +788,31 @@ export async function GET(
       );
     }
 
+    /**
+     * Content-Type 要**自己判斷**，不能直接轉發上游的。
+     *
+     * 實測（2026-11-21，從截圖分析時發現）：
+     *   `cdn.qd.je/163189/lhrh` 的 segment 實際是標準 MPEG-TS
+     *   （開頭 `47 40 00 3c` = sync byte 0x47 + transport error bit），
+     *   但上游回的是 `Content-Type: image/jpeg`。
+     *
+     * 為什麼這會造成問題：
+     *   瀏覽器與 CDN 會依 content-type 決定如何處理內容。
+     *   `image/jpeg` 會讓 hls.js 的 fragment loader 走錯路徑，
+     *   結果是「一直顯示連線中」但沒有明確的錯誤訊息 ——
+     *   使用者只看到轉圈圈，不知道哪裡出問題。
+     *
+     * 我們已經做過位元組層級的型別判斷（`looksLikeStream`），
+     * 所以直接**用那個判斷結果**決定 content-type，比信任上游可靠。
+     */
+    if (looksLikeStream) {
+      const isMp4Box = ISO_BMFF_BOX_TYPES.has(boxType);
+      headers.set(
+        'Content-Type',
+        isMp4Box ? 'video/mp4' : 'video/mp2t',
+      );
+    }
+
     if (isFullContent) {
       headers.set('Cache-Control', 'public, max-age=300, s-maxage=300');
     } else {

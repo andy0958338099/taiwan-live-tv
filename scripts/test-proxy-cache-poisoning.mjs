@@ -92,24 +92,25 @@ async function fetchHead(url, options = {}, timeoutMs = 30_000) {
  * 從頻道清單找一個測試用來源。
  *
  * 需求：上游要回 **206 + Content-Range**（過期時才看得出內容變短），
- * 而且**速度要夠快**。
+ * 而且**速度要夠快**（否則代理會正確地把它判為「太慢」而回 502）。
  *
  * ⚠️ 2026-11-21 換掉原本的央視-1：
  *
  * 央視-1 的來源實測要 30 秒以上才傳得完 5.4MB，
- * 代理正確地把它判為「太慢」而回 502（這是**正確**行為 ——
- * 放行會讓平台在 30 秒切斷，截斷的內容就被 CDN 快取 5 分鐘）。
+ * 代理正確地把它判為「太慢」而回 502 —— 這是**正確**行為。
+ * （舊版會回 HTTP 200 但只傳 696KB 就被平台切斷，還帶著 max-age=300
+ *   → 截斷的內容被 CDN 快取 5 分鐘，散播給所有使用者。）
  *
  * 但這讓本測試的 [A] 情境（「有效 segment 應回 200 + 可快取」）無法成立，
  * 測試會因為**被測對象的性質**而失敗，而不是因為代理有錯。
- * 所以改用 TVBS：實測 393ms 傳完 2.7MB，且回 206 + Content-Range。
+ * 所以改用龍華電視：實測 0.9 秒傳完 3MB，能正常通過代理的速度檢查。
  */
 function pickUpstream() {
   const catalog = JSON.parse(
     readFileSync(join(ROOT, 'shared/channels.json'), 'utf8'),
   );
-  // TVBS 的來源已知會回 206 + Content-Range，且速度夠快
-  const ch = catalog.channels.find((c) => c.channel_id === 'playlist-TVBS-tvbs');
+  // 龍華電視的來源夠快，且 segment 會隨直播滾動過期（可驗證 [B]/[C]）
+  const ch = catalog.channels.find((c) => c.channel_id === 'playlist-龍華-龍華電視');
   return ch?.stream_url ?? null;
 }
 
@@ -130,22 +131,62 @@ async function main() {
   // ⚠️ 必須走代理拿 manifest：代理會把 manifest 裡的 segment 網址
   // 改寫成**帶簽章**的代理網址。直接用上游網址會被 403
   // （allowlist + HMAC 簽章驗證）。
-  const manifestRes = await fetch(
-    `${BASE}/api/proxy?url=${encodeURIComponent(upstream)}`,
-    { headers: { 'User-Agent': UA }, signal: AbortSignal.timeout(20_000) },
-  );
-  const m = await manifestRes.text();
-  const seg =
-    m
-      .split('\n')
-      .map((l) => l.trim())
-      .filter((l) => l && !l.startsWith('#') && l.includes('/api/proxy'))[0] ?? null;
-  if (!seg) {
-    console.log('✗ manifest 沒有可用的 segment 網址');
-    console.log(`  manifest 內容：${m.slice(0, 300)}`);
-    process.exit(1);
+  //
+  // ⚠️ 這些來源是**多層 playlist**（master → child → segment）。
+  // 只取第一層會拿到「child manifest」而不是 segment，
+  // 而 child manifest 的內容是 `#EXTM3U` 開頭（0x23）→ 會被誤判成
+  // 「不是串流內容」。所以要逐層下鑽到真正的 segment。
+  let manifestText = '';
+  let segUrl = null;
+  let currentUrl = `${BASE}/api/proxy/${Buffer.from(upstream, 'utf8').toString('base64url')}`;
+
+  for (let depth = 0; depth < 5; depth++) {
+    const res = await fetch(currentUrl, {
+      headers: { 'User-Agent': UA },
+      signal: AbortSignal.timeout(20_000),
+    });
+    if (!res.ok) {
+      console.log(`✗ manifest 取得失敗（depth ${depth}）：HTTP ${res.status}`);
+      process.exit(1);
+    }
+    const text = await res.text();
+
+    // 回應不是 manifest → 這就是 segment 本身
+    if (!text.trimStart().startsWith('#EXTM3U')) {
+      segUrl = currentUrl;
+      manifestText = text;
+      break;
+    }
+
+    manifestText = text;
+    const next =
+      text
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith('#'))[0] ?? null;
+    if (!next) break;
+    currentUrl = next.startsWith('http')
+      ? next
+      : next.startsWith('/')
+        ? `${BASE}${next}`
+        : new URL(next, currentUrl).href;
   }
-  const segUrl = new URL(seg, BASE).href;
+
+  const m = manifestText;
+  if (!segUrl) {
+    // 沒下鑽到 segment（多層 playlist 解析失敗）→ 退回 manifest 裡的第一個網址
+    segUrl =
+      m
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith('#') && l.includes('/api/proxy'))[0] ?? null;
+    if (!segUrl) {
+      console.log('✗ manifest 沒有可用的 segment 網址');
+      console.log(`  manifest 內容：${m.slice(0, 300)}`);
+      process.exit(1);
+    }
+    segUrl = new URL(segUrl, BASE).href;
+  }
   console.log(`測試來源：${upstream}`);
   console.log(`segment： ${segUrl.slice(0, 100)}\n`);
 

@@ -21,6 +21,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { matchChannel, cleanName } from './lib/channel-match.mjs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
@@ -79,32 +80,10 @@ function parseM3U(text) {
   return entries;
 }
 
-/** 去除清單中的裝飾標記，讓比對更準確 */
-function cleanName(name) {
-  return name
-    .replace(/[「」\[\]【】（）()\s]/g, '')
-    .replace(/Relay|ofiii|直播|备用|備用|備援/g, '');
-}
+/** 去除清單中的裝飾標記，讓比對更準確（實作在 lib/channel-match.mjs） */
 
 // ---------- 頻道比對 ----------
-
-function matchChannel(entry, rules) {
-  const haystack = `${entry.name} ${entry.group}`;
-  const inPool = rules.include_group_keywords.some((k) => haystack.includes(k));
-  if (!inPool) return null;
-
-  const clean = cleanName(entry.name);
-  const map = rules.channel_map;
-
-  // 長關鍵字優先，避免「三立」誤吃「三立戲劇」以外、或短字吃掉長字
-  const keys = Object.keys(map).sort((a, b) => b.length - a.length);
-  for (const key of keys) {
-    if (clean.includes(key)) {
-      return { id: key, ...map[key] };
-    }
-  }
-  return null;
-}
+// 實作在 lib/channel-match.mjs（有回歸測試 scripts/test-channel-matching.mjs）
 
 // ---------- 串流探測 ----------
 

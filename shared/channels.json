@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-21T11:36:13.427Z",
+  "updated_at": "2026-11-21T15:17:43.006Z",
   "categories": [
     {
       "id": "news",
@@ -97,31 +97,6 @@
         "raw_channel_name": "龍華經典台",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/lhox",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/lhrh",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/lhxj",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/lhyp",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/lhkt",
-            "source": "yang",
-            "cors": false
-          },
-          {
             "url": "https://8.fast.hidns.vip/163189/lhjd",
             "source": "原主來源（已失效）",
             "cors": false
@@ -163,21 +138,6 @@
         "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
         "raw_channel_name": "翡翠台",
         "backup_urls": [
-          {
-            "url": "https://cdn.qd.je/163189/hlt",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/jade",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/hlfct",
-            "source": "yang",
-            "cors": false
-          },
           {
             "url": "https://cdn6.cc.cd/163189/fct",
             "source": "原主來源（已失效）",
@@ -228,43 +188,8 @@
         "raw_channel_name": "TVBJ1",
         "backup_urls": [
           {
-            "url": "https://cdn.qd.je/163189/tvbp",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/tvb1",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/tvbd",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/yzwx",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/tvbp2",
-            "source": "yang",
-            "cors": false
-          },
-          {
             "url": "https://cdn6.cc.cd/163189/j1",
             "source": "原主來源（已失效）",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/tvbxh",
-            "source": "TVAPP 直播源（3 個獨立來源）",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/tvbc",
-            "source": "TVAPP 直播源（1 個獨立來源）",
             "cors": false
           }
         ]
@@ -344,33 +269,7 @@
         "provider_label": "YanG IPTV",
         "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
         "raw_channel_name": "HOY TV",
-        "backup_urls": [
-          {
-            "url": "https://cdn.qd.je/163189/hoy78",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/hoy76",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/hoy",
-            "source": "kuliao",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/hoy78",
-            "source": "kuliao",
-            "cors": false
-          },
-          {
-            "url": "https://fast.hidns.vip/163189/hoy",
-            "source": "原主來源（已失效）",
-            "cors": false
-          }
-        ]
+        "backup_urls": []
       }
     },
     {
@@ -448,26 +347,6 @@
         "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
         "raw_channel_name": "天映經典「新加坡」",
         "backup_urls": [
-          {
-            "url": "https://cdn.qd.je/163189/typd",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/ccm2",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/jtyh",
-            "source": "yang",
-            "cors": false
-          },
-          {
-            "url": "https://cdn.qd.je/163189/typd2",
-            "source": "yang",
-            "cors": false
-          },
           {
             "url": "https://10.fast.hidns.vip/163189/ccm/video/index.php",
             "source": "原主來源（已失效）",
