@@ -107,10 +107,25 @@ export function useEmbedHealth(
 
       const record = data as Record<string, unknown>;
 
+      /**
+       * 統一的播放器狀態處理。
+       *
+       * 只有兩種狀態值得報警：
+       *   0（ENDED）—— 直播已經結束，畫面會停在最後一幀或黑畫面。
+       *   5（CUED）不做判斷：使用者在直播載入後還沒按播放時也是 5，
+       *     拿它當「失效」會誤報（實測就踩過）。
+       */
+      const onPlayerState = (state: number) => {
+        if (state === 0) {
+          markDead(null);
+          return;
+        }
+        if (PLAYING_STATES.has(state)) markPlaying();
+      };
+
       // 舊式事件：{"event":"onStateChange","info":1}
       if (record.event === 'onStateChange') {
-        const info = Number(record.info);
-        if (PLAYING_STATES.has(info)) markPlaying();
+        onPlayerState(Number(record.info));
         return;
       }
       if (record.event === 'onError') {
@@ -121,8 +136,7 @@ export function useEmbedHealth(
       // 新式事件：{"event":"infoDelivery","info":{"playerState":1,"errorCode":150}}
       if (record.event === 'infoDelivery' && record.info && typeof record.info === 'object') {
         const info = record.info as Record<string, unknown>;
-        const state = Number(info.playerState);
-        if (PLAYING_STATES.has(state)) markPlaying();
+        if (typeof info.playerState === 'number') onPlayerState(info.playerState);
         if (typeof info.errorCode === 'number' && info.errorCode > 0) {
           markDead(info.errorCode);
         }

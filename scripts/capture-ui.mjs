@@ -128,7 +128,52 @@ for (const size of SIZES) {
     mobile: size.mobile,
   });
   await cdp.send('Page.navigate', { url: `${BASE}/?t=${Date.now()}` });
-  await sleep(3200);
+
+  /**
+   * 等頁面**真的**載入完成再截圖。
+   *
+   * ⚠️ 固定 sleep 不可靠 —— 頻道資料是 client-side fetch，
+   * 慢一點就會拍到「載入中…」的空白畫面（實測拍到 6 張全空白）。
+   *
+   * 判斷依據：頁首的「頻道 ▾」按鈕出現 = 資料已載入、React 已 render。
+   */
+  let ready = false;
+  for (let i = 0; i < 40; i++) {
+    await sleep(500);
+    const r = await cdp.evalJs(`(() => {
+      const btn = document.querySelector('header button[aria-label="選擇頻道"]');
+      const loading = document.body.innerText.includes('載入中');
+      return JSON.stringify({ ok: !!btn && !loading });
+    })()`);
+    if (r.error) {
+      console.log('     evalJs 錯誤:', r.error);
+      break;
+    }
+    if (r.value && String(r.value).includes('"ok":true')) {
+      ready = true;
+      break;
+    }
+    if (i === 5) {
+      const dbg = await cdp.evalJs(`(async () => {
+        let fetchResult = 'pending';
+        try {
+          const r = await fetch('/channels.json', { cache: 'no-store' });
+          const t = await r.text();
+          fetchResult = r.status + ' ' + t.length + ' bytes';
+        } catch (e) { fetchResult = 'ERROR ' + e.message; }
+        return JSON.stringify({
+          url: location.href,
+          text: document.body ? document.body.innerText.slice(0,60) : 'no-body',
+          ready: document.readyState,
+          vis: document.visibilityState,
+          fetchResult,
+        });
+      })()`);
+      console.log('     除錯:', dbg.value);
+    }
+  }
+  if (!ready) console.log(`  ⚠️ ${size.name} 寬度：頁面未在時限內就緒，仍繼續截圖`);
+  await sleep(600);
 
   // ── 1. 抽屜收起 ──
   const closed = await shot(cdp, join(OUT, `ui-${size.name}-closed.png`));
@@ -172,6 +217,7 @@ for (const size of SIZES) {
   const state = await cdp.evalJs(`(() => {
     const a = document.querySelector('aside[aria-label="頻道選擇"]');
     const v = document.querySelector('video');
+    if (!a || !v) return 'no-elements';
     const vr = v.getBoundingClientRect();
     const ar = a.getBoundingClientRect();
     return JSON.stringify({
