@@ -1,0 +1,187 @@
+#!/usr/bin/env node
+/**
+ * capture-ui.mjs —— 產生 1440 與 390 寬度的介面截圖。
+ *
+ * 兩種寬度各拍三張：
+ *   · closed —— 抽屜收起的觀看畫面
+ *   · half  —— 抽屜半屏（預設 45vh）
+ *   · full  —— 抽屜全屏
+ *
+ * 用法：node scripts/capture-ui.mjs [--base http://localhost:3211] [--out <dir>]
+ */
+import { spawn } from 'node:child_process';
+import { mkdtempSync, rmSync, mkdirSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+const arg = (name, dflt) => {
+  const i = process.argv.indexOf(`--${name}`);
+  return i !== -1 ? process.argv[i + 1] : dflt;
+};
+
+const BASE = arg('base', 'http://localhost:3211');
+const OUT = arg('out', '/Users/andy/.hermes/cache/scratch');
+const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+const PORT = 9361;
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+const SIZES = [
+  { name: '1440', width: 1440, height: 900, mobile: false },
+  { name: '390', width: 390, height: 844, mobile: true },
+];
+
+const profile = mkdtempSync(join(tmpdir(), 'capture-ui-'));
+const chrome = spawn(
+  CHROME,
+  [
+    `--remote-debugging-port=${PORT}`,
+    `--user-data-dir=${profile}`,
+    '--no-first-run',
+    '--no-default-browser-check',
+    '--headless=new',
+    '--disable-gpu',
+    'about:blank',
+  ],
+  { stdio: 'ignore' },
+);
+
+process.on('exit', () => {
+  try {
+    chrome.kill('SIGKILL');
+    rmSync(profile, { recursive: true, force: true });
+  } catch {
+    /* ignore */
+  }
+});
+
+async function fetchJson(url, tries = 40) {
+  for (let i = 0; i < tries; i++) {
+    try {
+      const r = await fetch(url);
+      if (r.ok) return await r.json();
+    } catch {
+      /* retry */
+    }
+    await sleep(300);
+  }
+  throw new Error(`無法連到 ${url}`);
+}
+
+async function connect() {
+  const targets = await fetchJson(`http://127.0.0.1:${PORT}/json`);
+  const page = targets.find((t) => t.type === 'page');
+  const { WebSocket } = await import('ws');
+  const ws = new WebSocket(page.webSocketDebuggerUrl, {
+    maxPayload: 256 * 1024 * 1024,
+  });
+  await new Promise((res, rej) => {
+    ws.once('open', res);
+    ws.once('error', rej);
+  });
+  let id = 0;
+  const pending = new Map();
+  ws.on('message', (raw) => {
+    const msg = JSON.parse(raw.toString());
+    if (msg.id && pending.has(msg.id)) {
+      pending.get(msg.id)(msg);
+      pending.delete(msg.id);
+    }
+  });
+  const send = (method, params = {}) =>
+    new Promise((resolve, reject) => {
+      const mid = ++id;
+      pending.set(mid, (m) =>
+        m.error ? reject(new Error(m.error.message)) : resolve(m.result),
+      );
+      ws.send(JSON.stringify({ id: mid, method, params }));
+    });
+  const evalJs = async (expr) => {
+    const r = await send('Runtime.evaluate', {
+      expression: expr,
+      returnByValue: true,
+      awaitPromise: true,
+    });
+    if (r.exceptionDetails) return { error: r.exceptionDetails.text };
+    return { value: r.result?.value };
+  };
+  return { send, evalJs };
+}
+
+async function shot(cdp, file) {
+  const { data } = await cdp.send('Page.captureScreenshot', { format: 'png' });
+  writeFileSync(file, Buffer.from(data, 'base64'));
+  return file;
+}
+
+const cdp = await connect();
+await cdp.send('Page.enable');
+await cdp.send('Runtime.enable');
+mkdirSync(OUT, { recursive: true });
+
+console.log('════ 介面截圖 ════\n');
+
+for (const size of SIZES) {
+  await cdp.send('Emulation.setDeviceMetricsOverride', {
+    width: size.width,
+    height: size.height,
+    deviceScaleFactor: 1,
+    mobile: size.mobile,
+  });
+  await cdp.send('Page.navigate', { url: `${BASE}/?t=${Date.now()}` });
+  await sleep(3200);
+
+  // ── 1. 抽屜收起 ──
+  const closed = await shot(cdp, join(OUT, `ui-${size.name}-closed.png`));
+  console.log(`  ✓ ${closed}`);
+
+  // ── 2. 半屏 ──
+  await cdp.evalJs(`(() => {
+    const b = document.querySelector('header button[aria-label="選擇頻道"]');
+    if (b) b.click();
+  })()`);
+  await sleep(900);
+  const half = await shot(cdp, join(OUT, `ui-${size.name}-half.png`));
+  console.log(`  ✓ ${half}`);
+
+  // ── 3. 全屏（把高度設到最大）──
+  await cdp.evalJs(`(() => {
+    const a = document.querySelector('aside[aria-label="頻道選擇"]');
+    if (!a) return;
+    const grip = a.querySelector('button[aria-label="調整抽屜高度"]');
+    if (grip) {
+      // 用 pointer 事件模擬拖到最上方
+      const r = grip.getBoundingClientRect();
+      const x = r.left + r.width / 2;
+      const y = r.top + r.height / 2;
+      const opts = (cx, cy, type) => ({
+        pointerId: 1, pointerType: 'mouse', isPrimary: true,
+        clientX: cx, clientY: cy, button: 0, buttons: type === 'mouseReleased' ? 0 : 1,
+      });
+      grip.dispatchEvent(new PointerEvent('pointerdown', opts(x, y, 'mousePressed')));
+      for (let i = 1; i <= 10; i++) {
+        grip.dispatchEvent(new PointerEvent('pointermove', opts(x, y - i * 40, 'mouseMoved')));
+      }
+      grip.dispatchEvent(new PointerEvent('pointerup', opts(x, y - 400, 'mouseReleased')));
+    }
+  })()`);
+  await sleep(900);
+  const full = await shot(cdp, join(OUT, `ui-${size.name}-full.png`));
+  console.log(`  ✓ ${full}`);
+
+  // 順便記錄狀態
+  const state = await cdp.evalJs(`(() => {
+    const a = document.querySelector('aside[aria-label="頻道選擇"]');
+    const v = document.querySelector('video');
+    const vr = v.getBoundingClientRect();
+    const ar = a.getBoundingClientRect();
+    return JSON.stringify({
+      drawerPct: Math.round(ar.height / innerHeight * 100),
+      videoVisible: vr.bottom <= ar.top + 1,
+      videoSize: Math.round(vr.width) + 'x' + Math.round(vr.height),
+    });
+  })()`);
+  console.log(`     狀態：${state.value}`);
+}
+
+console.log('\n完成');
+process.exit(0);

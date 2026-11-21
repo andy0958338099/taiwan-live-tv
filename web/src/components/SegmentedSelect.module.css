@@ -1,0 +1,155 @@
+/* ============================================================
+   SegmentedSelect —— 「地區」「類型」的分段式下拉
+   ------------------------------------------------------------
+   篩選列固定單行，讓下方能顯示更多頻道卡片。
+   ============================================================ */
+
+.wrap {
+  position: relative;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* 觸發按鈕 —— 看起來像 segmented control 的一格 */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-secondary, #a8a8b3);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.trigger:hover,
+.triggerOpen {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--accent, #4f9cff);
+  color: var(--text-primary, #fff);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--accent, #4f9cff);
+  outline-offset: 2px;
+}
+
+/* 標籤（「地區」）—— 較淡，屬於說明文字 */
+.triggerLabel {
+  flex: 0 0 auto;
+  font-size: 0.76rem;
+  color: var(--text-muted, #6e6e7a);
+}
+
+.triggerOpen .triggerLabel {
+  color: var(--text-secondary, #a8a8b3);
+}
+
+/* 目前選取值 —— 主要資訊 */
+.triggerValue {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chevron {
+  flex: 0 0 auto;
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+/* 下拉選單 */
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 190px;
+  max-width: 260px;
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  background: #1b1d25;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.6);
+  animation: menuIn 0.14s ease;
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 11px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary, #a8a8b3);
+  font-size: 0.86rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.09);
+  color: var(--text-primary, #fff);
+}
+
+.itemActive {
+  background: rgba(79, 156, 255, 0.18);
+  color: var(--accent, #4f9cff);
+  font-weight: 600;
+}
+
+.itemName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 頻道數量 —— 保留原本 chip 上的資訊 */
+.itemCount {
+  flex: 0 0 auto;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.68rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary, #a8a8b3);
+}
+
+.itemActive .itemCount {
+  background: rgba(79, 156, 255, 0.22);
+  color: var(--accent, #4f9cff);
+}

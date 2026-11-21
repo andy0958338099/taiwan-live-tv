@@ -141,6 +141,16 @@ export function ChannelRail({
               <button
                 type="button"
                 data-channel-id={channel.channel_id}
+                /**
+                 * ⭐ 穩定識別碼。
+                 *
+                 * CSS module 的類別名是編譯後的雜湊值，改名就會變，
+                 * 測試腳本用 `[class*="..."]` 匹配會在改名後失效。
+                 * `data-channel-name` 不受 CSS 改名影響，
+                 * 而且與抽屜卡片使用同一個屬性語意。
+                 */
+                data-channel-name={channel.channel_name}
+                data-card-kind="rail"
                 className={`${styles.item} ${isActive ? styles.itemActive : ''}`}
                 onClick={() => onSelect(channel)}
                 aria-pressed={isActive}

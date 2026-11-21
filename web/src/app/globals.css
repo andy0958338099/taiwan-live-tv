@@ -59,3 +59,40 @@ a {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ============================================================
+   Netlify 徽章 —— 不要浮在內容上
+   ------------------------------------------------------------
+   Netlify 平台會注入一個 `<iframe data-nl-ready="1">`，
+   預設 `position: fixed; bottom: 0; right: 0`，會壓在頁尾與
+   抽屜的內容上。
+
+   處理方式：把它推到頁面底部**內容之下**並降低透明度 ——
+   不移除（那是平台的 attribution），但也不再干擾閱讀。
+   ============================================================ */
+
+iframe[data-nl-ready='1'] {
+  position: fixed !important;
+  bottom: 0 !important;
+  right: 0 !important;
+  z-index: 1 !important;
+  opacity: 0.35 !important;
+  transition: opacity 0.2s ease !important;
+  pointer-events: auto;
+}
+
+iframe[data-nl-ready='1']:hover {
+  opacity: 0.85 !important;
+}
+
+/*
+ * 頁尾留出安全邊距，徽章不會壓到文字。
+ *
+ * 徽章是 202×64px 的框（實際可見部分較小），
+ * 頁尾右下角留 64px 的空間就夠了。
+ */
+@media (min-width: 1024px) {
+  footer {
+    padding-bottom: 56px !important;
+  }
+}

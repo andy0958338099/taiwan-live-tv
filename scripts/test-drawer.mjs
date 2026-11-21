@@ -129,24 +129,37 @@ async function realClick(cdp, selectorExpr, label) {
   return box.value.text;
 }
 
-/** 抽屜狀態 */
+/**
+ * 抽屜狀態。
+ *
+ * ⚠️ 介面在 2026-11-22 重設計成「常駐底部的可拖曳抽屜」，
+ * 這裡的判斷方式要跟著改：
+ *
+ * · 舊版是 `transform: translateY(100%)` 滑出畫面 → 用「top 是否 >= 視窗高」判斷隱藏
+ * · 新版是 `height: 0`（flex 子元素 collapses）→ 用「高度是否 < 5px」判斷隱藏
+ *   （translateY 的判斷仍然成立，但高度判斷更直接）
+ *
+ * · 舊版的浮動把手會在抽屜開啟時淡出（class 含 'Hidden'），
+ *   新版沒有浮動把手 —— 入口是頁首的「頻道 ▾」按鈕，永遠可見。
+ *   所以改成檢查按鈕的 `aria-expanded` 是否正確反映狀態。
+ */
 const drawerState = (cdp) =>
   cdp.evalJs(`(() => {
     const aside = document.querySelector('aside[aria-label="頻道選擇"]');
     if (!aside) return { none: true };
     const r = aside.getBoundingClientRect();
     const vw = window.innerWidth, vh = window.innerHeight;
-    // 抽屜以 translate 移到畫面外。判斷方式：
-    //   下方抽屜（手機）→ 完全跑到視窗下方之外 = 隱藏
-    //   右側抽屜（桌機）→ 完全跑到視窗右方之外 = 隱藏
     const offBottom = r.top >= vh - 5;
     const offRight  = r.left >= vw - 5;
     const handle = document.querySelector('button[aria-label="選擇頻道"]');
-    const channelCards = aside.querySelectorAll('button[class*="drawerCard"]');
+    const channelCards = aside.querySelectorAll('button[data-channel-name]');
     return {
-      hidden: offBottom || offRight,
+      hidden: offBottom || offRight || r.height < 5,
+      height: Math.round(r.height),
       rect: { top: Math.round(r.top), left: Math.round(r.left), w: Math.round(r.width) },
       handleVisible: handle ? !handle.className.includes('Hidden') : false,
+      // 入口按鈕的 aria-expanded 要反映抽屜狀態
+      handleExpanded: handle ? handle.getAttribute('aria-expanded') : null,
       channelCards: channelCards.length,
       // 頁面上「不屬於抽屜」的頻道卡片數量（應該是 0 —— 全部收在抽屜裡）
       //
@@ -189,44 +202,45 @@ async function main() {
   // ── 步驟 1：預設應為隱藏 ──
   console.log('[1] 預設狀態（觀看中）');
   const s1 = await drawerState(cdp);
-  console.log(`    抽屜隱藏：${s1.value?.hidden ? '是 ✓' : '否 ✗'}  (rect ${JSON.stringify(s1.value?.rect)})`);
-  console.log(`    把手可見：${s1.value?.handleVisible ? '是 ✓' : '否 ✗'}`);
+  console.log(`    抽屜隱藏：${s1.value?.hidden ? '是 ✓' : '否 ✗'}  (高度 ${s1.value?.height}px)`);
+  console.log(`    入口按鈕可見：${s1.value?.handleVisible ? '是 ✓' : '否 ✗'}`);
+  console.log(`    入口 aria-expanded：${s1.value?.handleExpanded}`);
   console.log(`    抽屜內頻道數：${s1.value?.channelCards ?? '?'}`);
   console.log(
     `    抽屜外的頻道卡片：${s1.value?.cardsOutsideDrawer ?? '?'}  ${s1.value?.cardsOutsideDrawer === 0 ? '✓ 全部收在抽屜裡' : '✗'}`,
   );
 
-  // ── 步驟 2：點把手展開 ──
-  console.log('\n[2] 點擊「選擇頻道」把手');
+  // ── 步驟 2：點入口展開 ──
+  console.log('\n[2] 點擊頁首「頻道 ▾」');
   const handleText = await realClick(cdp, `document.querySelector('button[aria-label="選擇頻道"]')`, 'handle');
   console.log(`    點擊：${handleText}`);
   await sleep(900);
   const s2 = await drawerState(cdp);
-  console.log(`    抽屜隱藏：${s2.value?.hidden ? '是 ✗' : '否 ✓（已滑入）'}  (rect ${JSON.stringify(s2.value?.rect)})`);
-  console.log(`    把手可見：${s2.value?.handleVisible ? '是' : '否 ✓（已淡出）'}`);
+  console.log(`    抽屜隱藏：${s2.value?.hidden ? '是 ✗' : '否 ✓（已展開）'}  (高度 ${s2.value?.height}px)`);
+  console.log(`    入口 aria-expanded：${s2.value?.handleExpanded}`);
   console.log(`    抽屜內頻道數：${s2.value?.channelCards ?? '?'}`);
 
   // ── 步驟 3：選頻道後自動收起 ──
   console.log('\n[3] 點選抽屜內的一個頻道');
   const picked = await realClick(
     cdp,
-    `document.querySelector('aside[aria-label="頻道選擇"] button[class*="drawerCard"]')`,
+    `document.querySelector('aside[aria-label="頻道選擇"] button[data-channel-name]')`,
     'channel',
   );
   console.log(`    點選：${picked}`);
   await sleep(1200);
   const s3 = await drawerState(cdp);
-  console.log(`    抽屜隱藏：${s3.value?.hidden ? '是 ✓（已自動收起）' : '否 ✗'}  (rect ${JSON.stringify(s3.value?.rect)})`);
-  console.log(`    把手可見：${s3.value?.handleVisible ? '是 ✓' : '否 ✗'}`);
+  console.log(`    抽屜隱藏：${s3.value?.hidden ? '是 ✓（已自動收起）' : '否 ✗'}  (高度 ${s3.value?.height}px)`);
+  console.log(`    入口 aria-expanded：${s3.value?.handleExpanded}`);
 
   const pass =
     s1.value?.hidden &&
     s1.value?.handleVisible &&
     s1.value?.cardsOutsideDrawer === 0 &&
     !s2.value?.hidden &&
-    !s2.value?.handleVisible &&
+    s2.value?.handleExpanded === 'true' &&
     s3.value?.hidden &&
-    s3.value?.handleVisible;
+    s3.value?.handleExpanded === 'false';
 
   console.log('\n判定：');
   console.log(`  ${pass ? '✓ 全部通過' : '✗ 有項目未通過'}`);

@@ -2,10 +2,29 @@
    播放器元件樣式（CSS Modules）
    ============================================================ */
 
+/* ============================================================
+   播放器外殼
+   ------------------------------------------------------------
+   高度是**算出來的**，不是寫死的。
+
+   `--player-max-h` = 視窗高度 − 抽屜高度 − 頁首與選單的空間。
+
+   這是「任何抽屜高度下影片都還看得到」的機制：
+   抽屜拉得越高，播放器就按比例縮得越小，但**永遠不會被蓋掉**。
+
+   ⚠️ **寬度也要跟著算**，不能只靠 `max-height`。
+   只寫 `max-height` 的話，`width: 100%` 是確定值會勝過 `aspect-ratio`，
+   外殼變成非 16:9（例如實測 724×263 = 2.75），影片被 `object-fit: contain`
+   塞進去左右留黑邊。
+   正確做法：寬度取 `min(100%, max-h × 16/9)` —— 兩者一起縮，比例不變。
+   ============================================================ */
+
 .playerShell {
   position: relative;
-  width: 100%;
+  /* 寬度：滿版，但受高度上限反向約束 */
+  width: min(100%, calc(var(--player-max-h, 100dvh) * 16 / 9));
   aspect-ratio: 16 / 9;
+  margin-inline: auto;
   background: #000;
   border-radius: var(--radius);
   overflow: hidden;
@@ -193,5 +212,74 @@
   .spinner {
     width: 28px;
     height: 28px;
+  }
+}
+
+
+/* ── 官方嵌入播放器「可能失效」提示 ──────────────────────────
+   貼在播放器底部，不遮住主要畫面；只在偵測到錯誤或逾時時出現。
+   YouTube 直播 ID 會輪替，舊 ID 過期後 iframe 一片黑而網頁無感，
+   所以必須給使用者「開官方頁確認」與「重新載入」兩個出口。 */
+.embedWarning {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(18, 18, 18, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+}
+
+.embedWarningText {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: #f3f4f6;
+}
+
+.embedWarningActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.embedWarningLink {
+  font-size: 0.8125rem;
+  color: #93c5fd;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.embedWarningLink:hover {
+  text-decoration: underline;
+}
+
+.embedWarningBtn {
+  padding: 4px 10px;
+  font-size: 0.8125rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.16);
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.embedWarningBtn:hover {
+  background: rgba(255, 255, 255, 0.26);
+}
+
+@media (max-width: 520px) {
+  .embedWarning {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
 }

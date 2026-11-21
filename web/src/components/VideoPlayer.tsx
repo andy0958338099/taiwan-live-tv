@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PlayerStatus } from '../lib/useHlsPlayer';
+import { useEmbedHealth } from '../lib/useEmbedHealth';
 import styles from './VideoPlayer.module.css';
 
 interface VideoPlayerProps {
@@ -36,6 +37,13 @@ interface VideoPlayerProps {
   hasChannel?: boolean;
   /** 開啟頻道選擇抽屜 */
   onOpenPicker?: () => void;
+  /**
+   * 該頻道的官方頁面網址。
+   *
+   * iframe 模式偵測到「可能失效」時，這是唯一能讓使用者自救的出口：
+   * 直接開官方直播頁確認是不是真的斷了。
+   */
+  officialUrl?: string | null;
 }
 
 /**
@@ -78,9 +86,32 @@ export function VideoPlayer({
   hasChannel = true,
   /** 開啟頻道選擇抽屜（提示中的按鈕） */
   onOpenPicker,
+  officialUrl = null,
 }: VideoPlayerProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const [localIframeKey, setLocalIframeKey] = useState(0);
+
+  /**
+   * iframe 元素同時要做兩件事：
+   *  1. 交給外層做 litv handshake / YouTube 取消靜音（onIframeMount）
+   *  2. 留在這裡做健康狀態偵測（useEmbedHealth）
+   *
+   * 用 state 保存是因為 hook 需要「元素真的掛上去了」才會訂閱事件；
+   * 只在 ref 裡存的話不會觸發重繪，訂閱永遠不會發生。
+   */
+  const [iframeEl, setIframeEl] = useState<HTMLIFrameElement | null>(null);
+  const handleIframeRef = useCallback(
+    (el: HTMLIFrameElement | null) => {
+      setIframeEl(el);
+      onIframeMount?.(el);
+    },
+    [onIframeMount],
+  );
+
+  const { health: embedHealth, errorCode: embedErrorCode } = useEmbedHealth(
+    iframeEl,
+    embedUrl ?? null,
+  );
 
   // 自動播放被政策阻擋時，把焦點移到遮罩讓使用者能直接按 Enter
   useEffect(() => {
@@ -104,7 +135,7 @@ export function VideoPlayer({
       <div className={styles.playerShell}>
         <iframe
           key={`${iframeKey}-${localIframeKey}`}
-          ref={onIframeMount}
+          ref={handleIframeRef}
           className={styles.playerIframe}
           src={embedUrl}
           title={`${channelName} 直播畫面`}
@@ -112,6 +143,42 @@ export function VideoPlayer({
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
         />
+        {/*
+         * 官方嵌入播放器「可能失效」提示。
+         *
+         * 這些頻道沒有 HLS 源，只能嵌官方播放器；而 YouTube 直播 ID 會輪替，
+         * 舊 ID 過期後 iframe 就是一片黑，網頁本身完全不知道。
+         * 這裡在偵測到明確錯誤（onError 代碼）或逾時無回應時，把「可能失效」
+         * 顯示出來，並提供兩個出口：開官方頁確認、重新載入播放器。
+         */}
+        {(embedHealth === 'dead' || embedHealth === 'suspect') && status !== 'error' && (
+          <div className={styles.embedWarning} role="status" aria-live="polite">
+            <p className={styles.embedWarningText}>
+              {embedHealth === 'dead'
+                ? `官方直播可能已失效${embedErrorCode ? `（代碼 ${embedErrorCode}）` : ''}`
+                : '官方播放器沒有回應，可能已失效'}
+            </p>
+            <div className={styles.embedWarningActions}>
+              {officialUrl && (
+                <a
+                  className={styles.embedWarningLink}
+                  href={officialUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  開啟官方直播頁 ↗
+                </a>
+              )}
+              <button
+                type="button"
+                className={styles.embedWarningBtn}
+                onClick={handleRetry}
+              >
+                重新載入
+              </button>
+            </div>
+          </div>
+        )}
         {/*
          * iframe 模式的靜音按鈕也一併移除（理由同 HLS 模式）。
          */}
@@ -143,7 +210,16 @@ export function VideoPlayer({
         ref={onVideoMount}
         className={styles.playerVideo}
         playsInline
-        controls
+        /*
+         * ⚠️ `controls` 只在**有選中頻道**時才開啟。
+         *
+         * 沒有頻道時，`<video>` 沒有來源，瀏覽器的原生控制條會顯示
+         * 一整排「0:00 / ⏸ / ⛶」之類的**禁用控制項**——
+         * 看起來像壞掉或卡住，而不是「還沒選頻道」。
+         *
+         * 所以未選頻道時整條控制列都不渲染，只留中間的引導提示。
+         */
+        controls={hasChannel}
         preload="metadata"
         aria-label={`${channelName} 直播畫面`}
       />
