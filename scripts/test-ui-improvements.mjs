@@ -719,23 +719,87 @@ async function main() {
     if (!b) return { none: true };
     const cs = getComputedStyle(b);
     const r = b.getBoundingClientRect();
-    // 找有沒有內容被壓到（徽章範圍內的非 footer 元素）
-    const overlap = [...document.querySelectorAll('main *')].some(el => {
-      if (el.closest('footer')) return false;
-      if (el === b) return false;
-      const er = el.getBoundingClientRect();
-      if (er.width === 0 || er.height === 0) return false;
-      return !(er.right < r.left || er.left > r.right ||
-               er.bottom < r.top || er.top > r.bottom);
-    });
+    const footer = document.querySelector('footer');
+
+    /*
+     * 找出被徽章壓到的「實際內容」。
+     *
+     * ⚠️ 三個容易誤判的地方：
+     *
+     * 1. 不能直接掃 main * 然後只排除 footer 的子孫 ——
+     *    那會把 footer 的**祖先容器**（.content）也算進來，
+     *    而 .content 依法就是「包含 footer」的，徽章必然在它的矩形內。
+     *    那是幾何上的必然，不是真的蓋到東西。
+     *
+     * 2. 必須看「**可見**的重疊」。
+     *    抽屜是 position: fixed 疊在內容區之上，
+     *    它的卡片矩形會延伸到視窗外，純幾何上會和頁尾的徽章相交，
+     *    但徽章根本不在畫面上，抽屜也畫在徽章之上 —— 不是遮住。
+     *
+     * 3. 邊界剛好相接不算蓋住（徽章緊貼著「現在在播」區塊）。
+     *    所以用 1px 容差。
+     */
+    const EPS = 1;
+    /** 兩個矩形在「畫面上」是否真的互相蓋住 */
+    const coversVisible = (er) => {
+      const ix = Math.min(er.right, r.right) - Math.max(er.left, r.left);
+      const iy = Math.min(er.bottom, r.bottom) - Math.max(er.top, r.top);
+      if (ix <= EPS || iy <= EPS) return false;            // 沒相交 / 只相接
+      // 交集還必須落在視窗內，否則使用者根本看不到
+      const vx = Math.min(er.right, r.right, innerWidth) - Math.max(er.left, r.left, 0);
+      const vy = Math.min(er.bottom, r.bottom, innerHeight) - Math.max(er.top, r.top, 0);
+      return vx > EPS && vy > EPS;
+    };
+
+    // (a) 徽章不可壓到**頁尾自己的文字**
+    const footerTextHit = [...footer.querySelectorAll('p, a')].filter((el) =>
+      coversVisible(el.getBoundingClientRect()),
+    ).map((el) => ({
+      tag: el.tagName,
+      text: (el.textContent || '').trim().slice(0, 30),
+    }));
+
+    // (b) 徽章不可壓到頁尾以外的內容
+    const outsideHit = [...document.querySelectorAll('main *')]
+      .filter((el) => {
+        if (el === b) return false;
+        if (el.closest('footer')) return false;           // 頁尾裡的東西
+        if (footer && el.contains(footer)) return false;  // 頁尾的祖先容器
+        const hasOwnText = [...el.childNodes]
+          .some((n) => n.nodeType === 3 && n.textContent.trim().length > 0);
+        const isMedia = /^(IMG|VIDEO|CANVAS|SVG|IFRAME|BUTTON|INPUT)$/.test(el.tagName);
+        if (!hasOwnText && !isMedia) return false;         // 純容器不算
+        const er = el.getBoundingClientRect();
+        if (er.width === 0 || er.height === 0) return false;
+        return coversVisible(er);
+      })
+      .map((el) => {
+        const q = el.getBoundingClientRect();
+        return {
+          tag: el.tagName,
+          cls: String(el.className).slice(0, 40),
+          rect: [
+            Math.round(q.left), Math.round(q.top),
+            Math.round(q.width), Math.round(q.height),
+          ],
+          text: (el.textContent || '').trim().slice(0, 30),
+        };
+      });
+
+    const overlap = footerTextHit.length > 0 || outsideHit.length > 0;
+
     return { pos: cs.position, z: cs.zIndex, opacity: cs.opacity,
              overlap, bottom: Math.round(r.bottom), vh: innerHeight,
              inFooter: !!b.closest('footer'),
+             rect: [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)],
+             footerTextHit: footerTextHit,
+             outsideHit: outsideHit,
              parent: b.parentElement ? b.parentElement.tagName : null };
   })()`);
   if (badge.value?.none) {
     check('Netlify 徽章', true, '本機站沒有注入徽章（線上才會有）');
   } else {
+    if (badge.error) console.log('     evalJs 錯誤:', badge.error);
     check(
       '徽章已搬進頁尾（不再浮在內容上）',
       badge.value?.inFooter === true && badge.value?.pos === 'absolute',
@@ -744,7 +808,7 @@ async function main() {
     check(
       '徽章不蓋住任何內容',
       badge.value?.overlap === false,
-      `opacity=${badge.value?.opacity}，與內容重疊=${badge.value?.overlap}`,
+      `rect=${JSON.stringify(badge.value?.rect)}，頁尾文字=${JSON.stringify(badge.value?.footerTextHit)}，其他內容=${JSON.stringify(badge.value?.outsideHit)}`,
     );
   }
 
