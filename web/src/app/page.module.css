@@ -10,22 +10,26 @@
 /* 浮動的「選擇頻道」把手 —— 觀看時唯一可見的元素 */
 .drawerHandle {
   position: fixed;
-  left: 50%;
-  bottom: 18px;
-  transform: translateX(-50%);
+  /* ⚠️ 位置很重要：
+   *   原本放在視窗底部中央（bottom: 18px），剛好**壓在影片播放器的
+   *   進度條與控制條上** —— 使用者以為那是播放器的一部分，找不到入口。
+   *   現在改放在**右上方**，緊鄰搜尋框，遠離播放器控制區。 */
+  right: 20px;
+  top: 18px;
   z-index: 40;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 20px;
-  border: 1px solid var(--border, rgba(255, 255, 255, 0.18));
-  border-radius: 999px;
-  background: rgba(18, 20, 26, 0.92);
+  padding: 10px 18px;
+  border: 1px solid var(--accent, #4f9cff);
+  border-radius: 10px;
+  background: rgba(18, 20, 26, 0.95);
   backdrop-filter: blur(8px);
   color: var(--text-primary, #fff);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
   transition:
     transform 0.18s ease,
     opacity 0.18s ease;
@@ -33,15 +37,48 @@
 
 .drawerHandle:hover,
 .drawerHandle:focus-visible {
-  transform: translateX(-50%) translateY(-2px);
-  border-color: var(--accent, #4f9cff);
+  transform: translateY(-2px);
+  background: var(--accent, #4f9cff);
+  color: #0b0b0f;
 }
 
 /* 抽屜展開時，把手淡出（避免重疊） */
 .drawerHandleHidden {
   opacity: 0;
   pointer-events: none;
-  transform: translateX(-50%) translateY(12px);
+  transform: translateY(-8px);
+}
+
+/* 未選頻道時，播放器中央的「選擇頻道」提示 */
+.pickerHint {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 5;
+  background: rgba(11, 11, 15, 0.82);
+  pointer-events: none;
+}
+
+.pickerHintIcon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.pickerHintTitle {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary, #fff);
+}
+
+.pickerHintText {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted, #9aa0aa);
 }
 
 /* 背景遮罩 */

@@ -95,6 +95,38 @@ function decodeTarget(encoded: string): string | null {
 const PROXY_SECRET =
   process.env.PROXY_SECRET || randomBytes(32).toString('hex');
 
+/**
+ * ⏱️ 上游下載的時間預算。
+ *
+ * ## 為什麼需要這個
+ *
+ * 實測（2026-11-21 線上）：央視來源的 segment 高達 **5.4 MB**，
+ * 而 Netlify edge 到該來源的實測速度只有 **38–100 KB/s**
+ * → 單一個 segment 需要 **90–140 秒**。
+ *
+ * 但 Netlify 的 function／CDN origin 會在 **約 30.4 秒**切斷回應。
+ * 結果是：
+ *   · 客戶端拿到 `HTTP 200` + **被截斷的 segment**（5.4 MB 只到了 1.2–1.7 MB）
+ *   · 這個回應帶著 `Cache-Control: public, max-age=300`
+ *     → **被截斷的內容被 CDN 快取 5 分鐘**，所有使用者都拿到壞的 segment
+ *
+ * 這是比「播不出來」更糟的情況：壞的內容會被散播出去。
+ *
+ * ## 修法
+ *
+ * 1. `UPSTREAM_TIMEOUT_MS` —— 給上游 fetch 一個硬性時間上限。
+ *    目前**完全沒有** timeout：一個掛住的上游會佔住 function 直到平台殺掉它。
+ * 2. `MAX_PROJECTED_TRANSFER_MS` —— 讀到第一個 chunk 後就能估算
+ *    「照這個速度，整個 segment 要多久」。若估算超過預算，
+ *    **立刻放棄**並回 `502` + `no-store`：
+ *    · 客戶端馬上知道這個來源不行 → hls.js 快速 failover 到備援
+ *    · 因為還沒送出任何 body，**CDN 不會快取到壞內容**
+ *
+ * ⚠️ 預算必須小於平台的 30 秒切斷點，否則「快取到壞內容」的問題會先發生。
+ */
+const UPSTREAM_TIMEOUT_MS = 25_000;
+const MAX_PROJECTED_TRANSFER_MS = 22_000;
+
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36';
 
@@ -319,6 +351,17 @@ export async function GET(
     // 導致 hls.js 的位元組範圍計算錯亂、segment 被判定損壞而無法播放。
     const rangeHeader = request.headers.get('range');
 
+    // 開始計時 —— 用來估算上游下載速度（見下方「上游速度檢查」）
+    const startedAt = Date.now();
+
+    // ⚠️ **必須有 timeout**。
+    //
+    // 沒有 timeout 時，一個掛住或極慢的上游會佔住 function
+    // 直到平台在 ~30 秒強制中斷 —— 那時已經送出了 HTTP 200 + 部分內容，
+    // 而這份**被截斷的內容會被 CDN 快取 5 分鐘**（見 UPSTREAM_TIMEOUT_MS 說明）。
+    //
+    // 有了 timeout：上游太慢時 function 會自己先放棄，
+    // 走下面的「回 502 + 不快取」路徑 → 壞內容不會進入 CDN。
     const upstream = await fetch(target, {
       headers: {
         'User-Agent': UA,
@@ -327,6 +370,7 @@ export async function GET(
       },
       redirect: 'follow',
       cache: 'no-store',
+      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
     });
 
     if (!upstream.ok && upstream.status !== 206) {
@@ -370,6 +414,60 @@ export async function GET(
     const firstChunk = first.value ?? new Uint8Array(0);
     const head = new TextDecoder().decode(firstChunk.slice(0, 800));
     const isManifest = head.trimStart().startsWith('#EXTM3U');
+
+    /**
+     * ⏱️ **上游速度檢查**（在送出任何 body 之前）。
+     *
+     * 實測（2026-11-21 線上）：央視來源的 segment 是 5.4 MB，
+     * 從 Netlify edge 下載只有 38–100 KB/s → 需要 90–140 秒。
+     * 平台在 ~30.4 秒就會切斷回應，於是客戶端拿到
+     * `HTTP 200` + **被截斷的 segment**，而且因為帶著
+     * `Cache-Control: public, max-age=300`，**壞內容被 CDN 快取 5 分鐘**。
+     *
+     * 這裡在第一個 chunk 讀到之後就估算：
+     * 「照目前速度，整個 segment 要多久？」
+     * 若超過預算 → **立刻回 502 且不快取**：
+     *   · 客戶端馬上知道這個來源不可用 → hls.js 快速 failover
+     *   · 沒有送出任何 body → CDN 不會快取到壞內容
+     *
+     * 估算方式：用上游的 `Content-Length`（總長）÷ 第一個 chunk 的下載速度。
+     * 沒有 Content-Length 時（chunked）就無法估算，此時靠
+     * `UPSTREAM_TIMEOUT_MS` 的硬性 timeout 兜底。
+     */
+    const upstreamLengthHeader = upstream.headers.get('content-length');
+    const upstreamTotalBytes = upstreamLengthHeader
+      ? Number(upstreamLengthHeader)
+      : null;
+
+    if (
+      !isManifest &&
+      upstreamTotalBytes !== null &&
+      Number.isFinite(upstreamTotalBytes) &&
+      upstreamTotalBytes > 0
+    ) {
+      // 第一個 chunk 的下載速度（bytes/ms）
+      const elapsedMs = Math.max(1, Date.now() - startedAt);
+      const bytesPerMs = firstChunk.byteLength / elapsedMs;
+      // 估算整個 segment 下載完還要多久
+      const projectedMs =
+        bytesPerMs > 0 ? upstreamTotalBytes / bytesPerMs : Infinity;
+
+      if (projectedMs > MAX_PROJECTED_TRANSFER_MS) {
+        // 放棄上游（取消讀取，避免佔住頻寬）
+        await reader.cancel().catch(() => {});
+        console.warn(
+          `[代理] 上游太慢（預估 ${Math.round(projectedMs)}ms > ` +
+            `${MAX_PROJECTED_TRANSFER_MS}ms，總長 ${upstreamTotalBytes}B）→ 回 502 不快取`,
+        );
+        return NextResponse.json(
+          {
+            error: '來源供應過慢，已放棄（避免回傳被截斷的內容）',
+            projected_ms: Math.round(projectedMs),
+          },
+          { status: 502, headers: { 'Cache-Control': 'no-store' } },
+        );
+      }
+    }
 
     if (isManifest) {
       // Manifest 很小，讀完後改寫網址

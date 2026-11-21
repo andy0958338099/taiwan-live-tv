@@ -75,11 +75,22 @@ export default function Home() {
     setDrawerOpen(false);
   };
 
-  // --- Esc 關閉抽屜 ---
+  // --- Esc 關閉抽屜 / 快捷鍵開啟 ---
   useEffect(() => {
-    if (!drawerOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setDrawerOpen(false);
+      // 輸入框內不觸發快捷鍵
+      const t = e.target as HTMLElement | null;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA')) return;
+
+      if (e.key === 'Escape') {
+        setDrawerOpen(false);
+        return;
+      }
+      // `c` 或 `n` 開啟頻道選擇（電視遙控器常見的操作習慣）
+      if ((e.key === 'c' || e.key === 'C' || e.key === 'n' || e.key === 'N') && !drawerOpen) {
+        e.preventDefault();
+        setDrawerOpen(true);
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -167,6 +178,8 @@ export default function Home() {
             0,
             player.totalSources - player.activeSourceIndex - 1,
           )}
+          hasChannel={!!selected}
+          onOpenPicker={() => setDrawerOpen(true)}
         />
 
         {selected && (

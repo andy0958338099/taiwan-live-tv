@@ -36,6 +36,10 @@ interface VideoPlayerProps {
   onSkipSource?: () => void;
   /** 還有幾個備援來源可切換 */
   remainingSources?: number;
+  /** 是否已選取頻道（false 時顯示「選擇頻道」提示） */
+  hasChannel?: boolean;
+  /** 開啟頻道選擇抽屜 */
+  onOpenPicker?: () => void;
 }
 
 /**
@@ -71,6 +75,15 @@ export function VideoPlayer({
   elapsedSeconds,
   onSkipSource,
   remainingSources,
+  /**
+   * 是否已選取頻道。
+   *
+   * 沒有頻道時播放器是一片空白，使用者會以為「壞了」或「沒有頻道可選」。
+   * 這時在播放器中央顯示「選擇頻道」提示，直接引導到抽屜。
+   */
+  hasChannel = true,
+  /** 開啟頻道選擇抽屜（提示中的按鈕） */
+  onOpenPicker,
 }: VideoPlayerProps) {
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const [localIframeKey, setLocalIframeKey] = useState(0);
@@ -159,6 +172,30 @@ export function VideoPlayer({
         >
           {muted ? '🔇' : '🔊'}
         </button>
+      )}
+
+      {/*
+       * 未選頻道時的提示。
+       *
+       * 沒有這個提示，使用者看到的就是一片空白的播放器，
+       * 會以為「沒有頻道可選」或「網站壞了」。
+       * 這裡直接給一個可點擊的按鈕引導到頻道清單。
+       */}
+      {!hasChannel && (
+        <div className={styles.pickerHint}>
+          <span className={styles.pickerHintIcon} aria-hidden="true">
+            📺
+          </span>
+          <h2 className={styles.pickerHintTitle}>尚未選擇頻道</h2>
+          <p className={styles.pickerHintText}>
+            點下方按鈕開啟頻道清單，從 90 個直播頻道中挑選
+          </p>
+          {onOpenPicker && (
+            <button type="button" className={styles.retryBtn} onClick={onOpenPicker}>
+              選擇頻道
+            </button>
+          )}
+        </div>
       )}
 
       {status === 'loading' && (
