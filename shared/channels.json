@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-21T00:55:16.180Z",
+  "updated_at": "2026-11-21T01:57:14.236Z",
   "categories": [
     {
       "id": "news",
@@ -819,7 +819,7 @@
       "category": "finance",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV2.webp",
-      "stream_url": "http://121.19.134.149:808/tsfile/live/0002_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0002_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "央視-2 財經（經 itvlist 聚合源 轉載）",
       "source_website": "https://bit.ly/itvlist",
@@ -1418,7 +1418,7 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV12.webp",
-      "stream_url": "http://61.136.172.236:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "央視-12 社會與法（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
@@ -3316,7 +3316,7 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/陕西卫视.webp",
-      "stream_url": "http://218.13.170.98:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "陝西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",

@@ -78,6 +78,16 @@ const TIMEOUT_MS = parseInt(arg('timeout', '8000'), 10);
  * 亂加參數會把好端端的來源誤判成死亡。
  *
  * 只看 manifest、不抓 segment —— 快，且足以判斷 host 是否整台死掉。
+ *
+ * ## 失敗原因要分清楚（決定能不能移除整個 host）
+ *
+ *   · **連線層失敗**（AbortError / TypeError=fetch failed）
+ *     → 主機根本連不上 → 整台死 → 可以移除該 host 的所有網址
+ *   · **HTTP 層失敗**（403 / 404 …）
+ *     → 主機是活的，只是這個路徑／token 不對 → **不能**移除整個 host
+ *     實例：`yshipin.pages.dev` 會 302 轉址到帶 token 的 CDN，再回 403。
+ *     這在台灣的 Netlify edge 上會失敗，但**使用者在自己瀏覽器直接開
+ *     （不經代理）可能成功** —— 那種網址不能刪掉。
  */
 async function manifestOk(url) {
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -88,9 +98,13 @@ async function manifestOk(url) {
         headers: { 'User-Agent': UA },
         signal: ac.signal,
       });
-      if (!res.ok) return { ok: false, why: `HTTP ${res.status}` };
+      if (!res.ok) {
+        return { ok: false, why: `HTTP ${res.status}`, connLevel: false };
+      }
       const text = await res.text();
-      if (!text.trimStart().startsWith('#EXTM3U')) return { ok: false, why: '非 m3u8' };
+      if (!text.trimStart().startsWith('#EXTM3U')) {
+        return { ok: false, why: '非 m3u8', connLevel: false };
+      }
       return { ok: true };
     } catch (e) {
       // 逾時／連線錯誤 → 重試一次（上游偶發壅塞不代表死亡）
@@ -98,12 +112,12 @@ async function manifestOk(url) {
         await new Promise((r) => setTimeout(r, 1200));
         continue;
       }
-      return { ok: false, why: e.name };
+      return { ok: false, why: e.name, connLevel: true };
     } finally {
       clearTimeout(t);
     }
   }
-  return { ok: false, why: '未知' };
+  return { ok: false, why: '未知', connLevel: true };
 }
 
 async function main() {
@@ -160,7 +174,10 @@ async function main() {
   const deadHosts = new Set();
   for (const [host, rs] of byHost) {
     // 至少要有 2 個不同 path 都失敗才判定死亡
-    if (rs.length >= 2 && rs.every((r) => !r.ok)) deadHosts.add(host);
+    if (rs.length < 2) continue;
+    // 必須全部都是「連線層失敗」——
+    // HTTP 層失敗（403/404）代表主機是活的，只是路徑不對，不能移除整個 host
+    if (rs.every((r) => !r.ok && r.connLevel)) deadHosts.add(host);
   }
 
   console.log('');
@@ -171,22 +188,71 @@ async function main() {
   }
   if (!deadHosts.size) console.log('  （無）');
 
-  // ── 4. 找出每個 dead host 的替代 host（同 path 的鏡像）──
-  /** path → 可用的 host 清單 */
-  const liveByPath = new Map();
-  for (const r of results) {
-    if (r.ok) {
-      if (!liveByPath.has(r.path)) liveByPath.set(r.path, new Set());
-      liveByPath.get(r.path).add(r.host);
-    }
+  // ── 4. 找出替代 host ──
+  //
+  // 這批 itvlist 來源的結構是：多個 host 提供**同一批 path**（同一頻道的鏡像）。
+  // 所以「主來源的 host 死掉」時，正確的替代是
+  // **任何一個活著的 host + 同一個 path** —— 不限於清單裡剛好有那個 path 的 host。
+  //
+  // 實測：`/tsfile/live/0012_1.m3u8` 在 4 個活著的 host 上都存在，
+  // 但清單裡只有 1 個 host 剛好配對到那個 path。
+  // 若只從「已配對的 host」裡挑，就會錯過明顯更快的鏡像。
+  //
+  // 因此這裡對每個死 host 的 path，主動到所有活著的 host 上試一次。
+  const liveHosts = [...byHost.keys()].filter((h) => !deadHosts.has(h));
+
+  /** path → 可用的鏡像 host（依 segment 下載速度排序，慢的排後面） */
+  const mirrorCache = new Map();
+  async function findMirrors(path, sampleQuery) {
+    if (mirrorCache.has(path)) return mirrorCache.get(path);
+    // 並行探測所有活著的 host（12 個 host 逐一等待會花掉數分鐘）
+    const probes = await Promise.all(
+      liveHosts.map(async (host) => {
+        const u = `http://${host}${path}?${sampleQuery}`;
+        const r = await manifestOk(u);
+        if (!r.ok) return null;
+        // 抓第一個 segment 量速度（決定 failover 順序：快的先試）
+        const ms = await measureFirstSegment(u);
+        return { host, url: u, ms };
+      }),
+    );
+    const found = probes
+      .filter(Boolean)
+      .sort((a, b) => (a.ms ?? Infinity) - (b.ms ?? Infinity))
+      .map((p) => p.host);
+    mirrorCache.set(path, found);
+    return found;
   }
 
-  /** 某個 host 上的某個 path，有沒有活著的鏡像 */
-  function liveMirror(path) {
-    const hosts = liveByPath.get(path);
-    if (!hosts) return null;
-    const arr = [...hosts];
-    return arr.length ? arr[0] : null;
+  /**
+   * 量測 manifest 第一個 segment 的下載速度（毫秒）。
+   * 用來排序鏡像：同樣能播的來源，快的排前面。
+   */
+  async function measureFirstSegment(manifestUrl) {
+    try {
+      const res = await fetch(manifestUrl, {
+        headers: { 'User-Agent': UA },
+        signal: AbortSignal.timeout(10000),
+      });
+      if (!res.ok) return null;
+      const text = await res.text();
+      const seg = text
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith('#'))[0];
+      if (!seg) return null;
+      const segUrl = new URL(seg, manifestUrl).toString();
+      const t0 = Date.now();
+      const sres = await fetch(segUrl, {
+        headers: { 'User-Agent': UA },
+        signal: AbortSignal.timeout(20000),
+      });
+      if (!sres.ok) return null;
+      await sres.arrayBuffer();
+      return Date.now() - t0;
+    } catch {
+      return null;
+    }
   }
 
   // ── 5. 套用修改 ──
@@ -207,16 +273,21 @@ async function main() {
         u = null;
       }
       if (u && deadHosts.has(u.host)) {
-        const mirror = liveMirror(u.pathname);
-        if (mirror) {
+        // 保留原本的 query（key / playlive / authid 都有語意，不能亂改）
+        const sampleQuery = u.search.replace(/^\?/, '');
+        const mirrors = await findMirrors(u.pathname, sampleQuery);
+        if (mirrors.length) {
           const old = c.stream_url;
-          // 只換 host，保留原本的 query（key / playlive / authid 都有語意）
+          // 只換 host，保留 path 與 query
           const nu = new URL(old);
-          nu.host = mirror;
+          nu.host = mirrors[0];
           c.stream_url = nu.toString();
           fixedPrimaries++;
           details.push(
-            `  ↻ ${c.channel_name} 主來源 host 已死\n      舊: ${old}\n      新: ${c.stream_url}`,
+            `  ↻ ${c.channel_name} 主來源 host 已死\n` +
+              `      舊: ${old}\n` +
+              `      新: ${c.stream_url}\n` +
+              `      （可用鏡像 ${mirrors.length} 個：${mirrors.join(', ')}）`,
           );
           // 舊主來源若不是死 host，就保留為備援（它可能只是暫時的問題）
           const oldIsDead = deadHosts.has(u.host);
