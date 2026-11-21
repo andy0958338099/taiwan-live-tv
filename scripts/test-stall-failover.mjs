@@ -358,11 +358,13 @@ async function main() {
   const picked = await s('Runtime.evaluate', {
     expression: `(() => {
       const want = ${JSON.stringify(ch.channel_name)};
-      const btns = [...document.querySelectorAll('aside[aria-label="頻道選擇"] button[class*="channelCard"]')];
-      const hit = btns.find(b => {
-        const n = b.querySelector('[class*="cardName"]');
-        return n && (n.textContent || '').trim() === want;
-      });
+      // ⭐ 用 data-channel-name，不要用 [class*="channelCard"] / [class*="cardName"]。
+      // 抽屜重設計（commit 8095269）把 .channelCard / .cardName 改成
+      // .drawerCard / .drawerCardName（大小寫也不同），
+      // 舊的子字串選擇器從此匹配 0 個元素 → 測試永遠失敗。
+      // data-* 屬性不受 CSS 改名影響。
+      const btns = [...document.querySelectorAll('aside[aria-label="頻道選擇"] button[data-channel-name]')];
+      const hit = btns.find(b => b.getAttribute('data-channel-name') === want);
       if (!hit) return null;
       // ⚠️ **必須先 scrollIntoView**：抽屜是獨立捲動容器，
       // 目標頻道卡可能在視窗外（實測 y=1637 > 視窗高 633），

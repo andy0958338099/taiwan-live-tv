@@ -135,9 +135,8 @@ async function main() {
   for (let i = 0; i < 30; i++) {
     await sleep(1000);
     ready = await cdp.evalJs(`(() => {
-      const btns = [...document.querySelectorAll('button')];
-      const ch = btns.filter(b => b.querySelector('[class*="cardName"]'));
-      return { total: btns.length, channelButtons: ch.length,
+      const btns = [...document.querySelectorAll('button[data-channel-name]')];
+      return { total: btns.length, channelButtons: btns.length,
                loading: document.body.innerText.includes('載入中') };
     })()`);
     if (ready.value?.channelButtons) break;
@@ -160,14 +159,15 @@ async function main() {
    */
   async function clickChannel(index) {
     const box = await cdp.evalJs(`(() => {
-      const btns = [...document.querySelectorAll('button')]
-        .filter(b => b.querySelector('[class*="cardName"]'));
+      // ⭐ 用 data-channel-name，不要用 [class*="cardName"]。
+      // CSS module 改名後子字串選擇器會匹配不到（見 test-embed-channels.mjs 的說明）。
+      const btns = [...document.querySelectorAll('button[data-channel-name]')];
       const b = btns[${index}];
       if (!b) return null;
       b.scrollIntoView({ block: 'center' });
       const r = b.getBoundingClientRect();
       return { x: r.left + r.width/2, y: r.top + r.height/2,
-               name: (b.querySelector('[class*="cardName"]').textContent||'').trim().slice(0,20) };
+               name: (b.getAttribute('data-channel-name')||'').trim().slice(0,20) };
     })()`);
     if (!box.value) return null;
     await sleep(200); // 等 scrollIntoView 生效

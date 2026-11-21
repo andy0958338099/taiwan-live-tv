@@ -171,12 +171,17 @@ async function main() {
         const want = ${JSON.stringify(ch.channel_name)};
         const aside = document.querySelector('aside[aria-label="頻道選擇"]');
         const root = aside || document;
-        const btns = [...root.querySelectorAll('button')];
-        const hit = btns.find(b => {
-          const n = b.querySelector('[class*="cardName"]');
-          return n && (n.textContent || '').trim() === want;
-        });
-        if (!hit) return { err: 'no card' };
+        // ⭐ 用 data-channel-name 找卡片，不要用 [class*="cardName"]。
+        //
+        // CSS module 會把 .drawerCardName 編譯成 <hash>_drawerCardName，
+        // 而且類別名一改選擇器就跟著失效（實測 2026-11-22：
+        // 抽屜重設計把 .cardName 改名成 .drawerCardName，
+        // 大小寫不同 → [class*="cardName"] 匹配 0 個，
+        // 這個測試於是 10/10 全數誤判為失敗）。
+        // data-* 屬性不受 CSS 改名影響。
+        const btns = [...root.querySelectorAll('button[data-channel-name]')];
+        const hit = btns.find(b => b.getAttribute('data-channel-name') === want);
+        if (!hit) return { err: 'no card', found: btns.length };
         hit.scrollIntoView({ block: 'center' });
         const r = hit.getBoundingClientRect();
         return {

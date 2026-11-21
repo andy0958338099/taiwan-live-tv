@@ -424,6 +424,23 @@ export default function Home() {
                 <li key={channel.channel_id}>
                   <button
                     type="button"
+                    /**
+                     * ⭐ 穩定識別碼 —— 測試腳本靠它找到頻道卡片。
+                     *
+                     * 為什麼需要這個屬性：
+                     *   CSS module 會把 `.drawerCardName` 編譯成
+                     *   `<hash>_drawerCardName`，而且**類別名一改就會跟著改**。
+                     *   測試腳本若用 `[class*="cardName"]` 這種子字串選擇器，
+                     *   在類別改名後會**永遠匹配不到**（實測 2026-11-22：
+                     *   抽屜重設計把 `.cardName` 改成 `.drawerCardName`，
+                     *   大小寫不同 → `[class*="cardName"]` 匹配 0 個，
+                     *   導致 embed 頻道測試 10/10 全數誤判為失敗）。
+                     *
+                     *   `data-channel-id` 不受 CSS 改名影響，
+                     *   而且語意明確（ChannelRail 早已使用同一個屬性）。
+                     */
+                    data-channel-id={channel.channel_id}
+                    data-channel-name={channel.channel_name}
                     className={`${styles.drawerCard} ${
                       selected?.channel_id === channel.channel_id ? styles.drawerCardActive : ''
                     }`}
