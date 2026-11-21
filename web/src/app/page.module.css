@@ -748,6 +748,11 @@
   color: var(--text-muted);
   font-size: 0.78rem;
   line-height: 1.7;
+  /*
+   * Netlify 徽章會被搬進這個頁尾（見 page.tsx），
+   * 所以頁尾是它的定位參考。
+   */
+  position: relative;
 }
 
 .footer p {

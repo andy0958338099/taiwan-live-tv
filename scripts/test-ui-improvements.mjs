@@ -714,28 +714,37 @@ async function main() {
   // ══════════ 需求 6：Netlify 徽章 ══════════
   console.log('\n[6] Netlify 徽章不浮在內容上');
   const badge = await cdp.evalJs(`(() => {
-    const b = document.querySelector('iframe[data-nl-ready]');
+    const b = document.getElementById('nl-badge-frame') ||
+              document.querySelector('iframe[data-nl-ready]');
     if (!b) return { none: true };
     const cs = getComputedStyle(b);
     const r = b.getBoundingClientRect();
     // 找有沒有內容被壓到（徽章範圍內的非 footer 元素）
     const overlap = [...document.querySelectorAll('main *')].some(el => {
       if (el.closest('footer')) return false;
+      if (el === b) return false;
       const er = el.getBoundingClientRect();
       if (er.width === 0 || er.height === 0) return false;
       return !(er.right < r.left || er.left > r.right ||
                er.bottom < r.top || er.top > r.bottom);
     });
     return { pos: cs.position, z: cs.zIndex, opacity: cs.opacity,
-             overlap, bottom: Math.round(r.bottom), vh: innerHeight };
+             overlap, bottom: Math.round(r.bottom), vh: innerHeight,
+             inFooter: !!b.closest('footer'),
+             parent: b.parentElement ? b.parentElement.tagName : null };
   })()`);
   if (badge.value?.none) {
     check('Netlify 徽章', true, '本機站沒有注入徽章（線上才會有）');
   } else {
     check(
-      '徽章 z-index 低於內容（不蓋住內容）',
-      Number(badge.value?.z ?? 99) < 10 && badge.value?.overlap === false,
-      `z=${badge.value?.z}，opacity=${badge.value?.opacity}，與內容重疊=${badge.value?.overlap}`,
+      '徽章已搬進頁尾（不再浮在內容上）',
+      badge.value?.inFooter === true && badge.value?.pos === 'absolute',
+      `parent=${badge.value?.parent}，position=${badge.value?.pos}`,
+    );
+    check(
+      '徽章不蓋住任何內容',
+      badge.value?.overlap === false,
+      `opacity=${badge.value?.opacity}，與內容重疊=${badge.value?.overlap}`,
     );
   }
 

@@ -31,6 +31,35 @@ export default function Home() {
    */
   const headerRef = useRef<HTMLElement | null>(null);
   const sheet = useDrawerSheet(headerRef);
+  const footerRef = useRef<HTMLElement | null>(null);
+
+  // --- 把 Netlify 徽章搬進頁尾 ---
+  //
+  // Netlify 平台會注入一個 `position: fixed; bottom: 0; right: 0` 的
+  // iframe（`#nl-badge-frame`），預設會**浮在內容上** —— 抽屜開著時
+  // 它正好壓在右下角的頻道卡片上。
+  //
+  // 純 CSS 無解（它是 fixed 且在 body 底下），所以用 JS 把它搬到 `<footer>`，
+  // 再由 CSS 在頁尾裡定位。這樣：
+  //   · 徽章不再壓住任何內容
+  //   · 仍然是平台的 attribution，沒有移除
+  //
+  // ⚠️ 徽章是**延後注入**的（Next.js hydration 之後才會出現），
+  //    所以除了馬上搬一次，還要用 MutationObserver 持續守候。
+  useEffect(() => {
+    const relocate = () => {
+      const footer = footerRef.current;
+      if (!footer) return;
+      const badge = document.getElementById('nl-badge-frame');
+      if (!badge) return;
+      if (badge.parentElement !== footer) footer.appendChild(badge);
+    };
+
+    relocate();
+    const observer = new MutationObserver(relocate);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, []);
 
   // --- 載入頻道資料 ---
   useEffect(() => {
@@ -299,7 +328,7 @@ export default function Home() {
           ====================================================== */}
 
       <div className={styles.content}>
-        <footer className={styles.footer}>
+        <footer className={styles.footer} ref={footerRef}>
           <p>所有頻道均標註來源與授權狀態。未經授權的來源不會出現在本清單中。</p>
           <p className={styles.footerMeta}>
             schema v{catalog.schema_version} · APK 與網頁讀取同一份頻道資料 ·{' '}

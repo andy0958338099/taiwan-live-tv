@@ -63,37 +63,45 @@ a {
 /* ============================================================
    Netlify 徽章 —— 不要浮在內容上
    ------------------------------------------------------------
-   Netlify 平台會注入一個 `<iframe data-nl-ready="1">`，
+   Netlify 平台會注入一個 `<iframe id="nl-badge-frame">`，
    預設 `position: fixed; bottom: 0; right: 0`，會壓在頁尾與
    抽屜的內容上。
 
-   處理方式：把它推到頁面底部**內容之下**並降低透明度 ——
-   不移除（那是平台的 attribution），但也不再干擾閱讀。
+   處理方式：**把徽章搬到 `<footer>` 裡**（見 page.tsx 的
+   relocate 邏輯），這裡只負責在頁尾內定位。
+
+   為什麼不用純 CSS？
+     徽章是 `position: fixed` 且掛在 `<body>` 底下，
+     CSS 無法把它「搬進」頁尾，只能靠 JS 改變它的父節點。
    ============================================================ */
 
-iframe[data-nl-ready='1'] {
-  position: fixed !important;
+iframe#nl-badge-frame {
+  /*
+   * 從 fixed 改成 absolute —— 跟著頁尾走，不再浮在畫面上。
+   * 頁尾有 `position: relative`，所以這裡的 bottom/right 是相對頁尾。
+   */
+  position: absolute !important;
   bottom: 0 !important;
   right: 0 !important;
-  z-index: 1 !important;
-  opacity: 0.35 !important;
+  z-index: 0 !important;
+  opacity: 0.5 !important;
   transition: opacity 0.2s ease !important;
   pointer-events: auto;
 }
 
-iframe[data-nl-ready='1']:hover {
-  opacity: 0.85 !important;
+iframe#nl-badge-frame:hover {
+  opacity: 1 !important;
 }
 
 /*
  * 頁尾留出安全邊距，徽章不會壓到文字。
  *
- * 徽章是 202×64px 的框（實際可見部分較小），
+ * 徽章的框是 202×64px（可見的 logo 只佔左下角一小塊），
  * 頁尾右下角留 64px 的空間就夠了。
  */
 @media (min-width: 1024px) {
   footer {
-    padding-bottom: 56px !important;
+    padding-bottom: 64px !important;
   }
 }
 

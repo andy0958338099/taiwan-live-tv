@@ -23,6 +23,23 @@ import type { Channel } from './types';
  *   兩種情境的直覺不同。
  * · 輸入框 / textarea / contenteditable 內一律不攔截。
  *
+ * ## ⚠️ 為什麼資料都放 refs（重要）
+ *
+ * 第一版把 `channels` / `currentId` / `onSelect` 直接放進 effect 的依賴陣列。
+ * 結果 **`onSelect` 是 page.tsx 裡的 inline arrow function，每次 render
+ * 都是新的參考點** → effect 每次 render 都重跑 → cleanup 把
+ * `numTimerRef` 裡還沒觸發的 600ms 計時器 `clearTimeout` 掉。
+ *
+ * 結果是：**按數字鍵後，只要 600ms 內有任何一次 re-render
+ * （播放器狀態更新、EPG 更新、抽屜動畫……），
+ * 這次選台就會被無聲地取消。**
+ *
+ * 線上實測重現：按「3」後播放器/EPG 觸發一次 re-render，
+ * 頻道沒有切換；本機測試因為時序不同而通過 —— 典型的「本機過、線上壞」。
+ *
+ * 修法：event listener 只在 `enabled` 改變時掛載，
+ * 資料一律透過 refs 讀取，計時器只在卸載時清除。
+ *
  * @param channels  目前可見的頻道清單（決定 ↑↓ 的順序與數字鍵的對應）
  * @param currentId 目前選中的頻道 ID
  * @param onSelect  選取頻道的回呼
@@ -42,6 +59,18 @@ export function useKeyboardChannelNav({
   /** 數字鍵輸入緩衝 */
   const numBufferRef = useRef<string>('');
   const numTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /**
+   * 資料用 refs 保存，避免 effect 依賴它們。
+   *
+   * 每次 render 更新 ref 的內容，但**不觸發** listener 重新掛載。
+   */
+  const channelsRef = useRef(channels);
+  const currentIdRef = useRef(currentId);
+  const onSelectRef = useRef(onSelect);
+  channelsRef.current = channels;
+  currentIdRef.current = currentId;
+  onSelectRef.current = onSelect;
 
   useEffect(() => {
     if (!enabled) return;
@@ -63,8 +92,8 @@ export function useKeyboardChannelNav({
       if (!buf) return;
       const num = Number(buf);
       if (!Number.isFinite(num)) return;
-      const hit = channels.find((c) => c.channel_number === num);
-      if (hit) onSelect(hit);
+      const hit = channelsRef.current.find((c) => c.channel_number === num);
+      if (hit) onSelectRef.current(hit);
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -73,18 +102,19 @@ export function useKeyboardChannelNav({
 
       // ── ↑↓ 換台 ──
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
-        if (channels.length === 0) return;
+        const list = channelsRef.current;
+        if (list.length === 0) return;
         e.preventDefault();
-        const idx = channels.findIndex((c) => c.channel_id === currentId);
+        const idx = list.findIndex((c) => c.channel_id === currentIdRef.current);
         const delta = e.key === 'ArrowDown' ? 1 : -1;
         // 沒選中 → Down 選第一個、Up 選最後一個
         const next =
           idx === -1
             ? e.key === 'ArrowDown'
               ? 0
-              : channels.length - 1
-            : (idx + delta + channels.length) % channels.length;
-        onSelect(channels[next]);
+              : list.length - 1
+            : (idx + delta + list.length) % list.length;
+        onSelectRef.current(list[next]);
         return;
       }
 
@@ -101,7 +131,13 @@ export function useKeyboardChannelNav({
     window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
-      if (numTimerRef.current) clearTimeout(numTimerRef.current);
+      // ⚠️ 只在 listener 真的被拆掉時清計時器。
+      //    這裡 `enabled` 是唯一的依賴，所以正常 render 不會走到這行 ——
+      //    數字鍵的選台不會被中途 re-render 取消。
+      if (numTimerRef.current) {
+        clearTimeout(numTimerRef.current);
+        numTimerRef.current = null;
+      }
     };
-  }, [channels, currentId, onSelect, enabled]);
+  }, [enabled]);
 }
