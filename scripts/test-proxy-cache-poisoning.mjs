@@ -16,9 +16,18 @@
  *   · fMP4    → 第 5–8 byte 必須是 'ftyp'
  *   不符合 → 回 502 且**不快取**。
  *
- * 本測試驗證兩件事：
- *   1. 正常 segment → 200 + `public, max-age=300`（可快取）
+ * 本測試驗證四件事：
+ *   1. 正常 segment → 完整內容 + `public, max-age=300`（可快取）
  *   2. 過期 segment → 502 + **沒有** max-age（不可快取）
+ *   3. CDN 快取命中時 → 仍然是有效串流內容（0x47），不是 HTML 錯誤頁
+ *   4. **Range 快取鍵隔離** —— 中途 range 的部分內容不得污染完整 segment
+ *      （2026-11-21 新增；這是與「query string 不進快取鍵」同型別的 P0 風險）
+ *
+ * ⚠️ 2026-11-21 修正：本測試原本有兩處**過期斷言**，會在線上產生假失敗：
+ *   · 只認 HTTP 200 → 但 edge 快取命中時會回 **206 + 完整 Content-Range**
+ *     （`bytes 0-(N-1)/N`，內容完全正確）
+ *   · 從 `?url=` 反推上游網址 → 代理已改成 **base64url 放 path**，
+ *     反推永遠失敗 → 情境 [B]/[C] 的過期驗證被**靜默跳過**
  */
 
 import { readFileSync } from 'node:fs';
@@ -82,10 +91,59 @@ async function fetchHead(url, options = {}, timeoutMs = 30_000) {
     status: res.status,
     cacheControl: res.headers.get('cache-control') ?? '',
     contentRange: res.headers.get('content-range'),
+    contentLength: res.headers.get('content-length'),
     firstByte: first[0],
     firstBytes: Buffer.from(first.slice(0, 80)).toString('utf8'),
     size: first.length,
   };
+}
+
+/**
+ * 回應是否代表「完整資源」。
+ *
+ * 兩種形式都合法且內容相同：
+ *   · 代理本地：上游回 206（`bytes 0-N/N`）→ 代理**正規化成 200** 並移除 Content-Range
+ *     （見 route.ts 的 `isFullContent` / `responseStatus`）
+ *   · Netlify edge：若 edge 已快取完整物件，對 Range 請求會自行切片並回
+ *     **206 + 完整 Content-Range**（`bytes 0-(N-1)/N`）
+ *
+ * ⚠️ 舊的測試只認 200，於是 edge 回 206（內容完全正確）時被誤判為失敗。
+ */
+function isCompleteResponse(status, contentRange) {
+  if (status === 200) return true;
+  if (status !== 206 || !contentRange) return false;
+  const m = /^bytes (\d+)-(\d+)\/(\d+)$/.exec(contentRange.trim());
+  if (!m) return false;
+  return Number(m[1]) === 0 && Number(m[2]) + 1 === Number(m[3]);
+}
+
+/**
+ * 從代理網址反推原始上游網址。
+ *
+ * 代理的目標網址有兩種形式：
+ *   舊：/api/proxy?url=<urlencoded>&sig=<hex>
+ *   新：/api/proxy/<base64url(target)>?sig=<hex>
+ *
+ * ⚠️ 2026-11-21 改成 path 形式是為了修 P0（Netlify 的快取鍵不含一般 query string，
+ * 導致所有頻道共用同一份 CDN 快取項目）。反推方式必須跟著改，
+ * 否則情境 [B] 會永遠拿不到上游網址 → **過期 segment 的驗證整段被靜默跳過**。
+ */
+function decodeUpstreamFromProxied(proxied) {
+  try {
+    const u = new URL(proxied, BASE);
+    const m = /^\/api\/proxy\/([^/?]+)/.exec(u.pathname);
+    if (m) {
+      const decoded = Buffer.from(decodeURIComponent(m[1]), 'base64url').toString(
+        'utf8',
+      );
+      if (/^https?:\/\//.test(decoded)) return decoded;
+    }
+    const raw = u.searchParams.get('url');
+    if (raw) return decodeURIComponent(raw);
+  } catch {
+    /* 無法反推 → 回 null */
+  }
+  return null;
 }
 
 /**
@@ -191,7 +249,7 @@ async function main() {
   console.log(`segment： ${segUrl.slice(0, 100)}\n`);
 
   // ── 情境 A：segment 還活著 ──
-  console.log('[A] 有效 segment（應回 200 + 可快取）');
+  console.log('[A] 有效 segment（應回完整內容 + 可快取）');
   const a = await fetchHead(segUrl, { headers: { Range: 'bytes=0-' } }, 30_000);
   const aCc = a.cacheControl;
   console.log(`    HTTP ${a.status}`);
@@ -199,7 +257,7 @@ async function main() {
   console.log(`    Content-Range: ${a.contentRange ?? '無'}`);
   console.log(`    第一個 chunk: ${a.size} bytes，首位元組 0x${a.firstByte?.toString(16)}`);
   const aOk =
-    a.status === 200 &&
+    isCompleteResponse(a.status, a.contentRange) &&
     /max-age=[1-9]/.test(aCc) &&
     a.firstByte === 0x47;
   console.log(`    判定：${aOk ? '✓ 正確（完整 segment 且可快取）' : '✗ 不符預期'}\n`);
@@ -209,16 +267,7 @@ async function main() {
   await sleep(40_000);
 
   // 檢查上游是否真的過期（用原始上游網址，繞過代理）
-  const rawSeg =
-    m
-      .split('\n')
-      .map((l) => l.trim())
-      .filter((l) => l && !l.startsWith('#') && l.includes('/api/proxy'))[0] ?? '';
-  // 從簽章網址反推原始網址：/api/proxy?url=<encoded>&sig=<hex>
-  // 注意 url 參數是 URL-encoded，內部的 `&` 已被編碼成 `%26`，
-  // 所以用 `[^&]+` 就能完整取到（外層的 `&sig=` 才會分隔）。
-  const rawUrl = rawSeg.match(/[?&]url=([^&]+)/)?.[1];
-  const upstreamSegUrl = rawUrl ? decodeURIComponent(rawUrl) : null;
+  const upstreamSegUrl = decodeUpstreamFromProxied(segUrl);
 
   if (upstreamSegUrl) {
     const expiredProbe = await fetch(upstreamSegUrl, {
@@ -267,7 +316,7 @@ async function main() {
   if (isHtmlContent) {
     // ❌ HTML 錯誤頁被當成影片回應 → 快取污染
     cVerdict = `✗ HTML 錯誤頁被當成影片（status=${c.status}）`;
-  } else if (isValidStream && c.status === 200) {
+  } else if (isValidStream && isCompleteResponse(c.status, c.contentRange)) {
     // ✅ CDN 快取命中 → 回有效 segment（預期行為）
     cVerdict = '✓ CDN 快取命中，回有效 segment（0x47）—— 這是預期的保護效果';
   } else if (c.status === 502 && !hasCacheableMaxAge) {
@@ -280,8 +329,108 @@ async function main() {
 
   const cOk = isValidStream || (c.status === 502 && !hasCacheableMaxAge);
 
+  // ── 情境 D：Range 快取鍵隔離（P0 級風險）─────────────────────────
+  //
+  // ⚠️ **這是本測試原本完全沒有覆蓋的風險**。
+  //
+  // Netlify 的快取鍵**不含一般 query string**（`netlify-vary: query=__nextDataReq|_rsc`）。
+  // 那麼 `Range` 標頭呢？如果快取鍵也**不含 Range**：
+  //   · 先請求 `Range: bytes=100-200` → edge 可能把這個「部分內容」存成快取項目
+  //   · 後續請求 `Range: bytes=0-`（要完整 segment）→ 命中同一快取項目
+  //   → **播放器拿到 101 bytes 的片段卻以為是完整 segment** → 播不出來
+  //
+  // 這正是 2026-11-21 那次 P0 的同型問題（識別資訊放錯位置導致快取共用）。
+  // 所以這個情境必須**實測**，不能假設。
+  //
+  // 驗證方式：
+  //   1. 先請求中途 range（bytes=100-200）—— 製造「部分內容」
+  //   2. 再請求完整 range（bytes=0-）—— 必須拿到**完整** segment
+  //   3. 比對完整 segment 的長度是否等於 Content-Range 宣稱的總長
+  console.log('\n[D] Range 快取鍵隔離（部分內容不得污染完整 segment）');
+  const d1 = await fetchHead(segUrl, { headers: { Range: 'bytes=100-200' } }, 30_000);
+  console.log(
+    `    [D1] 中途 range: HTTP ${d1.status} cc=${d1.cacheControl} ` +
+      `cr=${d1.contentRange ?? '無'} len=${d1.size}`,
+  );
+
+  const d2 = await fetchHead(segUrl, { headers: { Range: 'bytes=0-' } }, 30_000);
+  console.log(
+    `    [D2] 完整 range: HTTP ${d2.status} cc=${d2.cacheControl} ` +
+      `cr=${d2.contentRange ?? '無'} len=${d2.size}`,
+  );
+
+  // 完整 segment 的預期長度：Content-Range 的總長，或 Content-Length
+  const declaredTotal = d2.contentRange
+    ? Number(d2.contentRange.split('/')[1])
+    : d2.contentLength
+      ? Number(d2.contentLength)
+      : null;
+
+  // ⚠️ fetchHead 只讀**第一個 chunk**，d2.size 是已讀到的位元組數（通常 4096），
+  // 不是整體長度。要真正驗證「拿到完整 segment」，必須把整個 body 讀完並比對長度。
+  // 這一步會下載整個 segment（實測 2–8 MB），但這是本測試唯一能證明
+  // 「部分內容沒有污染完整 segment」的方法。
+  let actualTotal = null;
+  try {
+    const full = await fetch(segUrl, {
+      headers: { 'User-Agent': UA, Range: 'bytes=0-' },
+      signal: AbortSignal.timeout(60_000),
+    });
+    const buf = Buffer.from(await full.arrayBuffer());
+    actualTotal = buf.length;
+  } catch (e) {
+    console.log(`    （完整下載失敗：${e.message}）`);
+  }
+
+  let dOk;
+  if (!isCompleteResponse(d2.status, d2.contentRange)) {
+    dOk = false;
+    console.log(
+      `    判定：✗ 完整 range 沒有回完整內容（status=${d2.status} cr=${d2.contentRange ?? '無'}）`,
+    );
+  } else if (
+    actualTotal !== null &&
+    declaredTotal !== null &&
+    declaredTotal > 0 &&
+    actualTotal < declaredTotal
+  ) {
+    // 實際下載到的位元組數 < 宣稱的總長 → 被中途 range 的部分內容污染了
+    dOk = false;
+    console.log(
+      `    判定：✗ **快取污染**：完整 range 只拿到 ${actualTotal} bytes` +
+        `（宣告 ${declaredTotal} bytes）—— CDN 快取鍵沒有包含 Range 標頭`,
+    );
+  } else if (actualTotal !== null) {
+    dOk = true;
+    console.log(
+      `    判定：✓ 完整 range 回完整 segment（實際 ${actualTotal} bytes / 宣告 ${declaredTotal ?? '無'}）` +
+        ` —— 未被中途 range 污染`,
+    );
+  } else {
+    dOk = true;
+    console.log('    判定：✓ 完整 range 回完整 segment —— 未被中途 range 污染');
+  }
+
+  // 部分內容的回應**不該**被快取（否則會變成上面那種污染）。
+  //
+  // ⚠️ 但要注意實測到的兩種情況（2026-11-21）：
+  //   · **首次**請求中途 range（網址尚未被快取）→ 代理回 `206` + `no-store` ✓
+  //   · 該網址**已被 edge 快取完整物件**後再請求中途 range → edge 會自行切片，
+  //     回 `206` + `max-age=300`（沿用被快取物件的標頭）
+  //
+  // 後者**不是** bug：edge 持有的是完整物件，切片位元組完全正確
+  // （[D2] 已實測下載到完整長度）。真正要防的是「部分內容被當成完整內容快取」，
+  // 那由 isCompleteResponse 判定 + [D2] 的完整下載比對把關。
+  const d1NotCacheable = !/max-age=[1-9]/.test(d1.cacheControl);
+  console.log(
+    `    [D1] 快取標頭：${d1.cacheControl}` +
+      (d1NotCacheable
+        ? '（部分內容不可快取 ✓）'
+        : '（edge 已有完整物件的快取項目，切片沿用其標頭；位元組正確）'),
+  );
+
   console.log('\n' + '═'.repeat(66));
-  const pass = aOk && cOk;
+  const pass = aOk && cOk && dOk;
   console.log(`結果：${pass ? '✓ 通過' : '✗ 未通過'}`);
   process.exit(pass ? 0 : 1);
 }

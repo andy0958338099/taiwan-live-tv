@@ -1257,3 +1257,111 @@ segment（台視的是 `m3u8/ttvnews.m3u8`），誤判台視失效。
 | `scripts/fix-wrong-backups.mjs` | 清理錯配備援（可重複執行） |
 | `scripts/dump-m3u-matches.mjs` | 傾印真實 M3U 的配對結果供人工檢查 |
 | `scripts/verify-affected-playback.mjs` | 確認受影響頻道仍可播放 |
+
+---
+
+## 12. 每 30 分鐘巡檢 — 2026-11-21 23:20 輪次
+
+### 12.1 巡檢現況（線上實測）
+
+| 檢查 | 結果 |
+|---|---|
+| `run-all-checks.mjs`（型別/建置/資料一致性/APK） | ✅ 8/8 全部通過 |
+| `verify-cdn-key.mjs`（CDN 快取鍵隔離） | ✅ 6 個頻道 → 6 份**不同** manifest（sha 各異） |
+| `test-drawer.mjs`（抽屜三項行為） | ✅ 全部通過（預設隱藏 / 點擊滑入 / 選頻道後自動收起） |
+| `test-playback-local.mjs`（真實播放抽樣） | ✅ 4/4 頻道成功，`muted=false`（解除靜音有效） |
+| `test-proxy-cache-poisoning.mjs` | ⚠️ **原本假失敗** → 修正後 ✅ 通過（見 §12.3） |
+
+線上抽樣播放（`--wait 60`，系統 Chrome + CDP 真實滑鼠事件）：
+
+```
+✓ 龍華電視    t=35.0  1920x1080  muted=false
+✓ TVB翡翠台   t=41.7  1920x1080  muted=false
+✓ Now TV      t=50.9  1920x1080  muted=false
+✓ HOY TV      t=41.8  1920x1080  muted=false
+結果：4/4 個頻道播放成功
+```
+
+### 12.2 本輪發現（實測，非推測）
+
+**Netlify edge 對 `Range` 標頭的行為（實測，非文件假設）**
+
+`netlify-vary` 顯示快取鍵為
+`query=__nextDataReq|_rsc, header=x-nextjs-data|...` —— **不含 `Range`**。
+這與「query string 不進快取鍵」是同型別的 P0 風險，因此必須實測而不能假設。
+
+實測結果（`Range: bytes=100-200` 先，再 `Range: bytes=0-`）：
+
+| 情境 | 結果 |
+|---|---|
+| 首次請求中途 range（網址尚未被快取） | `206` + `Cache-Control: no-store` ✓ 代理行為正確 |
+| edge 已快取完整物件後再請求中途 range | `206` + `public,max-age=300`（edge 自行切片，沿用快取物件標頭） |
+| **中途 range 之後請求完整 range** | **拿到完整 segment（實測 3056504 / 2258444 / 8696316 bytes 全部相符）** ✓ |
+| 中途 range 前後位元組比對 | 一致 ✓ |
+
+結論：**沒有 Range 快取污染**。edge 持有的是完整物件，切片位元組正確。
+
+### 12.3 修正：`test-proxy-cache-poisoning.mjs` 的兩處過期斷言
+
+本測試原本在線上**假失敗**（`✗ 未通過`），但代理行為其實是正確的。兩處原因：
+
+1. **只認 HTTP 200。** edge 快取命中時會回 `206` + **完整** Content-Range
+   （`bytes 0-(N-1)/N`，內容完全正確）。舊斷言把這種合法回應判為失敗。
+2. **從 `?url=` 反推上游網址。** 代理在 2026-11-21 已改成
+   `/api/proxy/<base64url(target)>?sig=…`（修 P0：query 不進快取鍵），
+   舊的反推方式**永遠失敗** → 情境 [B]/[C] 的「過期 segment」驗證
+   **被整段靜默跳過**。這是比假失敗更嚴重的問題：測試看起來在跑，
+   實際上沒有驗證到它宣稱要驗的東西。
+
+修法：
+
+- 新增 `isCompleteResponse(status, contentRange)`：接受 `200`，
+  或 `206` 且 Content-Range 涵蓋全部（`bytes 0-(N-1)/N`）。
+- 新增 `decodeUpstreamFromProxied()`：從 **path 的 base64url** 反推上游網址
+  （並保留舊 `?url=` 作為相容路徑）。
+- **新增情境 [D]：Range 快取鍵隔離** —— 先請求中途 range、再請求完整 range，
+  並**完整下載**比對位元組數是否等於宣告總長。這是本測試原本完全沒有覆蓋的
+  P0 級風險。
+
+### 12.4 修正後的線上驗證輸出
+
+```
+[A] 有效 segment（應回完整內容 + 可快取）
+    HTTP 206   Cache-Control: public,max-age=300
+    Content-Range: bytes 0-3056503/3056504
+    判定：✓ 正確（完整 segment 且可快取）
+
+[B] 等待 40 秒讓 segment 過期…
+    上游此刻回: HTTP 206 len 3056504 cr bytes 0-3056503/3056504
+    （已過期：否 —— 可能上游又更新了序號）   ← 反推成功，過期驗證不再被跳過
+
+[C] 代理回應（不可接受：HTML 錯誤頁被當成影片）
+    首位元組 0x47
+    判定：✓ CDN 快取命中，回有效 segment（0x47）—— 這是預期的保護效果
+
+[D] Range 快取鍵隔離（部分內容不得污染完整 segment）
+    [D1] 中途 range: HTTP 206 cr=bytes 100-200/3056504 len=101
+    [D2] 完整 range: HTTP 206 cr=bytes 0-3056503/3056504
+    判定：✓ 完整 range 回完整 segment（實際 3056504 bytes / 宣告 3056504）
+           —— 未被中途 range 污染
+
+結果：✓ 通過
+```
+
+### 12.5 上網參考（真的能套用的）
+
+| 來源 | 內容 | 對本專案的意義 |
+|---|---|---|
+| [Netlify Functions API reference](https://docs.netlify.com/build/functions/api/) | 同步執行上限 **60 秒**、串流回應上限 **20 MB**、緩衝 payload 6 MB | 代理的 `UPSTREAM_TIMEOUT_MS=25s` / `MAX_PROJECTED_TRANSFER_MS=22s` **低於**平台上限，屬保守但正確；本專案的 5.4 MB segment 在 20 MB 限制內 |
+| [hls.js Releases](https://github.com/video-dev/hls.js/releases) | v1.7.4 仍為最新穩定版（v1.7.3 於 2026-09-11 發布） | **無需升級**；目前用的 1.7.4 已是最新的穩定版 |
+| [hls.js #7283](https://github.com/video-dev/hls.js/issues/7283) / [videojs PR #2103](https://github.com/videojs/v10/pull/2103) | `startLoad()` 會先 `stopLoad()`，中止正在載入的 init segment → 100 ms 重試迴圈，播放永遠無法開始 | 本專案的 `useHlsPlayer.ts` **只在 `loadSource()` 後呼叫 `attachMedia()`**，沒有中途呼叫 `startLoad()`/`stopLoad()`，**不受此 bug 影響**；但這是未來若加入「手動重試」功能時的雷 |
+| [hls.js #7556](https://github.com/video-dev/hls.js/issues/7556) | 直播清單只有 1 個 segment 時會停頓一個 target duration | 本專案用 `liveSyncDuration: 6` + `maxBufferLength: 60`（見 `useHlsPlayer.ts`），緩衝做厚可涵蓋 |
+
+### 12.6 本輪未解問題
+
+- `shared/source-verification.json` 的 deep probe 尚在執行（本輪時間窗內未跑完）。
+- 未改動任何頻道資料 —— 本輪無「更多頻道可播」的可交付改動。
+- 代理的 `UPSTREAM_TIMEOUT_MS` 仍為 25 秒；Netlify 實際同步上限是 60 秒，
+  可考慮放寬以讓「慢但可用」的來源多撐 35 秒。**本輪未實作**：
+  放寬預算會讓「被平台中途切斷的截斷內容」有被快取的風險，
+  必須先量測各來源的實際下載時間分佈才能決定安全值。
