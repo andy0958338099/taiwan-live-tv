@@ -1468,3 +1468,100 @@ attempt 2  status 404 len 163 b0=0x3c   ← 錯誤頁（HTML）
 | `dce3b50` | 文件：記錄兩個根因與修正 |
 | `445da8c` | 更新來源驗證結果（85/85） |
 | `0548dff` | 同步頻道資料時間戳 |
+
+---
+
+## 13. 巡檢結果（2026-11-22 01:08 CST）
+
+### 13.1 三個測試腳本自 16:08 起就是壞的（重大發現）
+
+抽屜重設計（commit `8095269`，2026-11-21 16:08）把 CSS module 類別改名：
+
+| 舊 | 新 |
+|---|---|
+| `.cardName` | `.drawerCardName` |
+| `.channelCard` | `.drawerCard` |
+
+但三個測試腳本仍用小寫子字串選擇器。CSS module 編譯後是
+`<hash>_drawerCardName`（**大寫 C**），`[class*="cardName"]`（小寫 c）
+**永遠匹配 0 個元素**。
+
+| 腳本 | 失效的選擇器 | 修好前的行為 |
+|---|---|---|
+| `test-embed-channels.mjs` | `[class*="cardName"]` | 10/10 embed 頻道誤判失敗 |
+| `test-stall-failover.mjs` | `[class*="channelCard"]` + `[class*="cardName"]` | 找不到卡片 → 直接跳過 |
+| `test-channel-switch-unmute.mjs` | `[class*="cardName"]` | `✗ 找不到頻道按鈕` → exit 1 |
+
+**危害比「測試壞掉」更大**：`docs/03-test-report.md` §9.7 記載的
+「embed 頻道 10/10 通過」是 **2026-11-21 09:57**（重設計之前）量到的。
+16:08 之後測試就一直是假的 —— 等於 **11% 的頻道沒有任何自動化驗證**，
+而且失效是靜默的（腳本仍回報「成功」或直接跳過）。
+
+修法：抽屜卡片加上穩定的 `data-channel-id` / `data-channel-name`，
+測試腳本改用它們。`data-*` 屬性不受 CSS 改名影響（業界標準做法：
+Playwright / Cypress 的 `data-testid`、`data-cy`）。
+
+### 13.2 修好後的線上實測（正式站 `taiwan-live-tv.netlify.app`）
+
+| 測試 | 結果 |
+|---|---|
+| `test-embed-channels.mjs` | ✓ **10/10**（華視／中天／鏡新聞／中視／東森／三立／客家／大愛／寰宇／公視） |
+| `test-stall-failover.mjs` | ✓ 通過（卡頓於 t=1s 發生，t=28s 改用備援） |
+| `test-channel-switch-unmute.mjs` | ✓ 通過（切換後 0.4 秒內有聲，95 個頻道按鈕全找到） |
+| `test-playback-local.mjs` | ✓ **3/3**（遼寧／陝西／內蒙古，`muted=false`） |
+| `verify-cdn-key.mjs` | ✓ 6 個頻道 → 6 份不同 manifest |
+| `test-proxy-cache-poisoning.mjs` | ✓ 4 個情境全過（含 Range 隔離） |
+| `test-drawer.mjs` | ✓ 抽屜三項行為全過 |
+| `run-all-checks.mjs` | ✓ 8/8（型別／Web 建置／Android APK／資料一致性） |
+
+embed 頻道逐筆實測：
+
+```
+✓ 華視新聞 CH52      t=47454.6  640x360  muted=false
+✓ 中天新聞 CH52      t=47461.9  640x360  muted=false
+✓ 鏡新聞 24H         t=47469.3  640x360  muted=false
+✓ 中視新聞台         t=47476.6  640x360  muted=false
+✓ 東森新聞 CH51      t=47483.8  640x360  muted=false
+✓ 三立新聞台 CH54    t=47491.2  640x360  muted=false
+✓ 客家電視台         t=47498.4  640x360  muted=false
+✓ 大愛電視（全球）   t=47505.7  640x360  muted=false
+✓ 寰宇新聞台灣台     t=47513.1  640x360  muted=false
+✓ 公視網路直播       t=47520.4  640x360  muted=false
+```
+
+> ⚠️ 本機 `localhost:3210` 測試時 litv（東森／三立）與 4gTV（客家）會失敗，
+> 但**正式站 10/10 全過**。原因：litv／4gTV 的播放器需要正式站的
+> HTTPS + 網域情境才能取到串流。**embed 頻道的驗證必須在正式站做**，
+> 本機結果不可當結論。
+
+### 13.3 deep probe 結果（85 個可探測頻道）
+
+```
+可播 85/85｜需改用備援 3｜完全失效 0
+```
+
+3 個頻道的主來源已死、靠備援撐住（failover 要先等逾時才換源），
+已用 `scripts/cleanup-channels.mjs` 換成已驗證可播的備援：
+
+| 頻道 | 舊主來源（已死） | 新主來源 |
+|---|---|---|
+| 遼寧衛視 | `222.134.245.16:9901` | `61.136.172.236:9901` |
+| 陝西衛視 | `222.134.245.16:9901` | `218.13.170.98:9901` |
+| 內蒙古衛視 | `222.134.245.16:9901` | `218.13.170.98:9901` |
+
+> `222.134.245.16:9901` 這個 host 還有 6 個頻道在用（央視-2／央視-12／
+> 廣西／黑龍江／江西／山西），目前都還能播，暫不動。
+
+換源後線上實測 3/3 播放成功（`muted=false`）：
+
+```
+✓ 遼寧衛視    t=19.0    0x0
+✓ 陝西衛視    t=90.3    1280x720
+✓ 內蒙古衛視  t=59.0    0x0
+```
+
+### 13.4 本輪 commit
+
+| Commit | 內容 |
+|---|---|
+| `1cfcd96` | 修好三個測試腳本的 CSS module 選擇器 + 3 個壞掉的主來源換源 |
