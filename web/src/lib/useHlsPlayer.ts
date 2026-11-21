@@ -184,6 +184,23 @@ export function useHlsPlayer(channel: Channel | null) {
   const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   /** 卡頓 watchdog（緩衝持續耗盡時觸發 failover） */
   const stallTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /**
+   * 是否曾經真正開始播放。
+   *
+   * 用途：**區分「初始載入很慢」與「播放中卡住」**。
+   *
+   * · 初始載入很慢 → 由**載入 watchdog**（`LOAD_TIMEOUT_MS` = 60 秒）處理
+   * · 播放中卡住 → 由**卡頓 watchdog**（`STALL_TIMEOUT_MS` = 25 秒）處理
+   *
+   * 為什麼要分開：
+   *   初始載入期間 `waiting` 事件也會觸發（第一個 segment 還沒下載完）。
+   *   若卡頓 watchdog 在初始載入時也啟動，慢速但正常的來源會在 25 秒時
+   *   被誤判成「卡住」而換源 —— 對只有單一來源的頻道（22 個）來說，
+   *   那會直接變成播放失敗（沒有備援可換），是明確的**退步**。
+   *
+   *   所以卡頓 watchdog 只在「已經播過畫面」之後才有意義。
+   */
+  const hasPlayedRef = useRef(false);
   /** 目前頻道的 ref（供事件監聽器讀取當下值，避免過期閉包） */
   const channelRef = useRef<Channel | null>(null);
   /** 目前播放中的來源網址 ref */
@@ -208,6 +225,15 @@ export function useHlsPlayer(channel: Channel | null) {
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [needsUserGesture, setNeedsUserGesture] = useState(false);
+  /**
+   * 是否正在等待使用者手勢（自動播放被政策擋下）。
+   *
+   * 用途：**避免 watchdog 在「等待使用者點擊」時誤觸發換源**。
+   *   這種狀態下畫面還沒載入完不是來源的錯，而是瀏覽器政策擋住了自動播放。
+   *   若此時觸發 failover，使用者會看到「播放失敗」取代
+   *   「點擊開始播放」的提示 —— 那是明確的退步。
+   */
+  const needsUserGestureRef = useRef(false);
   const [nativeHls, setNativeHls] = useState(false);
   const [activeSourceIndex, setActiveSourceIndex] = useState(0);
   const [attemptedUrls, setAttemptedUrls] = useState<string[]>([]);
@@ -313,6 +339,9 @@ export function useHlsPlayer(channel: Channel | null) {
         const video = videoRef.current;
         const started = video && video.readyState >= 3 && video.currentTime > 0;
         if (!started) {
+          // 正在等待使用者手勢（自動播放被政策擋下）→ 不是來源的問題，
+          // 換源只會把「點擊開始播放」的提示換成「播放失敗」。
+          if (needsUserGestureRef.current) return;
           void handleFailureRef.current?.(
             target,
             url,
@@ -358,6 +387,10 @@ export function useHlsPlayer(channel: Channel | null) {
       // 記錄當下的頻道與來源網址（供卡頓 watchdog 使用）
       channelRef.current = target;
       activeUrlRef.current = url;
+      // 新來源 → 尚未播放過畫面，卡頓 watchdog 先不啟動
+      hasPlayedRef.current = false;
+      // 換源 → 重新嘗試自動播放，先前的「等待使用者點擊」狀態不再適用
+      needsUserGestureRef.current = false;
 
       /**
        * 靜音狀態的決定。
@@ -517,10 +550,17 @@ export function useHlsPlayer(channel: Channel | null) {
       hlsRef.current = hls;
 
       hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        if (watchdogRef.current) {
-          clearTimeout(watchdogRef.current);
-          watchdogRef.current = null;
-        }
+        // ⚠️ **不可在這裡清除載入 watchdog**。
+        //
+        // MANIFEST_PARSED 只代表「清單讀到了」，**畫面還沒出現**。
+        // 慢速來源的 manifest 秒回，但第一個 segment 要 10–30 秒 ——
+        // 這段期間正是最需要自動換源的時候。
+        //
+        // 舊的寫法在這裡清掉 watchdog，導致「清單有回應但 segment 不來」
+        // 的情況**完全沒有任何 watchdog 守護**，使用者只能乾等。
+        //
+        // 載入 watchdog 由 `onPlaying` 清除（真的有畫面才清除）——
+        // 見 onPlaying 裡的 clearTimeout(watchdogRef.current)。
         setStatus('playing');
         setNeedsUserGesture(false);
         video.play().catch(() => {
@@ -665,6 +705,14 @@ export function useHlsPlayer(channel: Channel | null) {
   useEffect(() => {
     handleFailureRef.current = handleFailure;
   }, [handleFailure]);
+
+  // needsUserGesture 的 ref 指標 —— 供 watchdog 讀取「是否正在等待使用者點擊」。
+  //
+  // 用 useEffect 同步（而不是在每個 setNeedsUserGesture 呼叫點都改 ref），
+  // 避免漏改。watchdog 的觸發時間是數十秒之後，React 早就 render 完了。
+  useEffect(() => {
+    needsUserGestureRef.current = needsUserGesture;
+  }, [needsUserGesture]);
 
   /**
    * 取消靜音。
@@ -878,6 +926,10 @@ export function useHlsPlayer(channel: Channel | null) {
     if (!video) return;
 
     const onPlaying = () => {
+      // 已經真的有畫面了 → 之後的 waiting 才是「播放中卡住」，
+      // 可以啟動卡頓 watchdog（見 hasPlayedRef 的說明）。
+      hasPlayedRef.current = true;
+
       if (watchdogRef.current) {
         clearTimeout(watchdogRef.current);
         watchdogRef.current = null;
@@ -939,6 +991,10 @@ export function useHlsPlayer(channel: Channel | null) {
     const onWaiting = () => {
       setStatus('loading');
 
+      // 只在「已經播過畫面」之後才啟動卡頓 watchdog。
+      // 初始載入期間的等待由載入 watchdog（60 秒）處理 —— 見 hasPlayedRef 的說明。
+      if (!hasPlayedRef.current) return;
+
       if (stallTimerRef.current) return; // 已在計時中
 
       const target = channelRef.current;
@@ -948,8 +1004,31 @@ export function useHlsPlayer(channel: Channel | null) {
       stallTimerRef.current = setTimeout(() => {
         stallTimerRef.current = null;
         const v = videoRef.current;
-        // 已經恢復播放 → 不是真的卡住
-        if (!v || v.paused === false) return;
+        if (!v) return;
+
+        // ⚠️ **不可用 `v.paused` 判斷「是否還在卡」**。
+        //
+        // 實測（2026-11-21，CDP 攔截並延遲 segment）：
+        //   waiting 事件觸發時 video.paused === false，
+        //   readyState === 0，且 currentTime 完全不前進。
+        //
+        // 原因是「緩衝耗盡」不等於「被暫停」：
+        //   video 元素仍處於「想播放」的狀態（paused=false），
+        //   只是沒有資料可以推进而已。
+        //
+        // 舊的寫法 `if (!v || v.paused === false) return;` 方向完全相反 ——
+        //   它恰好在「真的卡住」時提前 return，導致**卡頓 failover 從未生效**
+        //   （實測：卡頓 100 秒仍停在主來源，從未改用備援）。
+        //
+        // 判斷依據是「有沒有真的在播放」：
+        //   · readyState >= 3（HAVE_FUTURE_DATA）→ 緩衝充足，沒卡
+        //
+        // ⚠️ 不可用「currentTime 有沒有前進」當判準：
+        //   直播會自動對齊直播現場（live edge），currentTime 可能**跳躍式前進**，
+        //   即使畫面是凍結的。實測 currentTime 從 19 跳到 58 而畫面沒動。
+        //
+        //   「播放恢復」由 `onPlaying` 事件負責（它會清除這個 timer），
+        //   這裡不需要重複判斷。
         if (v.readyState >= 3) return;
 
         console.warn(
