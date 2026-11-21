@@ -137,6 +137,19 @@
   flex-direction: column;
   gap: 14px;
   padding-bottom: 12px;
+  /*
+   * 隱藏捲軸。
+   *
+   * 抽屜全屏時內容區只剩 ~150px 高，捲軸會變成一個小方塊
+   * 浮在右下角（實測截圖可見），看起來像畫面破圖。
+   * 這裡的內容都是次要資訊，不需要捲軸提示；
+   * 台標列與頁籤列也都已經隱藏捲軸，風格一致。
+   */
+  scrollbar-width: none;
+}
+
+.content::-webkit-scrollbar {
+  display: none;
 }
 
 .nowPlaying {

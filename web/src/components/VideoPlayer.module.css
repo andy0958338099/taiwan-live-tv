@@ -29,6 +29,15 @@
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--border);
+  /*
+   * Container query —— 讓提示內容知道「播放器現在有多矮」。
+   *
+   * 抽屜拉到全屏時播放器只剩 ~138px 高，
+   * 而空狀態提示（圖示 + 標題 + 說明 + 按鈕）大約 200px 高 → 溢出被裁切，
+   * 看起來像「按鈕被切一半」。
+   */
+  container-type: size;
+  container-name: player;
 }
 
 .playerVideo {
@@ -68,6 +77,48 @@
   text-align: center;
   background: rgba(11, 11, 15, 0.85);
   z-index: 5;
+  /* 內容比播放器高時要裁切而不是溢出到框外 */
+  overflow: hidden;
+}
+
+/**
+ * 播放器變矮時精簡提示內容。
+ *
+ * 抽屜全屏時播放器只有 ~138px 高，
+ * 原本的「圖示 + 標題 + 說明 + 按鈕」塞不下 → 按鈕被切成半截。
+ *
+ * 用 container query（而不是 media query）判斷，
+ * 因為播放器高度取決於**抽屜高度**，不是視窗寬度。
+ */
+@container player (max-height: 220px) {
+  .pickerHint {
+    gap: 6px;
+    padding: 8px;
+  }
+
+  .pickerHintIcon {
+    display: none;
+  }
+
+  .pickerHintTitle {
+    font-size: 0.95rem;
+  }
+
+  .pickerHintText {
+    display: none;
+  }
+
+  .pickerHint .retryBtn {
+    padding: 7px 18px;
+    font-size: 0.82rem;
+  }
+}
+
+/* 再矮就只留標題與按鈕 */
+@container player (max-height: 120px) {
+  .pickerHintTitle {
+    display: none;
+  }
 }
 
 .pickerHintIcon {

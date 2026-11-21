@@ -96,3 +96,19 @@ iframe[data-nl-ready='1']:hover {
     padding-bottom: 56px !important;
   }
 }
+
+/*
+ * Next.js 的 route announcer。
+ *
+ * 它是給螢幕閱讀器用的無障礙元素，但預設會在畫面上留下一小塊
+ * 白色方塊（實測在 1440 截圖右側可見），干擾畫面。
+ * 保留給輔助科技（不能 display:none，會讓螢幕閱讀器失去通知）。
+ */
+next-route-announcer {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+}

@@ -145,31 +145,9 @@ for (const size of SIZES) {
       const loading = document.body.innerText.includes('載入中');
       return JSON.stringify({ ok: !!btn && !loading });
     })()`);
-    if (r.error) {
-      console.log('     evalJs 錯誤:', r.error);
-      break;
-    }
     if (r.value && String(r.value).includes('"ok":true')) {
       ready = true;
       break;
-    }
-    if (i === 5) {
-      const dbg = await cdp.evalJs(`(async () => {
-        let fetchResult = 'pending';
-        try {
-          const r = await fetch('/channels.json', { cache: 'no-store' });
-          const t = await r.text();
-          fetchResult = r.status + ' ' + t.length + ' bytes';
-        } catch (e) { fetchResult = 'ERROR ' + e.message; }
-        return JSON.stringify({
-          url: location.href,
-          text: document.body ? document.body.innerText.slice(0,60) : 'no-body',
-          ready: document.readyState,
-          vis: document.visibilityState,
-          fetchResult,
-        });
-      })()`);
-      console.log('     除錯:', dbg.value);
     }
   }
   if (!ready) console.log(`  ⚠️ ${size.name} 寬度：頁面未在時限內就緒，仍繼續截圖`);
@@ -188,28 +166,42 @@ for (const size of SIZES) {
   const half = await shot(cdp, join(OUT, `ui-${size.name}-half.png`));
   console.log(`  ✓ ${half}`);
 
-  // ── 3. 全屏（把高度設到最大）──
-  await cdp.evalJs(`(() => {
-    const a = document.querySelector('aside[aria-label="頻道選擇"]');
-    if (!a) return;
-    const grip = a.querySelector('button[aria-label="調整抽屜高度"]');
-    if (grip) {
-      // 用 pointer 事件模擬拖到最上方
-      const r = grip.getBoundingClientRect();
-      const x = r.left + r.width / 2;
-      const y = r.top + r.height / 2;
-      const opts = (cx, cy, type) => ({
-        pointerId: 1, pointerType: 'mouse', isPrimary: true,
-        clientX: cx, clientY: cy, button: 0, buttons: type === 'mouseReleased' ? 0 : 1,
-      });
-      grip.dispatchEvent(new PointerEvent('pointerdown', opts(x, y, 'mousePressed')));
-      for (let i = 1; i <= 10; i++) {
-        grip.dispatchEvent(new PointerEvent('pointermove', opts(x, y - i * 40, 'mouseMoved')));
-      }
-      grip.dispatchEvent(new PointerEvent('pointerup', opts(x, y - 400, 'mouseReleased')));
-    }
+  // ── 3. 全屏（把把手往上拖）──
+  //
+  // ⚠️ 必須用 CDP 的真實滑鼠事件（Input.dispatchMouseEvent）。
+  // 用 `new PointerEvent()` 合成事件不行 —— React 的 pointer handler
+  // 依賴真實的 pointer capture 與座標，合成事件不會觸發拖曳邏輯
+  // （實測：合成事件拖了 400px，抽屜高度完全不變）。
+  const gripBox = await cdp.evalJs(`(() => {
+    const g = document.querySelector('button[aria-label="調整抽屜高度"]');
+    if (!g) return null;
+    const r = g.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   })()`);
-  await sleep(900);
+  if (gripBox.value) {
+    const gx = gripBox.value.x;
+    const gy = gripBox.value.y;
+    await cdp.send('Input.dispatchMouseEvent', {
+      type: 'mouseMoved', x: gx, y: gy,
+    });
+    await sleep(60);
+    await cdp.send('Input.dispatchMouseEvent', {
+      type: 'mousePressed', x: gx, y: gy, button: 'left', clickCount: 1,
+    });
+    // 往上拖 40 步，每步 22px（總計 440px，足以從 45vh 拉到 88vh）
+    for (let i = 1; i <= 20; i++) {
+      await cdp.send('Input.dispatchMouseEvent', {
+        type: 'mouseMoved', x: gx, y: Math.max(8, gy - i * 22),
+        button: 'left', buttons: 1,
+      });
+      await sleep(25);
+    }
+    await cdp.send('Input.dispatchMouseEvent', {
+      type: 'mouseReleased', x: gx, y: Math.max(8, gy - 440),
+      button: 'left', clickCount: 1,
+    });
+    await sleep(800);
+  }
   const full = await shot(cdp, join(OUT, `ui-${size.name}-full.png`));
   console.log(`  ✓ ${full}`);
 
@@ -226,7 +218,7 @@ for (const size of SIZES) {
       videoSize: Math.round(vr.width) + 'x' + Math.round(vr.height),
     });
   })()`);
-  console.log(`     狀態：${state.value}`);
+  console.log(`     全屏狀態：${state.value}`);
 }
 
 console.log('\n完成');

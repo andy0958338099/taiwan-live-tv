@@ -157,9 +157,23 @@ async function main() {
     console.log('本機站沒有注入徽章（線上才有）');
     return;
   }
-  console.log('徽章：', JSON.stringify(res.value?.badge));
-  console.log(`\n重疊元素（${res.value?.items?.length ?? 0} 個）：`);
-  for (const it of res.value?.items ?? []) {
+
+  // 抽屜「開著」才是真實情況 —— 底部抽屜是主要互動區，
+  // 徽章若壓到頻道卡片就真的有問題。
+  const openDrawer = await cdp.evalJs(`(() => {
+    const b = document.querySelector('header button[aria-label="選擇頻道"]');
+    if (!b) return false;
+    b.click();
+    return true;
+  })()`);
+  await sleep(1200);
+
+  const res2 = await cdp.evalJs(OVERLAP_JS);
+  const items = res2.value?.items ?? [];
+
+  console.log('徽章：', JSON.stringify(res2.value?.badge));
+  console.log(`\n重疊元素（抽屜開啟時，${items.length} 個）：`);
+  for (const it of items) {
     const kind = it.leaf ? '葉節點' : it.interactive ? '含控制項' : '容器';
     console.log(
       `  · <${it.tag}> [${it.cls}] ${kind}` +
@@ -167,9 +181,7 @@ async function main() {
         ` pos=${it.pos} z=${it.z} rect=${JSON.stringify(it.rect)}`,
     );
   }
-  const meaningful = (res.value?.items ?? []).filter(
-    (it) => it.ownText || it.interactive || it.leaf,
-  );
+  const meaningful = items.filter((it) => it.ownText || it.interactive || it.leaf);
   console.log(
     `\n有可見文字／控制項的重疊：${meaningful.length} 個 → ` +
       (meaningful.length ? '⚠️ 真的蓋到內容' : '✓ 只蓋到空容器，視覺無害'),

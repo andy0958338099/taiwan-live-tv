@@ -35,6 +35,13 @@ interface VideoPlayerProps {
   remainingSources?: number;
   /** 是否已選取頻道（false 時顯示「選擇頻道」提示） */
   hasChannel?: boolean;
+  /**
+   * 可選頻道的總數。
+   *
+   * 空狀態提示原本寫死「90 個」—— 頻道數變了之後文案就跟著錯，
+   * 會讓人懷疑資料是不是壞了。改成從實際資料帶進來。
+   */
+  channelCount?: number;
   /** 開啟頻道選擇抽屜 */
   onOpenPicker?: () => void;
   /**
@@ -84,6 +91,8 @@ export function VideoPlayer({
    * 這時在播放器中央顯示「選擇頻道」提示，直接引導到抽屜。
    */
   hasChannel = true,
+  /** 可選頻道總數（空狀態提示用） */
+  channelCount,
   /** 開啟頻道選擇抽屜（提示中的按鈕） */
   onOpenPicker,
   officialUrl = null,
@@ -251,7 +260,7 @@ export function VideoPlayer({
           </span>
           <h2 className={styles.pickerHintTitle}>尚未選擇頻道</h2>
           <p className={styles.pickerHintText}>
-            點下方按鈕開啟頻道清單，從 90 個直播頻道中挑選
+            點下方按鈕開啟頻道清單，從 {channelCount ?? 0} 個直播頻道中挑選
           </p>
           {onOpenPicker && (
             <button type="button" className={styles.retryBtn} onClick={onOpenPicker}>

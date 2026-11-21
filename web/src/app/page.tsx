@@ -252,6 +252,7 @@ export default function Home() {
             player.totalSources - player.activeSourceIndex - 1,
           )}
           hasChannel={!!selected}
+          channelCount={browser.visibleChannels.length}
           onOpenPicker={sheet.openDrawer}
           officialUrl={selected?.source_website ?? null}
         />
