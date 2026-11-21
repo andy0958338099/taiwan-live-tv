@@ -13,6 +13,7 @@ import {
 
 export type ViewMode = 'all' | 'favorites' | 'recent';
 export type CategoryFilter = string | '__all__';
+export type RegionFilter = string | '__all__';
 
 const ALL_CATEGORY = '__all__';
 
@@ -22,15 +23,19 @@ export interface ChannelBrowserState {
   visibleChannels: Channel[];
   viewMode: ViewMode;
   categoryFilter: CategoryFilter;
+  regionFilter: RegionFilter;
   query: string;
   favorites: string[];
   recent: string[];
   lastChannelId: string | null;
   setViewMode: (mode: ViewMode) => void;
   setCategoryFilter: (id: CategoryFilter) => void;
+  setRegionFilter: (id: RegionFilter) => void;
   setQuery: (q: string) => void;
   toggleFav: (channelId: string) => void;
   markWatched: (channelId: string) => void;
+  /** 所有可用的地區（依頻道數排序） */
+  regions: { id: string; name: string; count: number }[];
 }
 
 /**
@@ -45,6 +50,7 @@ export function useChannelBrowser(
 ): ChannelBrowserState {
   const [viewMode, setViewMode] = useState<ViewMode>('all');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>(ALL_CATEGORY);
+  const [regionFilter, setRegionFilter] = useState<RegionFilter>(ALL_CATEGORY);
   const [query, setQuery] = useState('');
   const [favorites, setFavorites] = useState<string[]>([]);
   const [recent, setRecent] = useState<string[]>([]);
@@ -57,6 +63,29 @@ export function useChannelBrowser(
     setLastChannelId(getLastChannel());
     setHydrated(true);
   }, []);
+
+  /**
+   * 可用地區清單。
+   *
+   * 「地區」是台灣觀眾最實際的第一層篩選（台灣 / 中國 / 香港…），
+   * 比「新聞台 / 綜合台」更符合「我要看本土台」的直覺。
+   */
+  const regions = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const c of allChannels) {
+      const r = c.region?.trim();
+      if (!r) continue;
+      counts.set(r, (counts.get(r) ?? 0) + 1);
+    }
+    return [...counts.entries()]
+      .map(([id, count]) => ({ id, name: id, count }))
+      // 台灣優先（本地台永遠第一），其餘依頻道數排序
+      .sort((a, b) => {
+        if (a.id === '台灣') return -1;
+        if (b.id === '台灣') return 1;
+        return b.count - a.count;
+      });
+  }, [allChannels]);
 
   const visibleChannels = useMemo(() => {
     let list = allChannels;
@@ -71,6 +100,10 @@ export function useChannelBrowser(
 
     if (categoryFilter !== ALL_CATEGORY) {
       list = list.filter((c) => c.category === categoryFilter);
+    }
+
+    if (regionFilter !== ALL_CATEGORY) {
+      list = list.filter((c) => c.region === regionFilter);
     }
 
     const q = query.trim().toLowerCase();
@@ -89,7 +122,7 @@ export function useChannelBrowser(
     }
 
     return list;
-  }, [allChannels, viewMode, favorites, recent, categoryFilter, query]);
+  }, [allChannels, viewMode, favorites, recent, categoryFilter, regionFilter, query]);
 
   const toggleFav = (channelId: string) => {
     const next = toggleFavorite(channelId);
@@ -108,12 +141,15 @@ export function useChannelBrowser(
     visibleChannels,
     viewMode,
     categoryFilter,
+    regionFilter,
     query,
     favorites,
     recent,
+    regions,
     lastChannelId: hydrated ? lastChannelId : null,
     setViewMode,
     setCategoryFilter,
+    setRegionFilter,
     setQuery,
     toggleFav,
     markWatched,

@@ -5,6 +5,10 @@
  * /channels.json（由 scripts/sync-channels.mjs 從 shared/channels.json 產生）。
  */
 
+import type { EpgCatalog } from './epg';
+
+export type { EpgCatalog, EpgChannel, EpgCurrent, EpgUpcoming } from './epg';
+
 export type StreamType = 'hls' | 'dash' | 'mp4' | 'progressive';
 
 export type AuthorizationStatus =
@@ -93,6 +97,12 @@ export interface ChannelCatalog {
   updated_at: string;
   categories: Category[];
   channels: Channel[];
+  /**
+   * 節目表（EPG）—— 由 scripts/fetch-epg.mjs 從官方來源擷取。
+   *
+   * 沒有 EPG 的頻道不會出現在這裡，UI 會退回「只顯示台標與名稱」。
+   */
+  epg?: EpgCatalog;
 }
 
 /**

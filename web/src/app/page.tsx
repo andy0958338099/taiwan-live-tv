@@ -7,6 +7,7 @@ import { useChannelBrowser, type CategoryFilter, type ViewMode } from '../lib/us
 import { useHlsPlayer } from '../lib/useHlsPlayer';
 import { VideoPlayer } from '../components/VideoPlayer';
 import { ChannelInfoDialog } from '../components/ChannelInfoDialog';
+import { ChannelRail } from '../components/ChannelRail';
 import styles from './page.module.css';
 
 const ALL_CATEGORY = '__all__';
@@ -138,19 +139,14 @@ export default function Home() {
           </p>
         </div>
 
-        <div className={styles.searchWrap}>
-          <label htmlFor="channel-search" className={styles.srOnly}>
-            搜尋頻道
-          </label>
-          <input
-            id="channel-search"
-            type="search"
-            className={styles.searchInput}
-            placeholder="搜尋頻道名稱或關鍵字"
-            value={browser.query}
-            onChange={(e) => browser.setQuery(e.target.value)}
-          />
-        </div>
+        {/*
+         * 搜尋框只放在抽屜裡。
+         *
+         * 原本頁首也有一個，但抽屜展開時兩個搜尋框同時出現、
+         * 內容同步、行為一致 —— 使用者會困惑到底哪個才是對的。
+         * 抽屜關閉時看不到搜尋也沒關係：
+         * 頁首的「選擇頻道」把手會引導使用者進到那裡。
+         */}
       </header>
 
       {/* 播放區 */}
@@ -292,6 +288,21 @@ export default function Home() {
             />
           </div>
 
+          {/*
+           * 橫向台標列 —— 主要的選台入口。
+           *
+           * 放在最上面（搜尋框之後、頁籤之前），因為它是「快速換台」
+           * 用的；而下方的網格是「瀏覽完整清單」用的。
+           * 兩者分工明確，不重複。
+           */}
+          <ChannelRail
+            channels={browser.visibleChannels}
+            selectedId={selected?.channel_id ?? null}
+            epg={catalog.epg}
+            categories={catalog.categories}
+            onSelect={handleSelect}
+          />
+
           {/* 檢視模式 —— 可橫向捾動的 chip 列 */}
           <nav className={styles.drawerTabs} aria-label="檢視模式">
             {(
@@ -311,6 +322,80 @@ export default function Home() {
               </button>
             ))}
           </nav>
+
+          {/*
+           * 我的最愛 —— 獨立的一列，不受頁籤切換影響。
+           *
+           * Apple HIG 對 Live-Viewing Apps 的說明裡，「My Channels」
+           * （我的頻道）永遠直接可見，不藏在子頁籤裡 ——
+           * 使用者最常回來的頻道就是最愛，藏起來等於增加兩次點擊。
+           * 這裡放在地區/分類篩選之前，因為它是最常用的一層。
+           */}
+          {browser.favorites.length > 0 && (
+            <section className={styles.favSection} aria-label="我的最愛頻道">
+              <ul className={styles.favRow}>
+                {browser.favorites.map((id) => {
+                  const ch = catalog.channels.find((c) => c.channel_id === id);
+                  if (!ch) return null;
+                  const isActive = selected?.channel_id === id;
+                  return (
+                    <li key={id}>
+                      <button
+                        type="button"
+                        className={`${styles.favItem} ${isActive ? styles.favItemActive : ''}`}
+                        onClick={() => handleSelect(ch)}
+                        aria-pressed={isActive}
+                      >
+                        <span className={styles.favLogoWrap}>
+                          {ch.logo ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={ch.logo} alt="" className={styles.favLogo} loading="lazy" />
+                          ) : (
+                            <span className={styles.favLogoPlaceholder}>
+                              {ch.channel_name.slice(0, 1)}
+                            </span>
+                          )}
+                          {isActive && (
+                            <span className={styles.liveBadge} aria-hidden="true">
+                              LIVE
+                            </span>
+                          )}
+                        </span>
+                        <span className={styles.favName}>{ch.channel_name}</span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          )}
+
+          {/*
+           * 地區 —— 對台灣觀眾最實用的一層篩選。
+           * 台灣永遠排第一，其餘依頻道數排序。
+           */}
+          {browser.regions.length > 1 && (
+            <nav className={styles.drawerChips} aria-label="頻道地區">
+              <button
+                type="button"
+                onClick={() => browser.setRegionFilter(ALL_CATEGORY)}
+                aria-pressed={browser.regionFilter === ALL_CATEGORY}
+              >
+                全部地區
+              </button>
+              {browser.regions.map((r) => (
+                <button
+                  key={r.id}
+                  type="button"
+                  onClick={() => browser.setRegionFilter(r.id)}
+                  aria-pressed={browser.regionFilter === r.id}
+                >
+                  {r.name}
+                  <span className={styles.chipCount}>{r.count}</span>
+                </button>
+              ))}
+            </nav>
+          )}
 
           {/* 分類 —— 也是可橫向捾動的 chip 列 */}
           <nav className={styles.drawerChips} aria-label="頻道分類">

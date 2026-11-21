@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-11-21T07:44:35.919Z",
+  "channels": {
+    "tw-taiwan-plus": {
+      "source": "Taiwan Plus 官方直播頁",
+      "current": {
+        "title": "Inside Taiwan",
+        "start": "2026/11/21 15:00",
+        "end": "16:00",
+        "description": "",
+        "age_rating": "0+"
+      },
+      "upcoming": [
+        {
+          "title": "Taiwan Talks",
+          "start": "2026/11/21 16:00"
+        },
+        {
+          "title": "Taiwan Talks",
+          "start": "2026/11/21 16:00"
+        },
+        {
+          "title": "The Chain Maker",
+          "start": "2026/11/21 16:30"
+        },
+        {
+          "title": "The Chain Maker",
+          "start": "2026/11/21 16:30"
+        },
+        {
+          "title": "What's Up Taiwan Weekend Edition ",
+          "start": "2026/11/21 17:00"
+        },
+        {
+          "title": "What's Up Taiwan Weekend Edition ",
+          "start": "2026/11/21 17:00"
+        }
+      ]
+    }
+  }
+}

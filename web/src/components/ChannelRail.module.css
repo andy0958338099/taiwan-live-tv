@@ -1,0 +1,329 @@
+/* ============================================================
+   ChannelRail —— 橫向台標列 +「現在在播」
+   ------------------------------------------------------------
+   設計參考：Apple HIG「Live-Viewing Apps」、YouTube TV、
+   Samsung TV Plus、Plex、Tellyfin —— 成熟 TV app 共同的模式。
+   ============================================================ */
+
+.wrap {
+  margin: 0 0 14px;
+}
+
+/* ---------------------------------------------------------
+   「現在在播」面板
+   --------------------------------------------------------- */
+
+.epgPanel {
+  margin: 0 0 12px;
+  padding: 13px 15px;
+  background: linear-gradient(
+    135deg,
+    rgba(79, 156, 255, 0.13),
+    rgba(255, 255, 255, 0.025)
+  );
+  border: 1px solid rgba(79, 156, 255, 0.22);
+  border-radius: 14px;
+}
+
+.epgHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+
+/* 紅色 LIVE 標記 —— Apple TV / YouTube TV / Plex 都用這個 */
+.epgLabel {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: #e0243c;
+  color: #fff;
+  font-size: 0.63rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  line-height: 1.6;
+}
+
+.epgChannel {
+  font-size: 0.86rem;
+  font-weight: 650;
+  color: var(--text-primary);
+}
+
+.epgCategory {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.epgTitle {
+  margin: 0 0 4px;
+  font-size: 1.02rem;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.epgMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 5px;
+}
+
+.epgTime {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent, #4f9cff);
+  font-variant-numeric: tabular-nums;
+}
+
+.epgDash {
+  margin: 0 1px;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+}
+
+.epgRating {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.66rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.epgDesc {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+/* 接下來要播的節目 */
+.epgNext {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 16px;
+  margin-top: 9px;
+  padding-top: 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.epgNextItem {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.epgNextTime {
+  margin-right: 5px;
+  font-weight: 600;
+  color: var(--accent, #4f9cff);
+  font-variant-numeric: tabular-nums;
+}
+
+.epgNoSchedule {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.epgSource {
+  margin: 8px 0 0;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  opacity: 0.7;
+}
+
+/* ---------------------------------------------------------
+   橫向台標列
+   --------------------------------------------------------- */
+
+.rail {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 2px 2px 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* 讓捲動終點的卡片不會貼死邊緣 */
+  scroll-padding-inline: 2px;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.rail > li {
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+
+.item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  width: 100px;
+  padding: 9px 7px 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.12s;
+}
+
+.item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.item:active {
+  transform: scale(0.95);
+}
+
+.item:focus-visible {
+  outline: 2px solid var(--accent, #4f9cff);
+  outline-offset: 2px;
+}
+
+.itemActive {
+  background: rgba(79, 156, 255, 0.18);
+  border-color: var(--accent, #4f9cff);
+  box-shadow: 0 0 0 3px rgba(79, 156, 255, 0.16);
+}
+
+/* 頻道號碼 */
+.number {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  min-width: 17px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--text-secondary, #a8a8b3);
+  font-size: 0.61rem;
+  font-weight: 700;
+  line-height: 1.55;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/**
+ * 台標框。
+ *
+ * 與卡片同樣的道理：台標大小差異極大（20×20 到 300×80），
+ * 必須 flex + overflow: hidden + 圖片給 max-width/max-height。
+ * 只寫 max-height 會讓 `<img>` 撐破容器；寫 width/height:100%
+ * 在沒有解析基準的高度下會被裁切。
+ */
+.logoWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 34px;
+  max-height: 44px;
+  overflow: hidden;
+}
+
+.logo {
+  max-width: 100%;
+  max-height: 40px;
+  width: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.logoPlaceholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 30px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-secondary, #a8a8b3);
+}
+
+/* LIVE 徽章 */
+.liveBadge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #e0243c;
+  color: #fff;
+  font-size: 0.54rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  line-height: 1.5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+}
+
+.name {
+  width: 100%;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--text-secondary);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.itemActive .name {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* ---------------------------------------------------------
+   手機上把台標列的項目再放大一點（觸控目標）
+   --------------------------------------------------------- */
+
+@media (max-width: 640px) {
+  .item {
+    width: 88px;
+    padding: 8px 6px 7px;
+  }
+
+  .logo {
+    max-height: 36px;
+  }
+
+  .name {
+    font-size: 0.68rem;
+  }
+
+  .epgPanel {
+    padding: 11px 13px;
+    border-radius: 12px;
+  }
+
+  .epgTitle {
+    font-size: 0.94rem;
+  }
+}

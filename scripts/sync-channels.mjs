@@ -69,6 +69,36 @@ const payload = {
   channels: (data.channels || []).filter((c) => c.is_active),
 };
 
+/**
+ * 併入節目表（EPG）。
+ *
+ * EPG 來自 shared/epg.json（scripts/fetch-epg.mjs 從官方站台擷取）。
+ * 這是**選用**的 —— 沒有這個檔案時，UI 就不顯示「現在在播」，
+ * 其餘功能完全不受影響。
+ */
+const EPG_SRC = join(ROOT, 'shared', 'epg.json');
+if (existsSync(EPG_SRC)) {
+  try {
+    const epg = JSON.parse(readFileSync(EPG_SRC, 'utf8'));
+    // 只保留「仍在啟用清單裡」的頻道的節目表
+    const activeIds = new Set(payload.channels.map((c) => c.channel_id));
+    const channels = {};
+    for (const [id, v] of Object.entries(epg.channels || {})) {
+      if (activeIds.has(id)) channels[id] = v;
+    }
+    payload.epg = {
+      schema_version: epg.schema_version ?? 1,
+      updated_at: epg.updated_at ?? data.updated_at,
+      channels,
+    };
+    console.log(
+      `  ✓ 節目表        ${Object.keys(channels).length} 個頻道有 EPG`,
+    );
+  } catch (err) {
+    console.warn(`  ⚠ 節目表讀取失敗（略過 EPG）：${err.message}`);
+  }
+}
+
 const serialized = JSON.stringify(payload, null, 2) + '\n';
 
 console.log('');

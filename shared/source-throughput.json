@@ -1,0 +1,3227 @@
+{
+  "measured_at": "2026-11-21T07:16:47.611Z",
+  "platform_budget_ms": 30000,
+  "results": [
+    {
+      "key": "59.39.89.130:60901|0003_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0003_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv3",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5499564,
+      "ms": 10059,
+      "bps": 546731,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5499564
+    },
+    {
+      "key": "59.39.89.130:60901|0004_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0004_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv4",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5495616,
+      "ms": 10082,
+      "bps": 545092,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5495616
+    },
+    {
+      "key": "222.134.245.16:9901|0002_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0002_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv2",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "36.136.38.87:9901|0004_1.m3u8",
+      "host": "36.136.38.87:9901",
+      "path": "0004_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv4",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "59.39.89.130:60901|0005_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0005_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5498248,
+      "ms": 22143,
+      "bps": 248306,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5498248
+    },
+    {
+      "key": "59.39.89.130:60901|0016_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0016_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5plus",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5498248,
+      "ms": 17841,
+      "bps": 308180,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5498248
+    },
+    {
+      "key": "59.39.89.130:60901|0006_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0006_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv6",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5499564,
+      "ms": 7930,
+      "bps": 693514,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5499564
+    },
+    {
+      "key": "218.13.170.98:9901|0003_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0003_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv3",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5503512,
+      "ms": 38457,
+      "bps": 143108,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 5503512
+    },
+    {
+      "key": "218.13.170.98:9901|0004_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0004_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv4",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5504828,
+      "ms": 38485,
+      "bps": 143038,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 5504828
+    },
+    {
+      "key": "121.19.134.149:808|0002_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0002_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv2",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40004,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0004_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0004_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv4",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0003_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0003_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv3",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40006,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0001_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0001_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv1",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40005,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0005_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0005_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40005,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1017_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1017_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv3",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1018_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1018_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv4",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0002_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0002_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv2",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0001_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0001_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv1",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0003_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0003_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv3",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1019_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1019_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40004,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1074_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1074_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0007_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0007_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv7",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1712116,
+      "ms": 4275,
+      "bps": 400495,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1712116
+    },
+    {
+      "key": "120.198.95.220:9901|1016_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1016_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv2",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0018_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0018_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5plus",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0005_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0005_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1022_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1022_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv7",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "61.136.172.236:9901|0016_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0016_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv5plus",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0012_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0012_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv12",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 5407,
+      "bps": 1040485,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "59.39.89.130:60901|0011_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0011_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv11",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1710800,
+      "ms": 6554,
+      "bps": 261031,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1710800
+    },
+    {
+      "key": "59.39.89.130:60901|0010_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0010_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv10",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5498248,
+      "ms": 13791,
+      "bps": 398684,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5498248
+    },
+    {
+      "key": "121.19.134.149:808|0006_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0006_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv6",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0008_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0008_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv8",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5498248,
+      "ms": 23304,
+      "bps": 235936,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5498248
+    },
+    {
+      "key": "59.39.89.130:60901|0009_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0009_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv9",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5498248,
+      "ms": 24475,
+      "bps": 224648,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5498248
+    },
+    {
+      "key": "59.39.89.130:60901|0015_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0015_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv15",
+          "role": "primary"
+        },
+        {
+          "channelId": "cn-cctv15",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1710800,
+      "ms": 4973,
+      "bps": 344018,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1710800
+    },
+    {
+      "key": "120.198.95.220:9901|1075_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1075_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv9",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 12220,
+      "ms": 24129,
+      "bps": 506,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 12220
+    },
+    {
+      "key": "59.39.89.130:60901|0017_1.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0017_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv17",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 1713432,
+      "ms": 3767,
+      "bps": 454853,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1713432
+    },
+    {
+      "key": "61.136.172.236:9901|0006_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0006_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv6",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|0008_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0008_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv8",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5500880,
+      "ms": 38898,
+      "bps": 141418,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 5500880
+    },
+    {
+      "key": "121.19.134.149:808|0007_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0007_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv7",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40000,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|0007_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0007_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv7",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0008_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0008_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv8",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1021_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1021_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv6",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40000,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0010_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0010_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv10",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0010_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0010_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv10",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0009_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0009_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv9",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0011_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0011_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv11",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1023_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1023_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv8",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0013_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0013_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv13",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40005,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_7.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_7.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bj",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5495616,
+      "ms": 8279,
+      "bps": 663802,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5495616
+    },
+    {
+      "key": "61.136.172.236:9901|0012_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0012_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv12",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1050_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1050_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "61.136.172.236:9901|0013_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0013_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv13",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0014_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0014_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv14",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0014_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0014_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv14",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0107_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0107_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-df",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5623268,
+      "ms": 8677,
+      "bps": 648066,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5623268
+    },
+    {
+      "key": "218.13.170.98:9901|0015_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0015_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv15",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0015_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0015_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv15",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0016_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0016_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv16",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_2.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_2.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hn",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5496932,
+      "ms": 7123,
+      "bps": 771716,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5496932
+    },
+    {
+      "key": "222.134.245.16:9901|0132_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0132_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hb2",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5624584,
+      "ms": 6104,
+      "bps": 921459,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5624584
+    },
+    {
+      "key": "218.13.170.98:9901|0016_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0016_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv17",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0017_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0017_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cctv17",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1005_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1005_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cgtn",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0122_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0122_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bj",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1015_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1015_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0122_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0122_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|1004_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1004_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1012_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1012_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-js",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0127_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0127_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-js",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0125_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0125_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gd",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 9996,
+      "bps": 562815,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "120.198.95.220:9901|1054_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1054_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gx",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "120.198.95.220:9901|1046_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1046_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-js",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1026_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1026_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-df",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0107_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0107_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-df",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1047_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1047_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-df",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0143_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0143_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hlj",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 5624584,
+      "ms": 13837,
+      "bps": 406489,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5624584
+    },
+    {
+      "key": "222.134.245.16:9901|0113_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0113_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gx",
+          "role": "primary"
+        },
+        {
+          "channelId": "cn-gx",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5623268,
+      "ms": 17240,
+      "bps": 326176,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5623268
+    },
+    {
+      "key": "61.136.172.236:9901|0124_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0124_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-zj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|1007_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1007_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hb2",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5499564,
+      "ms": 27835,
+      "bps": 197577,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5499564
+    },
+    {
+      "key": "121.19.134.149:808|1011_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1011_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-zj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1010_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1010_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hn",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_14.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_14.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hlj",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5500880,
+      "ms": 13669,
+      "bps": 402435,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5500880
+    },
+    {
+      "key": "59.39.89.130:60901|0125_11.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_11.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sz",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5502196,
+      "ms": 6018,
+      "bps": 914290,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5502196
+    },
+    {
+      "key": "121.19.134.149:808|1025_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1025_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hb2",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1044_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1044_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hn",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1028_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1028_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gd",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1055_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1055_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ha",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "61.136.172.236:9901|0125_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0125_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gd",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|1019_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1019_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gx",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40000,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0113_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0113_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gx",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1020_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1020_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hlj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0143_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0143_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hlj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0137_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0137_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-dn",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 9968,
+      "bps": 564396,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "121.19.134.149:808|1030_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1030_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hn2",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1027_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1027_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cq",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|1020_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1020_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hn2",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0142_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0142_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-cq",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1024_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1024_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sz",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0126_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0126_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sz",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|1005_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1005_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sz",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "113.25.252.226:9901|1041_1.m3u8",
+      "host": "113.25.252.226:9901",
+      "path": "1041_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sz",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5499564,
+      "ms": 38703,
+      "bps": 142097,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 5499564
+    },
+    {
+      "key": "120.198.95.220:9901|1048_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1048_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sz",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "36.136.38.87:9901|0126_1.m3u8",
+      "host": "36.136.38.87:9901",
+      "path": "0126_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sz",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1021_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1021_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sc",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_13.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_13.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ln",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5507460,
+      "ms": 5559,
+      "bps": 990729,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5507460
+    },
+    {
+      "key": "59.39.89.130:60901|0125_15.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_15.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gz",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5499564,
+      "ms": 13970,
+      "bps": 393670,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5499564
+    },
+    {
+      "key": "222.134.245.16:9901|0120_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0120_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gz",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5624584,
+      "ms": 19285,
+      "bps": 291656,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5624584
+    },
+    {
+      "key": "61.136.172.236:9901|0123_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0123_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sc",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1019_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1019_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ha",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0138_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0138_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-jx",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 5623268,
+      "ms": 16763,
+      "bps": 335457,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5623268
+    },
+    {
+      "key": "121.19.134.149:808|1014_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1014_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-dn",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0137_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0137_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-dn",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0121_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0121_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ln",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 5623268,
+      "ms": 26616,
+      "bps": 211274,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5623268
+    },
+    {
+      "key": "218.13.170.98:9901|1015_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1015_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-dn",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1023_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1023_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gz",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_8.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_8.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-tj",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5498248,
+      "ms": 5355,
+      "bps": 1026750,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5498248
+    },
+    {
+      "key": "61.136.172.236:9901|0120_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0120_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-gz",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0117_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0117_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hb",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 26273,
+      "bps": 214132,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "121.19.134.149:808|1022_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1022_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-jx",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0138_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0138_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-jx",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0130_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0130_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ah",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5623268,
+      "ms": 30541,
+      "bps": 184122,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 5623268
+    },
+    {
+      "key": "61.136.172.236:9901|0121_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0121_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ln",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40000,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1051_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1051_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ln",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "36.136.38.87:9901|0135_1.m3u8",
+      "host": "36.136.38.87:9901",
+      "path": "0135_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-tj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_19.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_19.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-jl",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5498248,
+      "ms": 5450,
+      "bps": 1008853,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5498248
+    },
+    {
+      "key": "121.19.134.149:808|1013_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1013_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ah",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40000,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_23.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_23.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx2",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1718696,
+      "ms": 2678,
+      "bps": 641783,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1718696
+    },
+    {
+      "key": "61.136.172.236:9901|0130_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0130_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-ah",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1006_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1006_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hb",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0117_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0117_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hb",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40000,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|1016_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1016_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-hb",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|1018_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1018_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sd",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0135_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0135_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-tj",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5624584,
+      "ms": 26534,
+      "bps": 211976,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5624584
+    },
+    {
+      "key": "61.136.172.236:9901|0131_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0131_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sd",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_21.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_21.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-nm",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1718696,
+      "ms": 3075,
+      "bps": 558926,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1718696
+    },
+    {
+      "key": "36.136.38.87:9901|0136_1.m3u8",
+      "host": "36.136.38.87:9901",
+      "path": "0136_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx2",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 0,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "manifest 例外：TimeoutError"
+    },
+    {
+      "key": "120.198.95.220:9901|1063_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1063_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sd",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|0136_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0136_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx2",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1718696,
+      "ms": 18732,
+      "bps": 91752,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1718696
+    },
+    {
+      "key": "59.39.89.130:60901|0125_18.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_18.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-yn",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5552204,
+      "ms": 6821,
+      "bps": 813987,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5552204
+    },
+    {
+      "key": "59.39.89.130:60901|0125_20.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_20.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1718696,
+      "ms": 2320,
+      "bps": 740817,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1718696
+    },
+    {
+      "key": "222.134.245.16:9901|0136_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0136_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx2",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 22235,
+      "bps": 253020,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "121.19.134.149:808|1016_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1016_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-tj",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40000,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0118_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0118_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx",
+          "role": "primary"
+        },
+        {
+          "channelId": "cn-sx",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1459444,
+      "ms": 7449,
+      "bps": 195925,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1459444
+    },
+    {
+      "key": "218.13.170.98:9901|0109_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0109_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-nm",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1717380,
+      "ms": 18479,
+      "bps": 92937,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1717380
+    },
+    {
+      "key": "121.19.134.149:808|0119_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0119_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-yn",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 1710800,
+      "ms": 13672,
+      "bps": 125132,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1710800
+    },
+    {
+      "key": "59.39.89.130:60901|0125_4.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_4.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xz",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1750280,
+      "ms": 2494,
+      "bps": 701796,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1750280
+    },
+    {
+      "key": "61.136.172.236:9901|0135_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0135_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-tj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "59.39.89.130:60901|0125_3.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_3.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xz",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5499564,
+      "ms": 5267,
+      "bps": 1044155,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5499564
+    },
+    {
+      "key": "218.13.170.98:9901|1008_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "1008_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-tj",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|0112_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0112_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-nx",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1720012,
+      "ms": 23594,
+      "bps": 72900,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1720012
+    },
+    {
+      "key": "59.39.89.130:60901|0125_17.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_17.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xj",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1750280,
+      "ms": 2234,
+      "bps": 783474,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1750280
+    },
+    {
+      "key": "113.25.252.226:9901|1046_1.m3u8",
+      "host": "113.25.252.226:9901",
+      "path": "1046_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-nx",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1718696,
+      "ms": 25773,
+      "bps": 66686,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1718696
+    },
+    {
+      "key": "59.39.89.130:60901|0125_5.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_5.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xm",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 1693692,
+      "ms": 2211,
+      "bps": 766030,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1693692
+    },
+    {
+      "key": "59.39.89.130:60901|0125_9.m3u8",
+      "host": "59.39.89.130:60901",
+      "path": "0125_9.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bt",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1750280,
+      "ms": 2974,
+      "bps": 588527,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1750280
+    },
+    {
+      "key": "121.19.134.149:808|1029_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "1029_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-jl",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "61.136.172.236:9901|0116_1.m3u8",
+      "host": "61.136.172.236:9901",
+      "path": "0116_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-jl",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40002,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0109_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0109_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-nm",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 28879,
+      "bps": 194809,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "121.19.134.149:808|0140_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0140_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-qh",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 1750280,
+      "ms": 20987,
+      "bps": 83398,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1750280
+    },
+    {
+      "key": "121.19.134.149:808|0112_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0112_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-nx",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 1721328,
+      "ms": 36493,
+      "bps": 47169,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 1721328
+    },
+    {
+      "key": "113.25.252.226:9901|1043_1.m3u8",
+      "host": "113.25.252.226:9901",
+      "path": "1043_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-qh",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1748964,
+      "ms": 21908,
+      "bps": 79832,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1748964
+    },
+    {
+      "key": "218.13.170.98:9901|0111_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0111_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xz",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1748964,
+      "ms": 18632,
+      "bps": 93869,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1748964
+    },
+    {
+      "key": "222.134.245.16:9901|0140_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0140_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-qh",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 23875,
+      "bps": 235640,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "120.198.95.220:9901|1068_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1068_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx2",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "222.134.245.16:9901|0110_1.m3u8",
+      "host": "222.134.245.16:9901",
+      "path": "0110_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xj",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 5625900,
+      "ms": 21498,
+      "bps": 261694,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 5625900
+    },
+    {
+      "key": "113.25.252.226:9901|1044_1.m3u8",
+      "host": "113.25.252.226:9901",
+      "path": "1044_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xj",
+          "role": "backup"
+        }
+      ],
+      "ok": true,
+      "bytes": 1748964,
+      "ms": 21080,
+      "bps": 82968,
+      "complete": true,
+      "fitsPlatform": true,
+      "reason": null,
+      "expectedBytes": 1748964
+    },
+    {
+      "key": "120.198.95.220:9901|1056_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1056_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-yn",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "120.198.95.220:9901|1057_1.m3u8",
+      "host": "120.198.95.220:9901",
+      "path": "1057_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-sx",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "218.13.170.98:9901|0115_1.m3u8",
+      "host": "218.13.170.98:9901",
+      "path": "0115_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-bt",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 1748964,
+      "ms": 32000,
+      "bps": 54655,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 1748964
+    },
+    {
+      "key": "121.19.134.149:808|0111_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0111_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xz",
+          "role": "primary"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40001,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "36.136.38.87:9901|0119_1.m3u8",
+      "host": "36.136.38.87:9901",
+      "path": "0119_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-yn",
+          "role": "backup"
+        }
+      ],
+      "ok": false,
+      "bytes": 0,
+      "ms": 40003,
+      "bps": 0,
+      "complete": false,
+      "fitsPlatform": false,
+      "reason": "下載超時"
+    },
+    {
+      "key": "121.19.134.149:808|0110_1.m3u8",
+      "host": "121.19.134.149:808",
+      "path": "0110_1.m3u8",
+      "usedBy": [
+        {
+          "channelId": "cn-xj",
+          "role": "primary"
+        }
+      ],
+      "ok": true,
+      "bytes": 5499564,
+      "ms": 39779,
+      "bps": 138253,
+      "complete": true,
+      "fitsPlatform": false,
+      "reason": null,
+      "expectedBytes": 5499564
+    }
+  ],
+  "summary": [
+    {
+      "host": "59.39.89.130:60901",
+      "paths": 29,
+      "completePaths": 29,
+      "bestMs": 2211,
+      "bestBps": 766030,
+      "bestKey": "59.39.89.130:60901|0125_5.m3u8"
+    },
+    {
+      "host": "222.134.245.16:9901",
+      "paths": 19,
+      "completePaths": 18,
+      "bestMs": 5407,
+      "bestBps": 1040485,
+      "bestKey": "222.134.245.16:9901|0012_1.m3u8"
+    },
+    {
+      "host": "121.19.134.149:808",
+      "paths": 44,
+      "completePaths": 4,
+      "bestMs": 13672,
+      "bestBps": 125132,
+      "bestKey": "121.19.134.149:808|0119_1.m3u8"
+    },
+    {
+      "host": "218.13.170.98:9901",
+      "paths": 19,
+      "completePaths": 9,
+      "bestMs": 18479,
+      "bestBps": 92937,
+      "bestKey": "218.13.170.98:9901|0109_1.m3u8"
+    },
+    {
+      "host": "113.25.252.226:9901",
+      "paths": 4,
+      "completePaths": 4,
+      "bestMs": 21080,
+      "bestBps": 82968,
+      "bestKey": "113.25.252.226:9901|1044_1.m3u8"
+    },
+    {
+      "host": "120.198.95.220:9901",
+      "paths": 21,
+      "completePaths": 1,
+      "bestMs": 24129,
+      "bestBps": 506,
+      "bestKey": "120.198.95.220:9901|1075_1.m3u8"
+    },
+    {
+      "host": "36.136.38.87:9901",
+      "paths": 5,
+      "completePaths": 0,
+      "bestMs": null,
+      "bestBps": null,
+      "bestKey": null
+    },
+    {
+      "host": "61.136.172.236:9901",
+      "paths": 30,
+      "completePaths": 0,
+      "bestMs": null,
+      "bestBps": null,
+      "bestKey": null
+    }
+  ]
+}

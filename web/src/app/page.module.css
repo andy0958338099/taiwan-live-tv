@@ -266,6 +266,146 @@
   font-weight: 600;
 }
 
+/**
+ * chip 上的頻道數量。
+ *
+ * 顯示數量讓使用者知道「點下去會看到幾個頻道」，
+ * 不用點了才知道 —— 尤其地區分類下有用的地方。
+ */
+.chipCount {
+  margin-left: 5px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.66rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-secondary, #a8a8b3);
+}
+
+.drawerChips > button[aria-pressed='true'] .chipCount {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--accent, #4f9cff);
+}
+
+/* ============================================================
+   我的最愛 —— 獨立的橫向列
+   ------------------------------------------------------------
+   Apple HIG：Live-Viewing Apps 的「My Channels」永遠直接可見，
+   不藏在子頁籤裡。最愛頻道是使用者最常回來看的，
+   讓它們多兩次點擊才能到達是沒道理的事。
+   ============================================================ */
+
+.favSection {
+  margin: 0 0 12px;
+  padding: 10px 0 2px;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.favRow {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.favRow::-webkit-scrollbar {
+  display: none;
+}
+
+.favRow > li {
+  flex: 0 0 auto;
+}
+
+.favItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 78px;
+  padding: 7px 5px 6px;
+  background: rgba(255, 214, 92, 0.07);
+  border: 1.5px solid rgba(255, 214, 92, 0.24);
+  border-radius: 11px;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.12s;
+}
+
+.favItem:hover {
+  background: rgba(255, 214, 92, 0.13);
+  border-color: rgba(255, 214, 92, 0.4);
+}
+
+.favItem:active {
+  transform: scale(0.95);
+}
+
+.favItemActive {
+  background: rgba(79, 156, 255, 0.18);
+  border-color: var(--accent, #4f9cff);
+  box-shadow: 0 0 0 3px rgba(79, 156, 255, 0.16);
+}
+
+.favLogoWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 30px;
+  max-height: 38px;
+  overflow: hidden;
+}
+
+.favLogo {
+  max-width: 100%;
+  max-height: 34px;
+  width: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.favLogoPlaceholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  min-height: 26px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-secondary, #a8a8b3);
+}
+
+.favName {
+  width: 100%;
+  font-size: 0.68rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--text-secondary);
+  text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.favItemActive .favName {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
 /* ============================================================
    抽屜內的頻道網格
    ============================================================ */
@@ -407,7 +547,16 @@
     left: auto;
     top: 0;
     bottom: 0;
-    width: 420px;
+    /*
+     * 桌機用 560px。
+     *
+     * 420px 原本夠放網格卡片，但**不夠放橫向台標列** ——
+     * 台標列的項目寬 100px + 間距，420px 只放得下 4 個，
+     * 而且第 4 個會被硬生生切斷（實測截圖確認）。
+     *
+     * 560px 能放 5 個完整的台標，捲動提示也比較明確。
+     */
+    width: 560px;
     max-height: none;
     border-radius: 0;
     border-top: none;
@@ -488,7 +637,8 @@
  */
 @media (min-width: 900px) {
   .pageDrawerOpen {
-    padding-right: 440px;
+    /* 抽屜寬 560px + 間距 */
+    padding-right: 580px;
   }
 }
 
@@ -702,6 +852,267 @@
   font-size: 0.78rem;
   color: var(--text-secondary);
   font-weight: 500;
+}
+
+/* ============================================================
+   橫向台標列（Logo Rail）
+   ------------------------------------------------------------
+   這是 Apple TV、YouTube TV、Samsung TV Plus 的共同做法：
+   **一排橫向捲動的台標**作為主要的選台入口。
+
+   為什麼不是純網格？
+     · 台標是最容易辨識的視覺特徵 —— 掃一排就能找到要的台
+     · 橫向捲動符合電視遙控器「左右」的直覺
+     · 手機上橫向滑動比縱向捲動 90 個頻道輕鬆得多
+   ============================================================ */
+
+.railSection {
+  margin: 0 0 4px;
+}
+
+.railHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.railTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+/** 橫向捲動的容器 —— 隱藏捲軸但保留手勢 */
+.rail {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  /* 讓內容可以貼齊左緣，同時右側留出漸層提示還有更多 */
+  padding: 2px 2px 6px;
+  margin: 0 -2px;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.railItem {
+  position: relative;
+  flex: 0 0 auto;
+  width: 96px;
+  padding: 8px 6px 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  color: var(--text-primary);
+  cursor: pointer;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.12s;
+}
+
+.railItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.railItem:active {
+  transform: scale(0.95);
+}
+
+/** 正在播放的台標 —— 加亮邊框 */
+.railItemActive {
+  background: rgba(79, 156, 255, 0.18);
+  border-color: var(--accent, #4f9cff);
+  box-shadow: 0 0 0 3px rgba(79, 156, 255, 0.15);
+}
+
+/** 台標框 —— 與卡片同樣的處理（flex + overflow hidden） */
+.railLogoWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 34px;
+  max-height: 42px;
+  overflow: hidden;
+}
+
+.railLogo {
+  max-width: 100%;
+  max-height: 38px;
+  width: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.railName {
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--text-secondary);
+  text-align: center;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.railItemActive .railName {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/**
+ * LIVE 徽章。
+ *
+ * 業界標準（Apple HIG、YouTube TV、Plex 都用紅色 LIVE 標記）。
+ * 放在台標框右上角 —— 不佔版面但一眼可見。
+ */
+.liveBadge {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #e0243c;
+  color: #fff;
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/** 頻道號碼 —— 傳統遙控器選台的入口 */
+.railNumber {
+  position: absolute;
+  top: 4px;
+  left: 5px;
+  min-width: 16px;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--text-secondary, #a8a8b3);
+  font-size: 0.6rem;
+  font-weight: 700;
+  line-height: 1.55;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   EPG 面板 —— 「現在在播」
+   ------------------------------------------------------------
+   Apple HIG 對 Live-Viewing Apps 的要求：
+   選台時應該能看到**現在正在播什麼**，否則使用者只能靠台標猜。
+   ============================================================ */
+
+.epgPanel {
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(79, 156, 255, 0.12),
+    rgba(255, 255, 255, 0.03)
+  );
+  border: 1px solid rgba(79, 156, 255, 0.22);
+  border-radius: 12px;
+}
+
+.epgHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.epgLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: #e0243c;
+  color: #fff;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.epgTime {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.epgTitle {
+  font-size: 0.98rem;
+  font-weight: 650;
+  color: var(--text-primary);
+  line-height: 1.35;
+  margin: 0 0 3px;
+}
+
+.epgDesc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.epgNext {
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+}
+
+.epgNextItem {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+}
+
+.epgNextTime {
+  font-variant-numeric: tabular-nums;
+  color: var(--accent, #4f9cff);
+  margin-right: 4px;
+  font-weight: 600;
+}
+
+.epgNextTitle {
+  color: var(--text-secondary);
+}
+
+/** 沒有節目表時的說明 */
+.epgEmpty {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/** 節目表來源註記 */
+.epgSource {
+  margin-top: 7px;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  opacity: 0.75;
 }
 
 .channelGrid {
