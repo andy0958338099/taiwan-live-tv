@@ -223,7 +223,13 @@ async function main() {
 
       // 逾時／網路錯誤可能是上游偶發壅塞，而不是真的失效。
       // 對「逾時」與 AbortError 重試一次，避免誤殺可用頻道。
-      if (!r.ok && /逾時|AbortError/.test(r.reason)) {
+      //
+      // ⚠️ 2026-11-21 修正：原本只重試「逾時／AbortError」，
+      // 但**下載中途連線被切斷**（ECONNRESET / UND_ERR_SOCKET / TypeError）
+      // 同樣是上游偶發狀況 —— 實測四川衛視（121.19.134.149:808）會出現
+      // `TypeError terminated UND_ERR_SOCKET`，重試後立刻就成功。
+      // 不重試 → 該頻道被誤判為失效（✗），而且會被 `needs_swap` 建議換源。
+      if (!r.ok && /逾時|AbortError|讀取失敗|連線被重置|TypeError/.test(r.reason)) {
         await new Promise((res) => setTimeout(res, 1500));
         const retry = await verify(cand.url);
         if (retry.ok) r = retry;
