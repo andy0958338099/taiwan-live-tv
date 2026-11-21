@@ -93,8 +93,19 @@ async function verify(url) {
   if (segs.length === 0) return { ok: false, reason: '無 segment' };
 
   // child manifest？
-  let target = new URL(segs[0], url).href;
-  if (!/\.(ts|m4s|mp4|aac|cmfv|cmfa)(\?|$)/i.test(segs[0])) {
+  //
+  // ⚠️ 直播清單的 segment 條目是**由舊到新**排列，而舊的 segment 會過期。
+  // 實測（2026-11-21）Dali TV（官方來源）回 404：
+  //   manifest 有 30 條 segment，`segs[0]`（331124.ts）→ **404**（過期）
+  //   `segs[29]`（331153.ts）→ 200，4.8 MB，有效 MPEG-TS
+  //
+  // 所以驗證時必須**優先用最新的 segment**，並在失敗時往後往前回溯。
+  // 只取 segs[0] 會把好頻道誤判成失效。
+  const pickOrder = [...segs].reverse();
+
+  // child manifest？
+  let target = new URL(pickOrder[0], url).href;
+  if (!/\.(ts|m4s|mp4|aac|cmfv|cmfa)(\?|$)/i.test(pickOrder[0])) {
     let cres;
     try {
       cres = await get(target);
@@ -122,36 +133,68 @@ async function verify(url) {
       .map((l) => l.trim())
       .filter((l) => l && !l.startsWith('#'));
     if (csegs.length === 0) return { ok: false, reason: 'child 無 segment' };
-    target = new URL(csegs[0], target).href;
+    // child manifest 的 segment 同樣是由舊到新 → 取最新的
+    target = new URL([...csegs].reverse()[0], target).href;
   }
 
   // segment 位元組 + 耗時
-  const t0 = Date.now();
-  let sres;
-  try {
-    sres = await get(target, 30000);
-  } catch (e) {
-    const reason =
-      e.name === 'AbortError'
-        ? '逾時'
-        : e.cause?.code === 'ECONNRESET'
-          ? '連線被重置'
-          : e.name;
-    return { ok: false, reason: `segment ${reason}` };
-  }
-  const segMs = Date.now() - t0;
-  if (!sres.ok) return { ok: false, reason: `segment HTTP ${sres.status}` };
+  //
+  // ⚠️ 必須**逐一試**多個候選 segment，不能只試一個：
+  //   · 最新的可能剛好在上游的更新空窗（404）
+  //   · 舊的可能已過期（404）
+  //   · 最新的可能下載中途被切斷（UND_ERR_SOCKET）
+  // 實測 Dali TV：segs[0] 404、segs[29] 正常 → 只試一個會誤判整個頻道失效。
+  const candidates = [
+    target,
+    ...pickOrder
+      .slice(1, 4)
+      .map((s) => new URL(s, url).href)
+      .filter((u) => u !== target),
+  ];
 
-  let buf;
-  try {
-    buf = Buffer.from(await sres.arrayBuffer());
-  } catch (e) {
-    // 下載中途連線被切斷（上游偶發）—— 不能讓整個腳本崩掉
-    const reason =
-      e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
-    return { ok: false, reason: `segment 讀取失敗 (${reason})` };
+  let buf = null;
+  let segMs = 0;
+  let lastReason = '無 segment';
+
+  for (const cand of candidates) {
+    const t0 = Date.now();
+    let sres;
+    try {
+      sres = await get(cand, 30000);
+    } catch (e) {
+      const reason =
+        e.name === 'AbortError'
+          ? '逾時'
+          : e.cause?.code === 'ECONNRESET'
+            ? '連線被重置'
+            : e.name;
+      lastReason = `segment ${reason}`;
+      continue;
+    }
+    segMs = Date.now() - t0;
+    if (!sres.ok) {
+      lastReason = `segment HTTP ${sres.status}`;
+      continue;
+    }
+    try {
+      buf = Buffer.from(await sres.arrayBuffer());
+    } catch (e) {
+      // 下載中途連線被切斷（上游偶發）—— 換下一個候選
+      const reason =
+        e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
+      lastReason = `segment 讀取失敗 (${reason})`;
+      buf = null;
+      continue;
+    }
+    if (buf.length < 1024) {
+      lastReason = `segment 過短 ${buf.length}B`;
+      buf = null;
+      continue;
+    }
+    break; // 拿到有效內容
   }
-  if (buf.length < 1024) return { ok: false, reason: `segment 過短 ${buf.length}B` };
+
+  if (!buf) return { ok: false, reason: lastReason };
 
   const isTs = buf[0] === 0x47;
   const isFmp4 =
