@@ -1423,3 +1423,48 @@ attempt 2  status 404 len 163 b0=0x3c   ← 錯誤頁（HTML）
 > `shared/source-verification.json`，後續的 `repair-dead-backups.mjs` /
 > `assign-backups.mjs` 可能據此**把好頻道的主來源換掉**。
 > 探測腳本的假失敗不只是數字不好看 —— 會造成資料劣化。
+
+### 12.8 最終巡檢結果（修正探測腳本後重跑）
+
+```
+檢查 85 個頻道
+可播 85/85｜需改用備援 5｜完全失效 0
+```
+
+| 指標 | 修正前 | 修正後 |
+|---|---|---|
+| 可播頻道 | 81/85 | **85/85** |
+| 完全失效 | 4（**全是假失敗**） | **0** |
+| `needs_swap`（建議換源） | 15 | **5** |
+| `primary_ok`（主來源可用） | 66 | **80** |
+
+`needs_swap` 從 15 降到 5 —— 原本有 10 個是探測腳本的假失敗造成的
+（若照舊執行 `repair-dead-backups.mjs`，會把 10 個好頻道的主來源換掉）。
+
+### 12.9 部署後線上驗證（deploy `6b01c7ff65462bceffa7df7f`）
+
+| 檢查 | 結果 |
+|---|---|
+| `test-proxy-cache-poisoning.mjs` | ✓ 通過（4 個情境全過，含新增的 Range 隔離） |
+| `verify-cdn-key.mjs` | ✓ 通過（6 個頻道 → 6 份不同 manifest） |
+| `test-drawer.mjs` | ✓ 通過 |
+| `test-playback-local.mjs` | ✓ **3/3** 播放成功（`muted=false`） |
+| 線上 `/channels.json` | 95 個頻道，`updated_at` 與 local 一致 |
+
+```
+✓ 龍華電視   t=34.5  1920x1080  muted=false
+✓ Now TV      t=50.8  1920x1080  muted=false
+✓ Dali TV     t=232.2 1280x720   muted=false
+結果：3/3 個頻道播放成功
+```
+
+### 12.10 本輪 commit
+
+| Commit | 內容 |
+|---|---|
+| `0876acf` | 修正快取污染測試的過期斷言 + 新增 Range 快取鍵隔離驗證 |
+| `1f9ca6d` | 探測腳本：下載中途斷線也重試 |
+| `26c55b9` | 探測腳本：改用最新 segment + 逐一試候選 |
+| `dce3b50` | 文件：記錄兩個根因與修正 |
+| `445da8c` | 更新來源驗證結果（85/85） |
+| `0548dff` | 同步頻道資料時間戳 |
