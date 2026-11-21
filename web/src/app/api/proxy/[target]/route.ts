@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { lookup } from 'node:dns/promises';
 import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import net from 'node:net';
+import {
+  estimateSegmentTransferMs,
+  SAMPLE_MAX_WAIT_MS,
+  SAMPLE_MIN_BYTES,
+} from '@/lib/proxySpeedEstimate';
 
 /**
  * HLS 串流代理 — 解決 CORS 限制
@@ -38,8 +43,32 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * 已授權頻道的入口 URL */
-let ALLOWED_ENTRY_URLS: Set<string> | null = null;
+ /**
+  * 已授權頻道的入口 URL。
+  *
+  * ⚠️ **不要用模組層級的永久快取**。
+  *
+  * 實測（2026-11-21）：新增頻道後，代理持續回 403
+  * 「此來源不在允許的頻道清單中」，即使 `/channels.json` 已經更新。
+  *
+  * 原因：serverless function 實例會存活很久，模組層級的變數
+  * 只在第一次呼叫時載入 —— 那是**部署當下**的清單。
+  * 之後無論 `/channels.json` 怎麼更新，實例都不會重新載入。
+  *
+  * 改成「短 TTL 快取」：既避免每個請求都重新抓（省頻寬），
+  * 又能在幾秒內反映頻道清單的變更。
+  */
+ let ALLOWED_ENTRY_URLS: Set<string> | null = null;
+ let ALLOWED_ENTRY_URLS_AT = 0;
+
+ /**
+  * 白名單的快取存活時間。
+  *
+  * 30 秒足夠讓「剛新增的頻道」在短時間內生效，
+  * 同時不會讓每個 segment 請求都重新抓 channels.json
+  * （segment 請求量是 manifest 的 10–30 倍）。
+  */
+ const ALLOWED_ENTRY_TTL_MS = 30_000;
 
 /**
  * ⭐ **目標網址放在 path，不是 query string**。
@@ -153,7 +182,11 @@ function verifySig(target: string, sig: string | null): boolean {
  *   3. `http://localhost:3210` —— 本機開發。
  */
 async function loadEntryUrls(baseUrl?: string): Promise<Set<string>> {
-  if (ALLOWED_ENTRY_URLS) return ALLOWED_ENTRY_URLS;
+  // 短 TTL 快取：既避免每個請求都重新抓，又能在短時間內反映清單變更
+  const now = Date.now();
+  if (ALLOWED_ENTRY_URLS && now - ALLOWED_ENTRY_URLS_AT < ALLOWED_ENTRY_TTL_MS) {
+    return ALLOWED_ENTRY_URLS;
+  }
 
   const urls = new Set<string>();
   const base =
@@ -173,9 +206,13 @@ async function loadEntryUrls(baseUrl?: string): Promise<Set<string>> {
     }
   } catch (e) {
     console.error('[proxy] 無法載入頻道清單:', e);
+    // ⚠️ 抓取失敗時**保留舊的白名單**。
+    // 直接回傳空集合會讓所有請求都 403 —— 那比過時的白名單更糟。
+    if (ALLOWED_ENTRY_URLS) return ALLOWED_ENTRY_URLS;
   }
 
   ALLOWED_ENTRY_URLS = urls;
+  ALLOWED_ENTRY_URLS_AT = now;
   return urls;
 }
 
@@ -465,58 +502,94 @@ export async function GET(
       /**
        * 估算整個 segment 下載完要多久。
        *
-       * ## ⚠️ 單靠「第一個 chunk」估算是不準的
+       * ## ⚠️ 用「單一 chunk」或「兩個 chunk」外推都會大量誤殺
        *
-       * 兩個原因：
-       *   1. **第一個 chunk 的到齊時間包含連線建立**
-       *      （DNS 查詢 + TCP 握手 + TLS 交握，通常 100–300ms），
-       *      這段時間沒有任何頻寬被使用，卻被算進「下載速度」。
-       *   2. **上游速度是爆發式的** —— 實測同一個 5.23 MB segment：
-       *      有時 196ms 就下載完（有時 123 秒）。
-       *      第一個 chunk 的大小也會波動（實測 1199B ~ 14159B），
-       *      用單一 chunk 外推會得到 wildly 不準的結果。
+       * 實測（`scripts/probe-upstream-chunks.mjs`，2026-11-21）：
+       * 上游把 segment 切成**極小的 chunk**（實測 1369B / 8192B），
+       * 所以任何「前 N 個 chunk」的外推都只是抽樣誤差：
        *
-       * ## 解法：兩段式判斷
+       *   頻道          實際下載   單一 chunk 外推   兩個 chunk 累計
+       *   龍華電視         875ms      1,103,488ms ✗      549,924ms ✗
+       *   TVB翡翠台      1,396ms      1,792,316ms ✗      893,202ms ✗
+       *   Now TV        1,193ms      1,059,192ms ✗      527,849ms ✗
        *
-       *   1. 先用第一個 chunk 估算。**夠快就直接放行**（不增加延遲）。
-       *   2. 只有在估算「可能太慢」時，才**讀第二個 chunk** 重新估算 ——
-       *      這時連線已建立，量到的才是真實頻寬。
+       * 誤殺的後果很嚴重：hls.js 收到 502 就會**換源**，
+       * 使用者看到的是「切台」而不是「繼續播放」——
+       * 明明這個來源完全健康，卻被無謂地放棄了。
        *
-       * 只有兩次估算都超過門檻才放棄上游。
+       * 線上實測更直接：`scripts/diagnose-502.mjs` 量到 TVB翡翠台被回
+       * 502「預估需 38150ms」，但同一個 segment 實際下載只要 1.3 秒。
+       *
+       * ## 修法：累積足夠的位元組再估算，且速率要扣掉 TTFB
+       *
+       *  · **累積**到 `SAMPLE_MIN_BYTES`（256KB）——
+       *    抽樣誤差會隨累積量收斂（實測 64KB 仍誤殺 5 個、128KB 誤殺 0 個）
+       *  · 速率**只算扣掉 TTFB 之後**的那一段 ——
+       *    headers 到第一個 chunk 之間有 200–500ms 的固定延遲，
+       *    那段時間沒有任何頻寬被使用，算進分母會嚴重低估速率
+       *  · 剩餘位元組 ÷ 這個速率 = 剩餘時間，再加上 TTFB
+       *
+       * 估算邏輯放在 `web/src/lib/proxySpeedEstimate.ts`（純函式），
+       * `scripts/test-speed-estimate.mjs` 用真實量測資料做回歸測試。
        */
-      const estimateWith = (bytes: number, ms: number): number => {
-        const bpm = bytes / Math.max(1, ms);
-        return bpm > 0 ? upstreamTotalBytes / bpm : Infinity;
-      };
+      let projectedMs = 0;
 
-      // 第一次估算：用「headers 到達 → 第一個 chunk 到達」的時間。
-      // 這樣連線建立的時間被排除在外（fetch 回應時 headers 就已到）。
-      const chunk1Ms = Math.max(1, Date.now() - headersAt);
-      let projectedMs = estimateWith(firstChunk.byteLength, chunk1Ms);
+      if (upstreamTotalBytes !== null) {
+        /** 第一個 chunk 的到達時間 —— TTFB 的結束點 */
+        const firstChunkAt = Date.now();
 
-      if (projectedMs > MAX_PROJECTED_TRANSFER_MS) {
-        // 可能太慢 → 讀第二個 chunk，用「已建立的連線」重新量一次真實頻寬
-        const second = await Promise.race([
-          reader.read(),
-          new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
-        ]);
+        let sampleBytes = 0;
+        let sampleMs = 0;
 
-        if (second && 'value' in second && second.value) {
-          const chunk2 = second.value;
-          // 累積：兩個 chunk 的總位元組 ÷ 從 headers 到第二個 chunk 的時間
-          const chunk2Ms = Math.max(1, Date.now() - headersAt);
-          projectedMs = estimateWith(
-            firstChunk.byteLength + chunk2.byteLength,
-            chunk2Ms,
+        // 累積樣本，直到位元組數足夠或時間到上限
+        while (sampleBytes < SAMPLE_MIN_BYTES && sampleMs < SAMPLE_MAX_WAIT_MS) {
+          const remainingWait = SAMPLE_MAX_WAIT_MS - sampleMs;
+          const next = await Promise.race([
+            reader.read(),
+            new Promise<null>((resolve) => setTimeout(() => resolve(null), remainingWait)),
+          ]);
+
+          // 讀不到更多資料（上游沒給或已結束）→ 用手上的樣本估算
+          if (!next || !('value' in next) || !next.value) break;
+
+          sampleBytes += next.value.byteLength;
+          sampleMs = Date.now() - firstChunkAt;
+          // 量測期間讀到的 chunk 不能丟掉 —— 要在串流時一併送出
+          pendingChunks.push(next.value);
+        }
+
+        projectedMs = estimateSegmentTransferMs({
+          totalBytes: upstreamTotalBytes,
+          sampleBytes,
+          sampleMs,
+          ttfbMs: firstChunkAt - headersAt,
+        });
+
+        // ⚠️ **讀不到足夠的樣本 = 沒有證據說它慢 → 放行。**
+        //
+        // 實測：上游常常只送第一個 chunk 就停頓（TCP 視窗未開滿、
+        // 或上游自己在讀磁碟）。這種情況下 sampleBytes 會是 0，
+        // 此時估算無法成立 —— 寧可放行也不要誤殺。
+        // 真正的保護由底層的 `UPSTREAM_TIMEOUT_MS` 與串流完整性檢查負責。
+        if (sampleBytes === 0) {
+          console.warn(
+            `[代理] 取樣期間上游未再送資料 → 無法估算速度 → 放行`,
           );
-          // 第二個 chunk 也要一起送出去（不能丟掉）
-          pendingChunks.push(chunk2);
-        } else {
-          // 讀不到第二個 chunk（上游沒給更多資料）→ 維持第一次估算
-          projectedMs = Infinity;
+          projectedMs = 0;
         }
       }
 
+      /**
+       * 放棄上游的門檻。
+       *
+       * 超過預算 → 回 502 且**不快取**：
+       *   · 客戶端馬上知道這個來源不可用 → hls.js 快速 failover
+       *   · 沒有送出任何 body → CDN 不會快取到壞內容
+       *
+       * 真正慢到 22 秒以上的來源（央視實測 45–140 秒），
+       * 用累積取樣估算一樣會超標 → 一樣會被放棄。
+       * 所以這個修法**只移除誤判，不放過真正慢的來源**。
+       */
       if (projectedMs > MAX_PROJECTED_TRANSFER_MS) {
         // 放棄上游（取消讀取，避免佔住頻寬）
         await reader.cancel().catch(() => {});

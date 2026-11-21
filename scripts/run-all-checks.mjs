@@ -81,6 +81,15 @@ step('Web 型別檢查', () => {
   return run('npx', ['tsc', '--noEmit'], join(ROOT, 'web'));
 });
 
+// 4b. segment 速度估算回歸測試
+//
+// 這是 2026-11-21 的 P0 守門：代理曾把健康來源誤判成「太慢」而回 502，
+// 導致 hls.js 換源、使用者看到「切台」而不是「繼續播放」。
+// 測試用真實量測資料（shared/gt-estimator.json）確認沒有誤殺。
+step('segment 速度估算回歸測試', () => {
+  return run(process.execPath, [join(__dirname, 'test-speed-estimate.mjs')]);
+});
+
 // 5. Web 建置
 step('Web 正式建置', () => {
   return run('npm', ['run', 'build'], join(ROOT, 'web'));

@@ -28,6 +28,10 @@ web/public/channels.json
 web/src/generated/
 android/app/src/main/assets/channels.json
 
+# 測試用臨時產物（實驗 hls.js 設定矩陣時複製的 hls.js）
+web/public/hls-test.js
+*-tmp.mjs
+
 # Env
 .env
 .env.local
