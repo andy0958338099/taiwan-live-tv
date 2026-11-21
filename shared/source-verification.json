@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-11-21T17:31:56.265Z",
+  "verified_at": "2026-11-21T19:45:08.596Z",
   "results": [
     {
       "channel_id": "playlist-龍華-龍華電視",
@@ -11,10 +11,12 @@
       "working_url": "https://cdn.qd.je/163189/lhjd",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 642,
+      "working_ms": 485,
       "working_bytes": 3267252,
       "working_manifest_bytes": 80,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": true,
+      "frozen_detail": "序號停在 21860（已停播）"
     },
     {
       "channel_id": "playlist-翡翠台-tvb翡翠台",
@@ -26,10 +28,12 @@
       "working_url": "https://cdn.qd.je/163189/fct",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 349,
-      "working_bytes": 8558700,
+      "working_ms": 213,
+      "working_bytes": 8378596,
       "working_manifest_bytes": 73,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "playlist-TVB-tvb系",
@@ -41,10 +45,12 @@
       "working_url": "https://cdn.qd.je/163189/j1",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 244,
-      "working_bytes": 5233920,
+      "working_ms": 273,
+      "working_bytes": 5332244,
       "working_manifest_bytes": 72,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "playlist-Now-now-tv",
@@ -56,10 +62,12 @@
       "working_url": "https://cdn.qd.je/163189/now",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 295,
+      "working_ms": 31,
       "working_bytes": 6351956,
       "working_manifest_bytes": 77,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": true,
+      "frozen_detail": "序號停在 478282（已停播）"
     },
     {
       "channel_id": "playlist-HOY-hoy-tv",
@@ -71,10 +79,12 @@
       "working_url": "https://cdn.qd.je/163189/hoy2",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 368,
-      "working_bytes": 4045008,
+      "working_ms": 327,
+      "working_bytes": 3790268,
       "working_manifest_bytes": 77,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "playlist-澳視-澳視",
@@ -86,10 +96,12 @@
       "working_url": "https://cdn.qd.je/163189/asam",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 261,
-      "working_bytes": 3438896,
+      "working_ms": 267,
+      "working_bytes": 3332300,
       "working_manifest_bytes": 74,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "playlist-天映-天映",
@@ -101,10 +113,12 @@
       "working_url": "https://cdn.qd.je/163189/ccm",
       "working_role": "primary",
       "working_kind": "unknown",
-      "working_ms": 325,
+      "working_ms": 215,
       "working_bytes": 2733143,
       "working_manifest_bytes": 358,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": true,
+      "frozen_detail": "序號停在 703（已停播）"
     },
     {
       "channel_id": "playlist-TVBS-tvbs",
@@ -116,10 +130,12 @@
       "working_url": "https://d2jc41c1shgcol.cloudfront.net/live/tvbsnewsqt/playlist.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 136,
-      "working_bytes": 312080,
+      "working_ms": 157,
+      "working_bytes": 320916,
       "working_manifest_bytes": 914,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv1",
@@ -131,10 +147,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0001_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 331,
+      "working_ms": 451,
       "working_bytes": 5482456,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv2",
@@ -146,10 +164,12 @@
       "working_url": "http://222.134.245.16:9901/tsfile/live/0002_1.m3u8?key=txiptv&playlive=0&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 216,
-      "working_bytes": 5624584,
+      "working_ms": 193,
+      "working_bytes": 5625900,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv3",
@@ -161,10 +181,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0003_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 235,
-      "working_bytes": 5417972,
+      "working_ms": 92,
+      "working_bytes": 5416656,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv4",
@@ -176,10 +198,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0004_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 125,
-      "working_bytes": 5499564,
+      "working_ms": 192,
+      "working_bytes": 5500880,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv5",
@@ -191,10 +215,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0005_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 194,
-      "working_bytes": 5417972,
+      "working_ms": 184,
+      "working_bytes": 5416656,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv5plus",
@@ -206,10 +232,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0018_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 183,
-      "working_bytes": 5500880,
+      "working_ms": 187,
+      "working_bytes": 5499564,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv6",
@@ -221,10 +249,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0006_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 91,
-      "working_bytes": 5417972,
+      "working_ms": 182,
+      "working_bytes": 5419288,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv7",
@@ -236,10 +266,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0007_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 184,
-      "working_bytes": 5500880,
+      "working_ms": 933,
+      "working_bytes": 5498248,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv8",
@@ -251,10 +283,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0008_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 178,
-      "working_bytes": 5416656,
+      "working_ms": 184,
+      "working_bytes": 5417972,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv9",
@@ -266,10 +300,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0009_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 90,
-      "working_bytes": 5502196,
+      "working_ms": 96,
+      "working_bytes": 5499564,
       "working_manifest_bytes": 429,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv10",
@@ -281,10 +317,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0010_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 91,
-      "working_bytes": 5500880,
+      "working_ms": 99,
+      "working_bytes": 5506144,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv11",
@@ -296,10 +334,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0011_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 99,
-      "working_bytes": 5500880,
+      "working_ms": 95,
+      "working_bytes": 5499564,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv12",
@@ -311,10 +351,12 @@
       "working_url": "http://222.134.245.16:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 288,
-      "working_bytes": 5624584,
+      "working_ms": 187,
+      "working_bytes": 5625900,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv13",
@@ -326,10 +368,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0013_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 179,
-      "working_bytes": 5499564,
+      "working_ms": 641,
+      "working_bytes": 5500880,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv14",
@@ -341,10 +385,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0014_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 197,
-      "working_bytes": 5500880,
+      "working_ms": 185,
+      "working_bytes": 5499564,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv15",
@@ -356,10 +402,12 @@
       "working_url": "http://59.39.89.130:60901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=0&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 549,
-      "working_bytes": 1712116,
+      "working_ms": 495,
+      "working_bytes": 1710800,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv16",
@@ -371,10 +419,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0016_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 184,
+      "working_ms": 95,
       "working_bytes": 5417972,
       "working_manifest_bytes": 434,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cctv17",
@@ -386,10 +436,12 @@
       "working_url": "http://59.39.89.130:60901/tsfile/live/0017_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 698,
-      "working_bytes": 1710800,
+      "working_ms": 240,
+      "working_bytes": 1712116,
       "working_manifest_bytes": 423,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cgtn",
@@ -401,10 +453,12 @@
       "working_url": "https://english-livebkali.cgtn.com/live/encgtn_0.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 51,
-      "working_bytes": 2229492,
+      "working_ms": 275,
+      "working_bytes": 2115564,
       "working_manifest_bytes": 294,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-bj",
@@ -416,10 +470,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0122_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 371,
-      "working_bytes": 15611708,
+      "working_ms": 200,
+      "working_bytes": 15643292,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-gdty",
@@ -431,10 +487,12 @@
       "working_url": "https://cdn.qd.je/163189/gdty",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 5356,
-      "working_bytes": 6498784,
+      "working_ms": 5540,
+      "working_bytes": 6368124,
       "working_manifest_bytes": 80,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-js",
@@ -446,10 +504,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1012_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 450,
-      "working_bytes": 5491668,
+      "working_ms": 190,
+      "working_bytes": 5500880,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-df",
@@ -461,10 +521,12 @@
       "working_url": "http://bp-resource-dfl.bestv.cn/155/3/video.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 202,
-      "working_bytes": 1055808,
+      "working_ms": 457,
+      "working_bytes": 2949156,
       "working_manifest_bytes": 851,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-zj",
@@ -476,10 +538,12 @@
       "working_url": "http://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 170,
-      "working_bytes": 1675644,
+      "working_ms": 570,
+      "working_bytes": 2039048,
       "working_manifest_bytes": 299,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": true,
+      "frozen_detail": "序號停在 359977910（已停播）"
     },
     {
       "channel_id": "cn-hn",
@@ -491,10 +555,12 @@
       "working_url": "http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/dWlwPTEyNy4wLjAuMSZ1aWQ9cWluZy1jbXMmbm5fdGltZXpvbmU9OCZjZG5leF9pZD1hbF9obHNfbGR2dCZ1dWlkPTliODY4NmU5ZTM2YzYwMmMmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNWSZGST.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 1254,
-      "working_bytes": 1035880,
+      "working_ms": 1238,
+      "working_bytes": 1093972,
       "working_manifest_bytes": 231,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-hb2",
@@ -506,10 +572,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1025_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 184,
-      "working_bytes": 5490352,
+      "working_ms": 182,
+      "working_bytes": 5500880,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-gd",
@@ -521,10 +589,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1028_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 89,
+      "working_ms": 93,
       "working_bytes": 5500880,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-gx",
@@ -536,10 +606,12 @@
       "working_url": "http://222.134.245.16:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=0&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 247,
-      "working_bytes": 5625900,
+      "working_ms": 19015,
+      "working_bytes": 5624584,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-hlj",
@@ -551,10 +623,12 @@
       "working_url": "http://222.134.245.16:9901/tsfile/live/0143_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 83,
-      "working_bytes": 5624584,
+      "working_ms": 173,
+      "working_bytes": 5625900,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-hn2",
@@ -566,10 +640,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1030_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 177,
-      "working_bytes": 5436396,
+      "working_ms": 94,
+      "working_bytes": 5450872,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-cq",
@@ -581,10 +657,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1027_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 180,
-      "working_bytes": 5500880,
+      "working_ms": 184,
+      "working_bytes": 5514040,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-sz",
@@ -596,10 +674,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1024_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 93,
-      "working_bytes": 5500880,
+      "working_ms": 102,
+      "working_bytes": 5496932,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-sc",
@@ -611,10 +691,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1021_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 91,
-      "working_bytes": 5449556,
+      "working_ms": 102,
+      "working_bytes": 5452188,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-ha",
@@ -626,10 +708,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1019_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 100,
-      "working_bytes": 5499564,
+      "working_ms": 98,
+      "working_bytes": 5498248,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-dn",
@@ -641,10 +725,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1014_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 97,
-      "working_bytes": 5499564,
+      "working_ms": 94,
+      "working_bytes": 5500880,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-gz",
@@ -656,10 +742,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1023_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 385,
+      "working_ms": 99,
       "working_bytes": 5500880,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-jx",
@@ -671,25 +759,29 @@
       "working_url": "http://222.134.245.16:9901/tsfile/live/0138_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 4574,
-      "working_bytes": 5625900,
+      "working_ms": 168,
+      "working_bytes": 5624584,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-ln",
       "channel_name": "遼寧衛視",
-      "primary_url": "http://222.134.245.16:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=1&authid=0",
-      "primary_ok": false,
-      "primary_reason": "逾時",
-      "primary_cors": null,
+      "primary_url": "http://61.136.172.236:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=1&authid=0",
+      "primary_ok": true,
+      "primary_reason": null,
+      "primary_cors": false,
       "working_url": "http://61.136.172.236:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=1&authid=0",
-      "working_role": "backup",
+      "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 409,
-      "working_bytes": 5433764,
+      "working_ms": 386,
+      "working_bytes": 5439028,
       "working_manifest_bytes": 439,
-      "needs_swap": true
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-ah",
@@ -701,10 +793,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1013_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 286,
-      "working_bytes": 5499564,
+      "working_ms": 176,
+      "working_bytes": 5512724,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-hb",
@@ -716,10 +810,12 @@
       "working_url": "http://event.pull.hebtv.com/jishi/weishi_tingyun.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 420,
-      "working_bytes": 1156764,
+      "working_ms": 393,
+      "working_bytes": 1025164,
       "working_manifest_bytes": 393,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-sd",
@@ -731,10 +827,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1018_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 189,
-      "working_bytes": 5499564,
+      "working_ms": 125,
+      "working_bytes": 5498248,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-tj",
@@ -746,10 +844,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 124,
-      "working_bytes": 5485088,
+      "working_ms": 105,
+      "working_bytes": 5502196,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-jl",
@@ -761,25 +861,29 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/1029_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 223,
+      "working_ms": 112,
       "working_bytes": 5499564,
       "working_manifest_bytes": 444,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-sx2",
       "channel_name": "陝西衛視",
-      "primary_url": "http://222.134.245.16:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
-      "primary_ok": false,
-      "primary_reason": "逾時",
-      "primary_cors": null,
+      "primary_url": "http://218.13.170.98:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=1&authid=0",
+      "primary_ok": true,
+      "primary_reason": null,
+      "primary_cors": false,
       "working_url": "http://218.13.170.98:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=1&authid=0",
-      "working_role": "backup",
+      "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 442,
+      "working_ms": 364,
       "working_bytes": 1718696,
       "working_manifest_bytes": 439,
-      "needs_swap": true
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-nx",
@@ -791,25 +895,29 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0112_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 259,
+      "working_ms": 103,
       "working_bytes": 1718696,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-nm",
       "channel_name": "內蒙古衛視",
-      "primary_url": "http://222.134.245.16:9901/tsfile/live/0109_1.m3u8?key=txiptv&playlive=1&authid=0",
-      "primary_ok": false,
-      "primary_reason": "逾時",
-      "primary_cors": null,
+      "primary_url": "http://218.13.170.98:9901/tsfile/live/0109_1.m3u8?key=txiptv&playlive=1&authid=0",
+      "primary_ok": true,
+      "primary_reason": null,
+      "primary_cors": false,
       "working_url": "http://218.13.170.98:9901/tsfile/live/0109_1.m3u8?key=txiptv&playlive=1&authid=0",
-      "working_role": "backup",
+      "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 491,
-      "working_bytes": 1718696,
+      "working_ms": 183,
+      "working_bytes": 1717380,
       "working_manifest_bytes": 439,
-      "needs_swap": true
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-yn",
@@ -821,10 +929,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0119_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 109,
+      "working_ms": 189,
       "working_bytes": 1712116,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-sx",
@@ -836,10 +946,12 @@
       "working_url": "http://222.134.245.16:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 1130,
-      "working_bytes": 1418648,
+      "working_ms": 189,
+      "working_bytes": 1417332,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-qh",
@@ -851,10 +963,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0140_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 190,
+      "working_ms": 100,
       "working_bytes": 1750280,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-xz",
@@ -866,10 +980,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0111_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 108,
-      "working_bytes": 5444292,
+      "working_ms": 99,
+      "working_bytes": 5450872,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-xj",
@@ -881,10 +997,12 @@
       "working_url": "http://121.19.134.149:808/tsfile/live/0110_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 191,
+      "working_ms": 94,
       "working_bytes": 5500880,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-fh",
@@ -896,10 +1014,12 @@
       "working_url": "http://php.jdshipin.com/TVOD/iptv.php?id=fhzw",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 246,
-      "working_bytes": 4328324,
+      "working_ms": 219,
+      "working_bytes": 4733464,
       "working_manifest_bytes": 74,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-bt",
@@ -911,10 +1031,12 @@
       "working_url": "http://218.13.170.98:9901/tsfile/live/0115_1.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 201,
-      "working_bytes": 1737120,
+      "working_ms": 371,
+      "working_bytes": 1750280,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-xm",
@@ -926,10 +1048,12 @@
       "working_url": "http://59.39.89.130:60901/tsfile/live/0125_5.m3u8?key=txiptv&playlive=1&authid=0",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 532,
-      "working_bytes": 1693692,
+      "working_ms": 552,
+      "working_bytes": 1692376,
       "working_manifest_bytes": 439,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-fhhk",
@@ -941,10 +1065,12 @@
       "working_url": "https://cdn.qd.je/163189/fhhk",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 259,
+      "working_ms": 223,
       "working_bytes": 4028652,
       "working_manifest_bytes": 74,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": true,
+      "frozen_detail": "序號停在 668032（已停播）"
     },
     {
       "channel_id": "cn-fhzw",
@@ -956,10 +1082,12 @@
       "working_url": "https://cdn.qd.je/163189/fhzw",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 300,
-      "working_bytes": 4547908,
+      "working_ms": 230,
+      "working_bytes": 4550164,
       "working_manifest_bytes": 74,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-fhzx",
@@ -971,10 +1099,12 @@
       "working_url": "https://cdn.qd.je/163189/fhzx",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 249,
-      "working_bytes": 4543584,
+      "working_ms": 232,
+      "working_bytes": 4549036,
       "working_manifest_bytes": 74,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-gdzj",
@@ -986,10 +1116,12 @@
       "working_url": "https://cdn.qd.je/163189/gdzj",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 5339,
-      "working_bytes": 3478188,
+      "working_ms": 226,
+      "working_bytes": 3414080,
       "working_manifest_bytes": 80,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-gzzh",
@@ -1001,10 +1133,12 @@
       "working_url": "https://cdn.qd.je/163189/gzzh",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 493,
-      "working_bytes": 732072,
+      "working_ms": 471,
+      "working_bytes": 656308,
       "working_manifest_bytes": 76,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-gzxw",
@@ -1016,10 +1150,12 @@
       "working_url": "https://cdn.qd.je/163189/gzxw",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 221,
-      "working_bytes": 585996,
+      "working_ms": 228,
+      "working_bytes": 598968,
       "working_manifest_bytes": 76,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-ngds",
@@ -1031,10 +1167,12 @@
       "working_url": "https://cdn.qd.je/163189/ngds",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 773,
-      "working_bytes": 899768,
+      "working_ms": 764,
+      "working_bytes": 1152064,
       "working_manifest_bytes": 80,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "cn-hxws",
@@ -1046,10 +1184,12 @@
       "working_url": "https://cdn.qd.je/163189/hxws",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 283,
-      "working_bytes": 2201104,
+      "working_ms": 271,
+      "working_bytes": 368480,
       "working_manifest_bytes": 115,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-ebc-financial",
@@ -1061,10 +1201,12 @@
       "working_url": "https://iptv.ebc.edu.kh/iptv/channel/1.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 80,
-      "working_bytes": 601788,
+      "working_ms": 72,
+      "working_bytes": 635440,
       "working_manifest_bytes": 159,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-tvbs-asia",
@@ -1076,10 +1218,12 @@
       "working_url": "http://38.64.72.148/hls/modn/list/4005/playlist.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 167,
-      "working_bytes": 768168,
+      "working_ms": 154,
+      "working_bytes": 894504,
       "working_manifest_bytes": 235,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-hakka",
@@ -1091,10 +1235,12 @@
       "working_url": "https://h5cul1yar48um3t.wcetv.com/hls/hakkatv.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 202,
-      "working_bytes": 612316,
+      "working_ms": 174,
+      "working_bytes": 613068,
       "working_manifest_bytes": 738,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-taiwan-plus",
@@ -1106,10 +1252,12 @@
       "working_url": "https://amg01868-amg01868c3-tvbanywhere-us-4491.playouts.now.amagi.tv/playlist/amg01868-tvbusa-tvbvietnam-tvbanywhereus/playlist.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 886,
-      "working_bytes": 3083952,
-      "working_manifest_bytes": 5286,
-      "needs_swap": false
+      "working_ms": 912,
+      "working_bytes": 3074176,
+      "working_manifest_bytes": 5298,
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-beautiful-life",
@@ -1121,10 +1269,12 @@
       "working_url": "https://5ddce30eb4b55.streamlock.net/bltvhd/bltv1/playlist.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 39,
-      "working_bytes": 1202072,
-      "working_manifest_bytes": 139,
-      "needs_swap": false
+      "working_ms": 122,
+      "working_bytes": 1204892,
+      "working_manifest_bytes": 137,
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-cgn",
@@ -1136,10 +1286,12 @@
       "working_url": "https://d3e05csss9c272.cloudfront.net/out/v1/f0bf71c57581470fb9379f603e8f5d83/CGNWebLiveCN.m3u8",
       "working_role": "primary",
       "working_kind": "unknown",
-      "working_ms": 288,
-      "working_bytes": 144695,
+      "working_ms": 193,
+      "working_bytes": 144175,
       "working_manifest_bytes": 754,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-weixin",
@@ -1151,10 +1303,12 @@
       "working_url": "https://mobile.ccdntech.com/transcoder/_definst_/vod164_Live/live/chunklist_w1177047531.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 169,
-      "working_bytes": 709136,
-      "working_manifest_bytes": 206,
-      "needs_swap": false
+      "working_ms": 111,
+      "working_bytes": 667400,
+      "working_manifest_bytes": 205,
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-supreme-master",
@@ -1166,10 +1320,12 @@
       "working_url": "https://lbs-us1.suprememastertv.com/720p.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 213,
-      "working_bytes": 2183996,
+      "working_ms": 158,
+      "working_bytes": 2320296,
       "working_manifest_bytes": 141,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-goodtv-ch1",
@@ -1181,10 +1337,12 @@
       "working_url": "https://live.streamingfast.net/osmflivech1.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 123,
-      "working_bytes": 1495540,
+      "working_ms": 78,
+      "working_bytes": 1480500,
       "working_manifest_bytes": 562,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tw-goodtv-ch2",
@@ -1196,10 +1354,12 @@
       "working_url": "https://live.streamingfast.net/osmflivech2.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 85,
-      "working_bytes": 1417332,
+      "working_ms": 68,
+      "working_bytes": 1525620,
       "working_manifest_bytes": 562,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "iptvorg-ttvnews-tw-sd",
@@ -1211,10 +1371,12 @@
       "working_url": "https://live.wcetv.com/hls/master-ttvnews.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 525,
-      "working_bytes": 1981144,
+      "working_ms": 458,
+      "working_bytes": 2067624,
       "working_manifest_bytes": 75,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "iptvorg-ntdtvasiapacific-us-sd",
@@ -1226,10 +1388,12 @@
       "working_url": "https://live.ntdtv.com/aplive200/playlist.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 1081,
-      "working_bytes": 787156,
+      "working_ms": 894,
+      "working_bytes": 946956,
       "working_manifest_bytes": 177,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "iptvorg-dalitv-tw-sd",
@@ -1241,10 +1405,12 @@
       "working_url": "http://www.dalitv.com.tw:4568/live/dali/index.m3u8",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 66,
-      "working_bytes": 4719364,
+      "working_ms": 38,
+      "working_bytes": 4876344,
       "working_manifest_bytes": 828,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tvapp-tw",
@@ -1256,10 +1422,12 @@
       "working_url": "https://cdn.qd.je/163189/typd2",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 323,
-      "working_bytes": 5351984,
+      "working_ms": 363,
+      "working_bytes": 5155524,
       "working_manifest_bytes": 269,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": false,
+      "frozen_detail": null
     },
     {
       "channel_id": "tvapp-tw-2",
@@ -1271,10 +1439,12 @@
       "working_url": "https://cdn.qd.je/163189/ccm2",
       "working_role": "primary",
       "working_kind": "mpegts",
-      "working_ms": 238,
-      "working_bytes": 1529380,
+      "working_ms": 330,
+      "working_bytes": 1447788,
       "working_manifest_bytes": 276,
-      "needs_swap": false
+      "needs_swap": false,
+      "frozen": true,
+      "frozen_detail": "序號停在 390（已停播）"
     }
   ]
 }

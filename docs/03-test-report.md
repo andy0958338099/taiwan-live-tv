@@ -1565,3 +1565,183 @@ embed 頻道逐筆實測：
 | Commit | 內容 |
 |---|---|
 | `1cfcd96` | 修好三個測試腳本的 CSS module 選擇器 + 3 個壞掉的主來源換源 |
+
+---
+
+## 14. 巡檢結果（2026-11-22 02:15 CST）
+
+### 14.1 重大發現：deep probe 對「停播來源」是假綠燈
+
+`verify-channel-sources.mjs` 的驗證流程是
+「manifest → child → segment」，它只確認**能不能下載到一段影片**。
+
+但有一種來源會讓這個檢查**完全失效**：
+
+| 步驟 | 停播來源的表現 | 檢查結果 |
+|---|---|---|
+| 讀 manifest | 讀得到（HTTP 200） | ✅ |
+| 讀 child 清單 | 讀得到，序號停在某個數字 | ✅ |
+| 下載 segment | 清單裡那幾段**舊的** segment 還下載得到 | ✅ |
+| **序號有沒有前進** | **完全不動** | ❌ **沒被檢查** |
+
+結果是：播放器把清單裡的舊內容播完（**看起來完全正常**），
+緩衝耗盡後就永遠卡在最後一格畫面 —— 使用者只會看到「連線中…」或一片凍結畫面，
+完全不知道發生了什麼事。
+
+#### 實測：6 個頻道處於這個狀態
+
+用 `scripts/probe-playlist-advancement.mjs` 量測（模擬 hls.js 的 reload 節奏）：
+
+| 頻道 | 序號 | targetduration | 90 秒內 misses |
+|---|---|---|---|
+| 龍華電視 | 21860（不動） | 4s | 28 |
+| Now TV | 478282（不動） | 10s | 16 |
+| 天映 | 703（不動） | 8s | 18 |
+| 浙江衛視 | 359977910（不動） | 8s | 15 |
+| 鳳凰衛視香港台 | 668032（不動） | — | — |
+| 天映經典 | 390（不動） | — | — |
+
+**排除上游 CDN 快取的可能**：同一組 URL 加了 cache-busting query
+（`?_cb=<timestamp>`）後序號**一樣不動** → 不是快取，是真的停播。
+（`scripts/probe-frozen-playlist.mjs`）
+
+**排除代理層的問題**：
+- `verify-manifest-freshness.mjs` → manifest 的 `Cache-Control: no-store` 生效，
+  代理**沒有**把 live 清單冰住
+- `verify-child-playlist-freshness.mjs` → 子清單序號**會前進**（GOOD TV、Dali TV），
+  代理層正常；龍華／Now TV 連直連上游都不動 → 問題在上游，不在代理
+
+### 14.2 修正一：播放器偵測「來源停播」並自動換源
+
+hls.js **1.7.0** 新增了 `liveMaxUnchangedPlaylistRefresh` 設定
+（預設 `Infinity` = 不啟用）與 `PLAYLIST_UNCHANGED_ERROR` 錯誤：
+
+> "**Stop loading stale live streams** — set `liveMaxUnchangedPlaylistRefresh`
+> to error out with `PLAYLIST_UNCHANGED_ERROR` after a set number of unchanged
+> playlist reloads instead of polling a dead playlist indefinitely."
+
+`web/src/lib/useHlsPlayer.ts` 改動兩處：
+
+1. **啟用停播偵測**：`liveMaxUnchangedPlaylistRefresh: 4`
+2. **把 `PLAYLIST_UNCHANGED_ERROR` 歸為「來源層級的失敗」**：
+   它的 `fatal` 是 `false`，原本會被 `if (!data.fatal && !isSourceLevelFailure) return;`
+   直接丟掉 → 使用者只會看到畫面凍結。現在會走 failover 換備援來源。
+
+#### 門檻 4 的實測依據（非猜測）
+
+hls.js 的 live 清單輪詢間隔（`computeReloadInterval`）：
+清單**有更新** → `targetduration` 秒；**沒更新** → `targetduration / 2` 秒。
+序號沒動就讓 misses +1，有動就歸零。
+
+用**正確的節奏**模擬 85 個頻道（`probe-playlist-advancement.mjs`）：
+
+| misses 分布 | 頻道數 | 說明 |
+|---|---|---|
+| 0 | 30 | 正常 |
+| 1 | 12 | 正常 |
+| 2 | 1 | 正常（最大） |
+| 15 / 16 / 18 / 28 | 4 | **停播** |
+
+→ 正常來源最壞只到 **2**，停播來源是 **15 以上**。
+門檻設 **4** 有 2 倍餘裕，不會誤殺正常來源，也不會拖太久。
+
+#### A/B 實測（本機 `localhost:3210`，同一支 Chrome、同一支頻道）
+
+**停播頻道（Now TV）—— 修正前 vs 修正後：**
+
+修正後（`localhost:3210`）：
+
+```
+[播放器] 「Now TV」hls.js 錯誤：type=networkError details=playlistUnchangedError fatal=false
+[播放器] 「Now TV」來源失敗（此來源已停止播送（串流清單長時間沒有更新）），改用備援來源 2/2
+```
+
+60 秒後頁面狀態：
+
+```json
+{"pageError": "播放失敗此來源已停止播送（串流清單長時間沒有更新）。已嘗試 2 個來源（含備援）皆無法播放。…"}
+```
+
+修正前（正式站，同一個頻道、同一支測試腳本）：
+
+```
+[播放器] 「Now TV」緩衝持續耗盡 25000ms，改用備援來源
+```
+
+→ 走的是「卡頓 25 秒後才換源」的路徑，而不是直接判定停播。
+
+**正常頻道（GOOD TV）—— 確認沒有誤殺：**
+
+```json
+60 秒後： {"v":{"t":100.006737,"rs":4,"paused":false,"w":1920,"h":1080,"err":null},"pageError":null}
+```
+
+`currentTime` 持續前進到 100 秒，沒有觸發 `PLAYLIST_UNCHANGED_ERROR`。
+
+### 14.3 修正二：deep probe 加「停播檢查」
+
+`scripts/verify-channel-sources.mjs` 現在在驗證通過後**再多做一步**：
+取 media playlist 兩次（間隔 = `targetduration`），比對 `#EXT-X-MEDIA-SEQUENCE`。
+序號不動 → 判定「已停播」，單獨列出而不是混在「可播」裡。
+
+修正前：
+
+```
+可播 85/85｜需改用備援 5｜完全失效 0
+```
+
+修正後：
+
+```
+可播 79/85｜需改用備援 0｜完全失效 0｜已停播 6
+
+已停播（清單讀得到但序號不動 —— 使用者只會看到畫面凍結）：
+  ✗ 龍華電視 — 序號停在 21860（已停播）
+  ✗ Now TV — 序號停在 478282（已停播）
+  ✗ 天映 — 序號停在 703（已停播）
+  ✗ 浙江衛視 — 序號停在 359977910（已停播）
+  ✗ 鳳凰衛視香港台 — 序號停在 668032（已停播）
+  ✗ 天映經典 — 序號停在 390（已停播）
+```
+
+> 修正前那個「85/85 可播」是**假綠燈** —— 6 個頻道其實根本沒在播。
+
+### 14.4 替代來源搜尋結果（停播頻道）
+
+`scripts/search-alternates-for-dead.mjs` 掃 9 個公開 IPTV 清單，
+對每個候選實測「序號是否前進」：
+
+| 頻道 | 可用替代 | 說明 |
+|---|---|---|
+| 龍華電視 | 1 | `https://iptv.yang-1989.xyz/ofiii/mm986q.m3u8`（**龍華偶像**） |
+| 天映 | 2 | `cdn.qd.je/163189/typd2`（天映頻道）、`cdn.qd.je/163189/ccm2`（天映經典） |
+| 浙江衛視 | 2 | `http://63.141.230.178:82/gslb/zbdq5.m3u8`（浙江卫视）、`ls.qingting.fm/live/4866.m3u8`（浙江动听） |
+| Now TV | 0 | 公開清單中找不到可用的同頻道來源 |
+| 鳳凰衛視香港台 | 0 | 公開清單中沒有這個頻道 |
+
+⚠️ **這些替代來源沒有直接換上去**，因為名稱比對顯示它們是**不同的頻道**：
+「龍華偶像」≠ 龍華電視、「浙江动听」是廣播電台。
+專案規則要求備援必須是**同一個頻道**（見 §11「備援來源指向別的頻道」），
+所以寧可讓播放器明確報錯，也不要把別的頻道冒充成原頻道。
+
+### 14.5 本輪新增的量測工具
+
+| 腳本 | 用途 |
+|---|---|
+| `probe-playlist-advancement.mjs` | 量測每個來源的 live playlist 序號是否前進（**依 hls.js 的 reload 節奏**模擬 misses 計數器） |
+| `probe-frozen-playlist.mjs` | 區分「真的停播」與「被上游 CDN 快取住」（加 cache-busting query 對照） |
+| `probe-live-playlist-shape.mjs` | 量測各來源的 playlist 結構（segment 數、targetduration、是否 VOD） |
+| `verify-manifest-freshness.mjs` | 驗證 manifest 的 `no-store` 是否真的生效（代理沒把 live 清單冰住） |
+| `verify-child-playlist-freshness.mjs` | 驗證**子** media playlist 的序號是否前進（含直連上游對照組） |
+| `test-sustained-playback.mjs` | **持續觀察** `currentTime` 是否前進（舊的 `test-playback-local.mjs` 只看 `currentTime > 0.5`，會對停播來源假通過） |
+| `diagnose-channel.mjs` | 單一頻道逐層診斷（直連 vs 經過代理） |
+| `debug-select-and-play.mjs` | 驗證「點擊 → 選到頻道 → 播放器狀態」完整鏈路（會先把卡片捲進視窗再點） |
+| `capture-player-console.mjs` | 擷取播放器在瀏覽器裡的 console 訊息（hls.js 事件明細） |
+| `find-alternate-for-dead.mjs` | 從既有候選池找停播頻道的可用替代 |
+| `search-alternates-for-dead.mjs` | 從 9 個公開 IPTV 清單搜尋停播頻道的替代 |
+
+### 14.6 本輪 commit
+
+| Commit | 內容 |
+|---|---|
+| （本輪） | 播放器啟用 `liveMaxUnchangedPlaylistRefresh` + 處理 `PLAYLIST_UNCHANGED_ERROR`；deep probe 加停播檢查；新增 11 支量測腳本 |

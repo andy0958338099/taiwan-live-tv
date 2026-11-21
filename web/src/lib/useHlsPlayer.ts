@@ -539,6 +539,48 @@ export function useHlsPlayer(channel: Channel | null) {
         // 又不會讓使用者覺得在看延遲直播。
         liveSyncDuration: 6,
         //
+        // liveMaxUnchangedPlaylistRefresh：**偵測「來源停播」**
+        //
+        // ⚠️ **這是 hls.js 1.7.0 新增的功能，預設值是 Infinity（等於不啟用）。**
+        //
+        // ## 問題：來源停播時播放器會「永遠卡住」
+        //
+        // 實測（2026-11-22，`scripts/probe-playlist-advancement.mjs`）：
+        // 有 5 個頻道的上游 live playlist **序號完全不動**（停播）：
+        //   龍華電視（seq 21860 定住）、Now TV（478282）、天映（703）、
+        //   浙江衛視、鳳凰衛視香港台
+        //
+        // 這種來源的行為是：
+        //   1. manifest 讀得到 ✅
+        //   2. 清單裡那幾段舊 segment 也還下載得到 ✅
+        //   3. 播放器把舊內容播完 → **看起來完全正常**
+        //   4. 緩衝耗盡後就永遠卡在最後一格畫面 ❌
+        //
+        // 而 hls.js 預設會**無限次**輪詢那個不動的清單，
+        // 既不報錯也不換源 —— 使用者只會看到畫面凍結。
+        //
+        // `liveMaxUnchangedPlaylistRefresh` 就是為此設計：
+        // 連續 N 次重新載入清單都沒有更新 → 觸發 `PLAYLIST_UNCHANGED_ERROR`，
+        // 讓上層的 failover 邏輯接手（改用備援來源）。
+        //
+        // ## 門檻怎麼選（實測依據，非猜測）
+        //
+        // hls.js 的 live 清單輪詢間隔：
+        //   · 清單有更新 → targetduration 秒
+        //   · 清單沒更新 → targetduration / 2 秒（「miss half average」）
+        // 而「序號沒變」就會讓 misses 計數器 +1，有更新則歸零。
+        //
+        // 實測 79 個可播頻道的 misses 分布：
+        //   · misses=1 → 7 個　· misses=2 → 2 個　· **最大 2**
+        // 停播的 5 個頻道：misses = 9 / 11 / 16（遠大於 2）
+        //
+        // 所以設 4：正常來源最壞只到 2（有 2 倍餘裕），
+        // 停播來源則在第 4 次就會被判定 —— 不會誤殺，也不會拖太久。
+        //
+        // ⚠️ 門檻下限是 2（hls.js 會自動 clamp 並警告）。
+        // ⚠️ 這只對 **live** 清單有效；VOD（帶 #EXT-X-ENDLIST）不受影響。
+        liveMaxUnchangedPlaylistRefresh: 4,
+        //
         // liveMaxLatencyDuration：播放器最多可以落後直播現場多少秒。
         //
         // ⚠️ **這是「緩衝做不大」的主要瓶頸**，比 maxBufferLength 更關鍵。
@@ -657,7 +699,21 @@ export function useHlsPlayer(channel: Channel | null) {
             (data.details === Hls.ErrorDetails.FRAG_LOAD_ERROR ||
               data.details === Hls.ErrorDetails.FRAG_LOAD_TIMEOUT ||
               data.details === Hls.ErrorDetails.LEVEL_LOAD_ERROR ||
-              data.details === Hls.ErrorDetails.LEVEL_LOAD_TIMEOUT);
+              data.details === Hls.ErrorDetails.LEVEL_LOAD_TIMEOUT ||
+              // ⚠️ **必須把「來源停播」也算進來，否則 failover 不會觸發**
+              //
+              // hls.js 1.7.0 新增：當 live 清單連續 N 次重新載入都沒有更新
+              // （`liveMaxUnchangedPlaylistRefresh`），會丟出
+              // `PLAYLIST_UNCHANGED_ERROR`。
+              //
+              // 它的 `fatal` 是 **false**（非致命），所以原本的
+              // `if (!data.fatal && !isSourceLevelFailure) return;`
+              // 會把它直接丟掉 → 使用者只會看到畫面凍結在最後一格。
+              //
+              // 把它歸為「來源層級的失敗」→ 走 failover 改用備援來源。
+              // 若沒有備援，handleFailure 會顯示明確的錯誤訊息
+              // （而不是讓畫面無限期凍結）。
+              data.details === Hls.ErrorDetails.PLAYLIST_UNCHANGED_ERROR);
 
           if (!data.fatal && !isSourceLevelFailure) return;
 
@@ -722,6 +778,18 @@ export function useHlsPlayer(channel: Channel | null) {
                   target,
                   url,
                   '串流清單載入失敗：來源供應過慢或已中斷',
+                );
+              } else if (
+                data.details === Hls.ErrorDetails.PLAYLIST_UNCHANGED_ERROR
+              ) {
+                // 來源停播：live 清單連續多次重新載入都沒有更新
+                //
+                // 這種來源的 manifest 讀得到、舊 segment 也下載得到，
+                // 所以它會「看起來正常」直到緩衝耗盡 —— 必須明確告知使用者。
+                void fail(
+                  target,
+                  url,
+                  '此來源已停止播送（串流清單長時間沒有更新）',
                 );
               } else {
                 void fail(

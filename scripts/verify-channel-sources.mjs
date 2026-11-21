@@ -105,6 +105,11 @@ async function verify(url) {
 
   // child manifest？
   let target = new URL(pickOrder[0], url).href;
+  // targetduration / child 清單網址 —— 供「停播檢查」使用
+  const manifestTdMatch = text.match(/^#EXT-X-TARGETDURATION:(\d+(?:\.\d+)?)/m);
+  const manifestTargetduration = manifestTdMatch ? Number(manifestTdMatch[1]) : null;
+  let childTargetduration = null;
+  let childPlaylistUrl = null;
   if (!/\.(ts|m4s|mp4|aac|cmfv|cmfa)(\?|$)/i.test(pickOrder[0])) {
     let cres;
     try {
@@ -133,6 +138,11 @@ async function verify(url) {
       .map((l) => l.trim())
       .filter((l) => l && !l.startsWith('#'));
     if (csegs.length === 0) return { ok: false, reason: 'child 無 segment' };
+    // ⚠️ 必須**在 target 被改寫成 segment 網址之前**記下 child 清單網址
+    //    （停播檢查要重新抓的是 child playlist，不是 segment）
+    childPlaylistUrl = target;
+    const childTdMatch = ctext.match(/^#EXT-X-TARGETDURATION:(\d+(?:\.\d+)?)/m);
+    childTargetduration = childTdMatch ? Number(childTdMatch[1]) : null;
     // child manifest 的 segment 同樣是由舊到新 → 取最新的
     target = new URL([...csegs].reverse()[0], target).href;
   }
@@ -211,7 +221,59 @@ async function verify(url) {
     segMs,
     manifestBytes,
     kind: isTs ? 'mpegts' : isFmp4 ? 'fmp4' : 'unknown',
+    // targetduration：停播檢查要用它決定「等多久再取一次序號」
+    targetduration: childTargetduration ?? manifestTargetduration ?? null,
+    // child 清單網址（停播檢查要重新取它）
+    childUrl: childPlaylistUrl ?? null,
   };
+}
+
+/**
+ * 檢查 live playlist 是否**真的在前進**（序號有沒有動）
+ *
+ * ## 為什麼需要這一步
+ *
+ * 純粹的「manifest → child → segment」驗證會對**停播來源**回報 ✓：
+ *   · manifest 讀得到 ✅
+ *   · 清單裡那幾段舊 segment 也還下載得到 ✅
+ *   · 但序號早就定住了 → 其實根本沒在播
+ *
+ * 實測（2026-11-22）：龍華電視 / Now TV / 天映 / 浙江衛視 / 鳳凰衛視香港台
+ * 都被舊的驗證判成「可播」，但序號 90 秒完全不動 —— 使用者只會看到
+ * 畫面凍結在最後一格。
+ *
+ * ## 做法
+ *
+ * 取子清單兩次（間隔 = targetduration），比對 `#EXT-X-MEDIA-SEQUENCE`。
+ * 序號不動 → 判定「已停播」。
+ *
+ * ⚠️ 只有在**第一次就取得 td** 時才做這個檢查（避免對沒有
+ *    MEDIA-SEQUENCE 的來源誤判）。
+ *
+ * @returns { Promise<{frozen: boolean, seq: number|null, detail: string}> }
+ */
+async function checkAdvancing(childUrl, td) {
+  const first = await get(childUrl).then((r) => (r.ok ? r.text() : null)).catch(() => null);
+  if (!first) return { frozen: false, seq: null, detail: '' };
+
+  const m1 = first.match(/^#EXT-X-MEDIA-SEQUENCE:(\d+)/m);
+  if (!m1) return { frozen: false, seq: null, detail: '' };
+  const seq1 = Number(m1[1]);
+
+  // 等一個 targetduration（hls.js 的 reload 間隔）再取一次
+  await new Promise((r) => setTimeout(r, Math.min(td * 1000 + 1500, 20000)));
+
+  const second = await get(childUrl).then((r) => (r.ok ? r.text() : null)).catch(() => null);
+  if (!second) return { frozen: false, seq: seq1, detail: '' };
+
+  const m2 = second.match(/^#EXT-X-MEDIA-SEQUENCE:(\d+)/m);
+  if (!m2) return { frozen: false, seq: seq1, detail: '' };
+  const seq2 = Number(m2[1]);
+
+  if (seq2 === seq1) {
+    return { frozen: true, seq: seq1, detail: `序號停在 ${seq1}（已停播）` };
+  }
+  return { frozen: false, seq: seq2, detail: '' };
 }
 
 async function main() {
@@ -288,15 +350,45 @@ async function main() {
     const primary = found[0];
     const working = found.find((f) => f.ok);
 
-    const status = working ? '✓' : '✗';
-    const detail = working
-      ? `${working.kind} ${(working.segBytes / 1048576).toFixed(1)}MB ` +
-        `${(working.segMs / 1000).toFixed(1)}s ${working.cors ? 'CORS' : '需代理'}`
-      : `主來源 ${primary?.reason ?? '無'}`;
+    // ── 停播檢查 ──
+    //
+    // ⚠️ **必須在「可播」判定之後再做**，而且只對**通過驗證**的來源做。
+    //
+    // 停播來源的特徵是「manifest 讀得到、舊 segment 也下載得到」，
+    // 所以前面的驗證會回報 ✓ —— 但它其實沒有在播。
+    //
+    // 這裡對**每個通過驗證的候選**檢查序號是否前進；
+    // 只要有**任何一個**候選還在播，這個頻道就是可用的。
+    let frozenDetail = '';
+    let allFrozen = false;
+    if (working) {
+      const advancing = [];
+      for (const cand of found.filter((f) => f.ok)) {
+        // ⚠️ 必須檢查 **media playlist**（child），不是 master manifest
+        //    —— master manifest 沒有 MEDIA-SEQUENCE，而且內容本來就不常變。
+        //    沒有 child 的（本身就是 media playlist）就用它自己。
+        const playlistUrl = cand.childUrl ?? cand.url;
+        const adv = await checkAdvancing(playlistUrl, cand.targetduration ?? 6);
+        if (!adv.frozen) advancing.push(cand);
+        else frozenDetail = adv.detail;
+      }
+      if (advancing.length === 0) {
+        allFrozen = true;
+      }
+    }
+
+    const status = working && !allFrozen ? '✓' : '✗';
+    const detail =
+      working && !allFrozen
+        ? `${working.kind} ${(working.segBytes / 1048576).toFixed(1)}MB ` +
+          `${(working.segMs / 1000).toFixed(1)}s ${working.cors ? 'CORS' : '需代理'}`
+        : allFrozen
+          ? `已停播：${frozenDetail}`
+          : `主來源 ${primary?.reason ?? '無'}`;
 
     console.log(
       `  ${status} ${ch.channel_name.padEnd(18)} ` +
-        `${working && working.role === 'backup' ? '備援可用 ' : ''}${detail}`,
+        `${working && working.role === 'backup' && !allFrozen ? '備援可用 ' : ''}${detail}`,
     );
 
     doneCount++;
@@ -314,6 +406,9 @@ async function main() {
       working_bytes: working?.segBytes ?? null,
       working_manifest_bytes: working?.manifestBytes ?? null,
       needs_swap: !!(working && working.role === 'backup'),
+      // 停播狀態：manifest 讀得到但序號不動 → 其實沒在播
+      frozen: allFrozen,
+      frozen_detail: allFrozen ? frozenDetail : null,
     };
   }
 
@@ -353,16 +448,26 @@ async function main() {
   const order = new Map(targets.map((c, i) => [c.channel_id, i]));
   results.sort((a, b) => (order.get(a.channel_id) ?? 0) - (order.get(b.channel_id) ?? 0));
 
-  const ok = results.filter((r) => r.working_url).length;
+  const ok = results.filter((r) => r.working_url && !r.frozen).length;
   const needSwap = results.filter((r) => r.needs_swap).length;
   const dead = results.filter((r) => !r.working_url);
+  // 停播：manifest 讀得到、segment 也下載得到，但序號不動 → 沒在播
+  const frozen = results.filter((r) => r.frozen);
 
   console.log('');
   console.log('═'.repeat(78));
-  console.log(`可播 ${ok}/${results.length}｜需改用備援 ${needSwap}｜完全失效 ${dead.length}`);
+  console.log(
+    `可播 ${ok}/${results.length}｜需改用備援 ${needSwap}｜完全失效 ${dead.length}｜已停播 ${frozen.length}`,
+  );
   if (dead.length) {
     console.log('\n完全失效：');
     for (const d of dead) console.log(`  ✗ ${d.channel_name} — ${d.primary_reason}`);
+  }
+  if (frozen.length) {
+    console.log('\n已停播（清單讀得到但序號不動 —— 使用者只會看到畫面凍結）：');
+    for (const f of frozen) {
+      console.log(`  ✗ ${f.channel_name} — ${f.frozen_detail ?? '序號未前進'}`);
+    }
   }
   if (needSwap) {
     console.log('\n主來源壞掉但備援可用（建議置換）：');
