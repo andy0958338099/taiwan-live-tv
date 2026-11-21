@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-21T08:11:13.181Z",
+  "updated_at": "2026-11-21T11:34:41.702Z",
   "categories": [
     {
       "id": "news",
@@ -182,6 +182,11 @@
             "url": "https://cdn6.cc.cd/163189/fct",
             "source": "原主來源（已失效）",
             "cors": false
+          },
+          {
+            "url": "http://r.jdshipin.com/qClQf",
+            "source": "TVAPP 直播源（8 個獨立來源）",
+            "cors": false
           }
         ]
       }
@@ -250,6 +255,16 @@
           {
             "url": "https://cdn6.cc.cd/163189/j1",
             "source": "原主來源（已失效）",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/tvbxh",
+            "source": "TVAPP 直播源（3 個獨立來源）",
+            "cors": false
+          },
+          {
+            "url": "https://cdn.qd.je/163189/tvbc",
+            "source": "TVAPP 直播源（1 個獨立來源）",
             "cors": false
           }
         ]
@@ -1641,8 +1656,7 @@
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
-        "original_name": "央視-16 奧林匹克",
-        "backup_urls": []
+        "original_name": "央視-16 奧林匹克"
       }
     },
     {
@@ -3790,8 +3804,7 @@
       "playlist_source": {
         "source_id": "suxuang",
         "source_label": "suxuang 聚合源",
-        "original_name": "鳳凰衛視",
-        "backup_urls": []
+        "original_name": "鳳凰衛視"
       }
     },
     {
@@ -3867,8 +3880,7 @@
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
-        "original_name": "廈門衛視",
-        "backup_urls": []
+        "original_name": "廈門衛視"
       }
     },
     {
@@ -4210,8 +4222,7 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "東森財經新聞台",
-        "backup_urls": []
+        "raw_channel_name": "東森財經新聞台"
       }
     },
     {
@@ -4242,7 +4253,13 @@
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
         "raw_channel_name": "TVBS Asia",
-        "backup_urls": []
+        "backup_urls": [
+          {
+            "url": "http://38.64.72.148:80/hls/modn/list/4005/playlist.m3u8",
+            "source": "TVAPP 直播源（5 個獨立來源）",
+            "cors": false
+          }
+        ]
       }
     },
     {
@@ -4272,8 +4289,7 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "客家電視台 HAKKA TV",
-        "backup_urls": []
+        "raw_channel_name": "客家電視台 HAKKA TV"
       }
     },
     {
@@ -4340,8 +4356,7 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "Beautiful Life TV 美麗人生",
-        "backup_urls": []
+        "raw_channel_name": "Beautiful Life TV 美麗人生"
       }
     },
     {
@@ -4371,8 +4386,7 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "CGNTV 中文台",
-        "backup_urls": []
+        "raw_channel_name": "CGNTV 中文台"
       }
     },
     {
@@ -4402,8 +4416,7 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "唯心電視",
-        "backup_urls": []
+        "raw_channel_name": "唯心電視"
       }
     },
     {
@@ -4433,8 +4446,7 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "真善美電視",
-        "backup_urls": []
+        "raw_channel_name": "真善美電視"
       }
     },
     {
@@ -4464,8 +4476,7 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "GOOD TV 綜合台",
-        "backup_urls": []
+        "raw_channel_name": "GOOD TV 綜合台"
       }
     },
     {
@@ -4495,8 +4506,176 @@
         "provider": "github",
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
-        "raw_channel_name": "GOOD TV 真理台",
-        "backup_urls": []
+        "raw_channel_name": "GOOD TV 真理台"
+      }
+    },
+    {
+      "channel_id": "iptvorg-ttvnews-tw-sd",
+      "channel_name": "台視",
+      "name_en": "TTV News",
+      "category": "news",
+      "channel_number": 29,
+      "logo": "https://i.imgur.com/AfkK0gv.png",
+      "stream_url": "https://live.wcetv.com/hls/master-ttvnews.m3u8",
+      "stream_type": "hls",
+      "cors_enabled": false,
+      "source_name": "iptv-org 官方台灣清單（官方維護、每日自動更新）",
+      "source_website": "https://iptv-org.github.io/iptv/countries/tw.m3u",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-21T10:28:24.770Z",
+      "description": "TTV News｜iptv-org 收錄的台灣直播頻道（新聞台）。來源為 iptv-org 官方維護的台灣頻道清單，GitHub Actions 每日自動更新與修正失效連結。網頁版透過本專案的串流代理播放（來源未提供 CORS 或為 HTTP）。",
+      "region": "台灣",
+      "tags": [
+        "iptv-org",
+        "台灣",
+        "news"
+      ],
+      "verification": {
+        "verified_at": "2026-11-21T10:28:24.772Z",
+        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
+        "target_duration": 7,
+        "avg_segment_mb": 1.97,
+        "avg_segment_ms": 1332,
+        "segments_tested": 3,
+        "cors_acao": null,
+        "needs_proxy": true
+      }
+    },
+    {
+      "channel_id": "iptvorg-ntdtvasiapacific-us-sd",
+      "channel_name": "NTD TV Asia-Pacific",
+      "name_en": "NTD TV Asia-Pacific",
+      "category": "general",
+      "channel_number": 30,
+      "logo": "https://i.imgur.com/iyFXcDy.png",
+      "stream_url": "https://live.ntdtv.com/aplive200/playlist.m3u8",
+      "stream_type": "hls",
+      "cors_enabled": true,
+      "source_name": "iptv-org 官方台灣清單（官方維護、每日自動更新）",
+      "source_website": "https://iptv-org.github.io/iptv/countries/tw.m3u",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-21T10:28:25.037Z",
+      "description": "NTD TV Asia-Pacific｜iptv-org 收錄的台灣直播頻道（綜合台）。來源為 iptv-org 官方維護的台灣頻道清單，GitHub Actions 每日自動更新與修正失效連結。",
+      "region": "台灣",
+      "tags": [
+        "iptv-org",
+        "台灣",
+        "general"
+      ],
+      "verification": {
+        "verified_at": "2026-11-21T10:28:25.037Z",
+        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
+        "target_duration": 11,
+        "avg_segment_mb": 0.72,
+        "avg_segment_ms": 1441,
+        "segments_tested": 3,
+        "cors_acao": "*",
+        "needs_proxy": false
+      }
+    },
+    {
+      "channel_id": "iptvorg-dalitv-tw-sd",
+      "channel_name": "Dali TV",
+      "name_en": "Dali TV",
+      "category": "general",
+      "channel_number": 31,
+      "logo": "https://i.imgur.com/pFIMLsA.png",
+      "stream_url": "http://www.dalitv.com.tw:4568/live/dali/index.m3u8",
+      "stream_type": "hls",
+      "cors_enabled": false,
+      "source_name": "iptv-org 官方台灣清單（官方維護、每日自動更新）",
+      "source_website": "https://iptv-org.github.io/iptv/countries/tw.m3u",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-21T10:28:25.069Z",
+      "description": "Dali TV (720p)｜iptv-org 收錄的台灣直播頻道（綜合台）。來源為 iptv-org 官方維護的台灣頻道清單，GitHub Actions 每日自動更新與修正失效連結。網頁版透過本專案的串流代理播放（來源未提供 CORS 或為 HTTP）。",
+      "region": "台灣",
+      "tags": [
+        "iptv-org",
+        "台灣",
+        "general"
+      ],
+      "verification": {
+        "verified_at": "2026-11-21T10:28:25.069Z",
+        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
+        "target_duration": 8,
+        "avg_segment_mb": 4.47,
+        "avg_segment_ms": 530,
+        "segments_tested": 3,
+        "cors_acao": "*",
+        "needs_proxy": true
+      }
+    },
+    {
+      "channel_id": "tvapp-tw",
+      "channel_name": "天映頻道",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": 32,
+      "logo": "https://iptv.yang-1989.xyz/logo/天映頻道.webp",
+      "stream_url": "https://cdn.qd.je/163189/typd2",
+      "stream_type": "hls",
+      "cors_enabled": false,
+      "source_name": "TVAPP 直播源彙整（JackTV 等 1 個來源交叉提供）",
+      "source_website": "https://github.com/youhunwl/TVAPP#直播源-",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-21T11:34:31.550Z",
+      "description": "天映頻道｜來源為 TVAPP 專案整理的直播源（娛樂台）。該頻道在 1 個獨立來源中都有提供，經深度驗證確認為持續更新的真直播。",
+      "region": "台灣",
+      "tags": [
+        "tvapp",
+        "台灣",
+        "entertainment"
+      ],
+      "verification": {
+        "verified_at": "2026-11-21T11:34:31.551Z",
+        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
+        "target_duration": 10,
+        "avg_segment_mb": 4.92,
+        "avg_segment_ms": 1057,
+        "source_count": 1,
+        "sources": [
+          "JackTV"
+        ],
+        "needs_proxy": true
+      }
+    },
+    {
+      "channel_id": "tvapp-tw-2",
+      "channel_name": "天映經典",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": 33,
+      "logo": "https://iptv.yang-1989.xyz/logo/天映經典頻道.webp",
+      "stream_url": "https://cdn.qd.je/163189/ccm2",
+      "stream_type": "hls",
+      "cors_enabled": false,
+      "source_name": "TVAPP 直播源彙整（JackTV 等 1 個來源交叉提供）",
+      "source_website": "https://github.com/youhunwl/TVAPP#直播源-",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-21T11:34:31.551Z",
+      "description": "天映經典｜來源為 TVAPP 專案整理的直播源（娛樂台）。該頻道在 1 個獨立來源中都有提供，經深度驗證確認為持續更新的真直播。",
+      "region": "台灣",
+      "tags": [
+        "tvapp",
+        "台灣",
+        "entertainment"
+      ],
+      "verification": {
+        "verified_at": "2026-11-21T11:34:31.551Z",
+        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
+        "target_duration": 10,
+        "avg_segment_mb": 1.4,
+        "avg_segment_ms": 681,
+        "source_count": 1,
+        "sources": [
+          "JackTV"
+        ],
+        "needs_proxy": true
       }
     }
   ]

@@ -166,8 +166,6 @@ export default function Home() {
           iframeKey={player.iframeKey}
           onIframeMount={player.setIframeEl}
           onVideoMount={player.setVideoEl}
-          muted={player.muted}
-          onToggleMute={player.toggleMute}
           elapsedSeconds={player.elapsedSeconds}
           onSkipSource={player.skipSource}
           remainingSources={Math.max(

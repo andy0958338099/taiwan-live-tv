@@ -26,10 +26,6 @@ interface VideoPlayerProps {
   onIframeMount?: (el: HTMLIFrameElement | null) => void;
   /** video 元素掛載回呼（供事件監聽綁定使用） */
   onVideoMount?: (el: HTMLVideoElement | null) => void;
-  /** 目前是否靜音 */
-  muted?: boolean;
-  /** 切換靜音 */
-  onToggleMute?: () => void;
   /** 已等待的秒數（載入中顯示，避免使用者以為當機） */
   elapsedSeconds?: number;
   /** 是否可切換到下一個來源（載入過久時提供手動切換） */
@@ -70,8 +66,6 @@ export function VideoPlayer({
   iframeKey = 0,
   onIframeMount,
   onVideoMount,
-  muted = true,
-  onToggleMute,
   elapsedSeconds,
   onSkipSource,
   remainingSources,
@@ -118,17 +112,9 @@ export function VideoPlayer({
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
         />
-        {onToggleMute && (
-          <button
-            type="button"
-            className={styles.muteToggle}
-            onClick={onToggleMute}
-            aria-label={muted ? '取消靜音' : '靜音'}
-            title={muted ? '取消靜音' : '靜音'}
-          >
-            {muted ? '🔇' : '🔊'}
-          </button>
-        )}
+        {/*
+         * iframe 模式的靜音按鈕也一併移除（理由同 HLS 模式）。
+         */}
         {status === 'error' && (
           <div className={styles.playerOverlayError} role="alert">
             <div className={styles.playerOverlay}>
@@ -162,17 +148,18 @@ export function VideoPlayer({
         aria-label={`${channelName} 直播畫面`}
       />
 
-      {onToggleMute && (
-        <button
-          type="button"
-          className={styles.muteToggle}
-          onClick={onToggleMute}
-          aria-label={muted ? '取消靜音' : '靜音'}
-          title={muted ? '取消靜音' : '靜音'}
-        >
-          {muted ? '🔇' : '🔊'}
-        </button>
-      )}
+      {/*
+       * 靜音按鈕已移除。
+       *
+       * 使用者要求：「點選頻道後不要靜音，也不用出現喇叭標記」。
+       *
+       * 原本這裡有一個 🔇/🔊 的切換按鈕。它存在的唯一理由是
+       * 「Chrome 的自動播放政策要求先靜音才能自動播放」——
+       * 但使用者已經用點擊選台（真實手勢），Chrome 允許有聲自動播放，
+       * 所以那個按鈕對我們的流程一點用都沒有，只有視覺噪音。
+       *
+       * 音量的控制交給瀏覽器內建的 `controls`（影片右下角的齒輪icon）。
+       */}
 
       {/*
        * 未選頻道時的提示。

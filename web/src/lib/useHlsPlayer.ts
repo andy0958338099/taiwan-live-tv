@@ -395,42 +395,47 @@ export function useHlsPlayer(channel: Channel | null) {
       /**
        * 靜音狀態的決定。
        *
-       * 三種情況：
-       *   · 使用者主動切換頻道 + 使用者從未手動靜音
-       *     → **立刻有聲**（muted = false）
-       *       Chrome 的自動播放政策要求「媒體變成有聲的那一刻，
-       *       使用者手勢必須仍有效」。切換頻道的點擊手勢此刻還有效，
-       *       所以此時解除靜音是允許的，而且這正是使用者要的：
-       *       切換頻道後立刻有聲，不必等畫面出來。
+       * ## 使用者要求：「點選頻道後不要靜音，也不用出現喇叭標記」
        *
-       *   · 使用者主動切換頻道，但先前手動按過靜音
-       *     → 維持靜音（尊重使用者的明確選擇）
+       * 所以這裡**一律嘗試有聲啟動**（`startMuted = false`）。
        *
-       *   · 自動 failover / 自動恢復上次頻道（無使用者手勢）
-       *     → 先靜音啟動（不然 play() 會被拒絕），
-       *       等 playing 事件觸發後再解除
+       * 為什麼這樣安全？
+       *   · **使用者主動選台** → 點擊手勢此刻仍有效，
+       *     Chrome 允許有聲自動播放。✅
+       *   · **自動恢復上次頻道 / 自動 failover** → 沒有手勢，
+       *     Chrome 會拒絕有聲自動播放。
+       *     但這時 `video.play()` 會丟出 NotAllowedError，
+       *     而我們已經把它 catch 住並設定 `needsUserGesture = true`，
+       *     畫面會顯示「點擊開始播放」——
+       *     使用者一點就會有聲播放。
        *
-       * ⚠️ 為什麼「等 playing 事件」對慢速來源不可行：
-       *   實測央視來源的 segment 需 50 秒以上才下載完，
-       *   playing 事件那時才觸發 → 使用者要靜靜地聽 50 秒空白。
-       *   而 Chrome 的使用者手勢早已失效，那時再解除靜音還會被 Chrome
-       *   自動暫停（實測會停在 t=10）。所以必須在手勢內就解除。
+       * 也就是說：**不需要預先靜音來「換取」自動播放**。
+       * 預設靜音反而會讓使用者聽到一段無聲的開頭。
+       *
+       * ⚠️ 這是 Chrome 自動播放政策的實際行為（實測確認）：
+       *   · 有手勢 + muted=false → 直接有聲播放 ✅
+       *   · 無手勢 + muted=false → play() 被拒絕 → 顯示點擊提示 ✅
+       *   · 無手勢 + muted=true  → 靜音自動播放（使用者聽不到聲音）❌
+       *
+       * 所以「先靜音再解除」的路線在我們的流程裡是錯的：
+       * 它讓自動恢復的場景變成靜音播放，而使用者點擊選台的場景
+       * 又多了一次「等待 playing 事件才出聲」的延遲。
        */
-      const startMuted = !hasUserGesture || userMutedRef.current;
+      const startMuted = false;
       video.muted = startMuted;
       video.volume = 1;
       setMuted(startMuted);
-      wantUnmutedRef.current = !startMuted;
+      wantUnmutedRef.current = true;
       /**
-       * 立刻呼叫 play()（此時仍是靜音）。
+       * 立刻呼叫 play()。
        *
        * 為什麼要在這裡就呼叫：
        *   Chrome 的自動播放政策允許「靜音自動播放」，但要求 play() 發生在
        *   使用者手勢的有效時間窗內。等 manifest 載完才呼叫 play()，
        *   手勢會失效 → 有聲自動播放被拒絕。
        *
-       *   所以先在這裡（點擊手勢內）啟動播放（靜音），
-       *   之後 playing 事件觸發時再取消靜音。
+       *   所以先在這裡（點擊手勢內）啟動播放，
+       *   之後 playing 事件觸發時再確認音量狀態。
        */
       video.play().catch(() => {
         // 自動播放被拒絕 → 交由 needsUserGesture 提示使用者點擊
@@ -500,19 +505,52 @@ export function useHlsPlayer(channel: Channel | null) {
         // 以下是「避免一直轉圈圈」的關鍵設定
         // ─────────────────────────────────────────────────────────
         //
-        // liveSyncDurationCount：hls.js 預設是 **3**，
-        // 意思是「必須先下載 3 個 segment、湊滿 3 個 targetduration 的
-        // 緩衝才開始播放」。
+        // liveSyncDuration / liveMaxLatencyDuration
         //
-        // 對慢速上游來說這是災難：segment 需 30 秒 → 要等 90 秒才有畫面。
-        // 改成 1 表示「第一個 segment 到就播」，畫面立刻出現。
-        // 代價是開頭可能有一次微小的卡頓（第二個 segment 還在下載），
-        // 對直播來說這個取捨非常划算。
-        liveSyncDurationCount: 1,
-        // 直播的最大允許延遲（以 targetduration 為單位）。
-        // 若播放器落後直播現場超過這個數量，就直接跳到最新位置，
-        // 而不是慢慢追趕 —— 避免「一直轉圈等追上台」。
-        liveMaxLatencyDurationCount: 10,
+        // ⚠️ **這裡用「秒數」而不是「segment 數」，而且必須整組替換。**
+        //
+        // ## hls.js 的設定分兩組，不能混用
+        //
+        // 實測（2026-11-21）：混用會直接丟錯，整個播放器建構失敗：
+        //   "Illegal hls.js config: don't mix up
+        //    liveSyncDurationCount/liveMaxLatencyDurationCount
+        //    and liveSyncDuration/liveMaxLatencyDuration"
+        //
+        //   · segment 數組：liveSyncDurationCount + liveMaxLatencyDurationCount
+        //   · 秒數組：    liveSyncDuration + liveMaxLatencyDuration
+        //
+        // 另外 `liveMaxLatencyDuration` 必須 > `liveSyncDuration`，否則也丟錯。
+        //
+        // ## 為什麼要用秒數
+        //
+        // 各來源的 targetduration 差異極大，用 segment 數會讓
+        // **同一個設定的實際容忍度差 2.5 倍**：
+        //   龍華電視   targetduration 4s → 10 × 4s  =  40 秒
+        //   TVB翡翠台  targetduration 8s → 10 × 8s  =  80 秒
+        //   TVB系     targetduration 10s → 10 × 10s = 100 秒
+        //
+        // 40 秒的容忍度 → 辛苦累積的緩衝會被整段丟棄，
+        // 直接跳回直播現場重新下載。
+        //
+        // ## liveSyncDuration = 6 秒
+        //
+        // 「從直播現場往回退多少秒開始播」。
+        // 6 秒足以讓第一個 segment 有內容可播（不會黑屏），
+        // 又不會讓使用者覺得在看延遲直播。
+        liveSyncDuration: 6,
+        //
+        // liveMaxLatencyDuration：播放器最多可以落後直播現場多少秒。
+        //
+        // ⚠️ **這是「緩衝做不大」的主要瓶頸**，比 maxBufferLength 更關鍵。
+        //
+        // hls.js 的邏輯（dist/hls.js 的 LiveSyncController.checkLiveUpdate）：
+        //   當 `currentTime < end - maxLatency` 時會把播放位置**強制拉回**直播邊緣。
+        //
+        // 原本的 count=10（龍華只有 40 秒）會讓累積的緩衝被整段丟棄。
+        // 改成 90 秒後，緩衝才真的留得住。
+        //
+        // 必須 > liveSyncDuration（hls.js 會檢查，否則丟錯）。
+        liveMaxLatencyDuration: 90,
         //
         // 緩衝區大小 —— 直接影響「中途訊號斷掉」的耐受度。
         //
@@ -520,20 +558,32 @@ export function useHlsPlayer(channel: Channel | null) {
         // 播放器會維持這麼多秒的已下載內容，網路短暫中斷時
         // 可以從緩衝繼續播，不會立刻停頓。
         //
-        // 實測：央視來源的 segment 是 5.2 MB / 6 秒內容 ≈ 6.9 Mbps，
-        // 而慢速上游只有約 480 KB/s（3.8 Mbps）—— **供不應求**，
-        // 緩衝只會持續流失，加長 maxBufferLength 對這類來源沒有用。
-        // 但對「上游夠快」的來源（TVBS 65ms 下載 5.2MB），
-        // 30 秒緩衝足以吸收數秒的網路抖动。
+        // 實測（2026-11-21，`scripts/analyze-buffer-feasibility.mjs`）：
+        //   龍華電視    3.02MB / 2.3s，內容 4s  → 倍率 0.59x ✅ 緩衝會賺
+        //   TVB翡翠台  8.11MB / 3.8s，內容 8s  → 倍率 0.48x ✅ 緩衝會賺
+        //   TVB系      5.12MB / 3.8s，內容 10s → 倍率 0.38x ✅ 緩衝會賺
         //
-        // 這裡從 30 提高到 60：讓快速來源有更厚的安全餘裕，
-        // 而慢速來源不會因此變慢（它本來就受上游速度限制）。
+        // **倍率 < 1 代表下載速度快於播放速度 —— 緩衝會持續累積。**
+        //
+        // ⚠️ 必須**小於** liveMaxLatencyDuration（90 秒），
+        // 否則緩衝會長到超過容忍度而被強制丟棄。
+        // 60 秒緩衝 + 90 秒容忍度 = 有 30 秒安全餘裕。
         maxBufferLength: 60,
         // maxMaxBufferLength：即使使用者暫停也要保留的上限。
         // 拉高避免「暫停一下就把緩衝清空」。
-        maxMaxBufferLength: 120,
+        maxMaxBufferLength: 90,
         // 後向緩衝（回看用的已播放內容）。
-        backBufferLength: 60,
+        backBufferLength: 90,
+        //
+        // maxBufferSize：**位元組上限**（預設 60MB）。
+        //
+        // 這個值很多人會漏掉 —— hls.js 用它反推出一個時間上限：
+        //   min(max(8 × maxBufferSize / bitrate, maxBufferLength), maxMaxBufferLength)
+        //
+        // 對 15 Mbps 的高畫質串流，60MB 會把上限壓到 **32 秒** ——
+        // 比 maxBufferLength 的 60 秒還小，等於設定完全失效。
+        // 提到 200MB 後：15Mbps → 107 秒、8Mbps → 200 秒、4Mbps → 400 秒。
+        maxBufferSize: 200 * 1000 * 1000,
         // 允許在 manifest 載入中就開始準備第一個 fragment（預載）
         startFragPrefetch: true,
         // 片段載入失敗時不要無限重試同一個來源，
@@ -893,31 +943,15 @@ export function useHlsPlayer(channel: Channel | null) {
     });
   }, []);
 
-  /** 手動切換靜音 */
-  const toggleMute = useCallback(() => {
-    if (muted) {
-      userMutedRef.current = false;
-      unmute();
-    } else {
-      userMutedRef.current = true;
-      wantUnmutedRef.current = false;
-      if (mode === 'iframe') {
-        if (isYouTubeEmbed(embedUrl)) {
-          postYouTubeCommand(iframeMounted, 'mute');
-          setMuted(true);
-          return;
-        }
-        if (!embedUrl) return;
-        const sep = embedUrl.includes('?') ? '&' : '?';
-        setIframeSrc(`${embedUrl}${sep}mute=1`);
-        setIframeKey((k) => k + 1);
-      } else {
-        const video = videoRef.current;
-        if (video) video.muted = true;
-      }
-      setMuted(true);
-    }
-  }, [muted, unmute, mode, embedUrl]);
+  /*
+   * 手動切換靜音已移除（使用者要求：「點選頻道後不要靜音，
+   * 也不用出現喇叭標記」）。
+   *
+   * 保留 `unmute()` 是必要的 —— 它處理 Chrome 的自動播放政策：
+   * 媒體「變成有聲的那一刻」使用者手勢必須仍有效，
+   * 而 Chrome 會非同步自動 pause 有聲媒體（實測確認）。
+   * `unmute()` 裡的 onPause 監聽器會補 play()。
+   */
 
   // 頻道變更時重新載入
   useEffect(() => {
@@ -1187,8 +1221,6 @@ export function useHlsPlayer(channel: Channel | null) {
     mode,
     embedUrl: iframeSrc,
     iframeKey,
-    muted,
-    toggleMute,
     elapsedSeconds,
     skipSource,
   };

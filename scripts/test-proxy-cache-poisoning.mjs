@@ -88,13 +88,28 @@ async function fetchHead(url, options = {}, timeoutMs = 30_000) {
   };
 }
 
-/** 從頻道清單找一個已知有備援且主來源會回 206 的來源 */
+/**
+ * 從頻道清單找一個測試用來源。
+ *
+ * 需求：上游要回 **206 + Content-Range**（過期時才看得出內容變短），
+ * 而且**速度要夠快**。
+ *
+ * ⚠️ 2026-11-21 換掉原本的央視-1：
+ *
+ * 央視-1 的來源實測要 30 秒以上才傳得完 5.4MB，
+ * 代理正確地把它判為「太慢」而回 502（這是**正確**行為 ——
+ * 放行會讓平台在 30 秒切斷，截斷的內容就被 CDN 快取 5 分鐘）。
+ *
+ * 但這讓本測試的 [A] 情境（「有效 segment 應回 200 + 可快取」）無法成立，
+ * 測試會因為**被測對象的性質**而失敗，而不是因為代理有錯。
+ * 所以改用 TVBS：實測 393ms 傳完 2.7MB，且回 206 + Content-Range。
+ */
 function pickUpstream() {
   const catalog = JSON.parse(
-    readFileSync(join(ROOT, 'shared', 'channels.json'), 'utf8'),
+    readFileSync(join(ROOT, 'shared/channels.json'), 'utf8'),
   );
-  // 央視-1 的來源已知會回 206 + Content-Range
-  const ch = catalog.channels.find((c) => c.channel_id === 'cn-cctv1');
+  // TVBS 的來源已知會回 206 + Content-Range，且速度夠快
+  const ch = catalog.channels.find((c) => c.channel_id === 'playlist-TVBS-tvbs');
   return ch?.stream_url ?? null;
 }
 
