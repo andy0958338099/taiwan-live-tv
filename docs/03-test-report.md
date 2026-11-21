@@ -1779,3 +1779,69 @@ hls.js 的 live 清單輪詢間隔（`computeReloadInterval`）：
 | `test-proxy-cache-poisoning.mjs` | ✓ 4 個情境全過（含 Range 隔離） |
 | `test-drawer.mjs` | ✓ 抽屜三項行為全過 |
 | `run-all-checks.mjs` | ✓ 8/8（型別／Web 建置／Android APK／資料一致性） |
+
+---
+
+## 12. 本輪介面精進（6 項需求）與驗收
+
+### 需求與實作
+
+| # | 需求 | 實作 | 檔案 |
+|---|---|---|---|
+| 1 | 底部抽屜預設 45vh、可拖曳三段、影片任何高度都可見、把手加寬加陰影 | peek 148px / 半屏 45vh / 全屏 88vh；`--player-max-h` 反向約束播放器 | `useDrawerSheet.ts`、`page.module.css` |
+| 2 | 去掉重複 CTA | 頁首只留「頻道 ▾」；空狀態只留「選擇頻道」 | `page.tsx`、`VideoPlayer.tsx` |
+| 3 | 卡片「正在播放」藍框 + LIVE 小標 + 右上星標收藏 | 卡片高收斂到 99px；收藏持久化於 `localStorage` key `tltv:v1:favorites` | `page.tsx`、`storage.ts` |
+| 4 | 篩選 chips 單行橫向滾動、地區／類型改 segmented 下拉 | 頁籤列 40px 單行；兩顆下拉含頻道數量 badge | `SegmentedSelect.tsx` |
+| 5 | 未選頻道時隱藏播放器那排禁用控制條（0:00） | 空狀態不渲染控制條 | `VideoPlayer.tsx` |
+| 6 | Netlify 徽章不要浮在內容上；桌面 ≥1024px ↑↓ 換台 + 數字鍵選台號 | 徽章搬進 `<footer>` 絕對定位；鍵盤選台 | `page.tsx`、`globals.css`、`useKeyboardChannelNav.ts` |
+
+### 驗收結果
+
+| 測試 | 環境 | 結果 |
+|---|---|---|
+| `scripts/test-ui-improvements.mjs` | 本機 3211 | ✓ **30/30** |
+| `scripts/test-ui-improvements.mjs` | **線上正式站** | ✓ **31/31** |
+| `scripts/test-drawer.mjs` | 本機 | ✓ 通過（已更新為新版抽屜判斷方式） |
+| `scripts/test-playback-local.mjs` | 本機 | ✓ 3/3 播放成功，**全部 `muted=false`** |
+| `npx tsc --noEmit` | — | ✓ 通過 |
+| `npm run build` | — | ✓ 通過 |
+
+### 截圖驗收（正式站，1440 與 390 寬）
+
+| 狀態 | 1440 | 390 |
+|---|---|---|
+| 收合 | 播放器滿版、頁首「頻道 ▾」、頁尾文字完整未被壓 | 同上，標題截斷為省略號 |
+| 半屏（45vh） | 影片在上方 604×339 仍可見；把手 1408px 寬帶陰影；篩選列單行（3 頁籤 + 2 下拉）；卡片右上角有星號 | 影片仍可見；台標列橫向捲動；卡片兩欄 |
+| 全屏（88%） | 影片縮為 247×138 **仍可見**；提示內容自動精簡不被裁切 | 同上 |
+
+### 過程中修掉的四個真實缺陷
+
+1. **本機 server 的 JS bundle 回 500 → React 永不 hydrate。**
+   背景 cron 排程在 05:37 執行 `npm run build` 重建了 `.next`，
+   而 `next start` 是 05:26 啟動的 —— chunk manifest 換掉後，
+   還在跑的 server 讓所有 `/_next/static/chunks/*.js` 回 500，
+   症狀是頁面永遠停在「載入中…」。
+   判斷方式：直接抓一個 chunk 看狀態碼。**改完程式要重啟 server 再測。**
+
+2. **播放器在全屏抽屜下內容被裁切。**
+   抽屜全屏時播放器只剩 ~138px 高，固定的空狀態提示約 200px 高 → 按鈕被切一半。
+   改用 `@container player (max-height: 220px)`（不是 media query ——
+   播放器高度取決於抽屜高度）。
+
+3. **播放器外殼不是 16:9。**
+   只寫 `max-height` 時 `width: 100%` 是確定值會勝過 `aspect-ratio`，
+   外殼變成 724×263 = 2.75，影片左右留黑邊。
+   改成 `width: min(100%, calc(var(--player-max-h) * 16 / 9))`。
+
+4. **數字鍵選台被 re-render 取消（線上才會發生）。**
+   `useKeyboardChannelNav` 的 effect 依賴陣列含 inline `onSelect`，
+   每次 render 都重跑 → cleanup 把 600ms debounce 砍掉。
+   線上播放器／EPG 更新頻繁必定踩到，本機時序不同所以測試通過。
+   修法：listener 只依賴 `enabled`，資料走 refs 讀取。
+
+### 測試腳本自身的兩個 bug
+
+- **重疊檢查誤判**：純幾何相交把「祖先容器依法包含頁尾」「固定覆蓋層矩形延伸到視窗外」
+  「邊界剛好相接」都算成蓋住。改成只算交集落在視窗內且面積 > 1px。
+- **template literal 被註解破壞**：註解裡寫了反引號包住的 `<`，
+  提早結束字串 → 送給 CDP 的表達式被截斷 → "Invalid parameters"。
