@@ -142,7 +142,7 @@ const drawerState = (cdp) =>
     const offBottom = r.top >= vh - 5;
     const offRight  = r.left >= vw - 5;
     const handle = document.querySelector('button[aria-label="選擇頻道"]');
-    const channelCards = aside.querySelectorAll('button[class*="channelCard"]');
+    const channelCards = aside.querySelectorAll('button[class*="drawerCard"]');
     return {
       hidden: offBottom || offRight,
       rect: { top: Math.round(r.top), left: Math.round(r.left), w: Math.round(r.width) },
@@ -203,7 +203,7 @@ async function main() {
   console.log('\n[3] 點選抽屜內的一個頻道');
   const picked = await realClick(
     cdp,
-    `document.querySelector('aside[aria-label="頻道選擇"] button[class*="channelCard"]')`,
+    `document.querySelector('aside[aria-label="頻道選擇"] button[class*="drawerCard"]')`,
     'channel',
   );
   console.log(`    點選：${picked}`);

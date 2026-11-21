@@ -410,10 +410,27 @@ export async function GET(
       return NextResponse.json({ error: '上游沒有回應內容' }, { status: 502 });
     }
 
+    /**
+     * headers 到達的時間點。
+     *
+     * 用它當速度估算的起點，才能把「DNS + TCP + TLS 握手」排除在外 ——
+     * 那段時間沒有任何頻寬被使用（實測 100–300ms），
+     * 算進「下載速度」會嚴重低估。
+     */
+    const headersAt = Date.now();
+
     const first = await reader.read();
     const firstChunk = first.value ?? new Uint8Array(0);
     const head = new TextDecoder().decode(firstChunk.slice(0, 800));
     const isManifest = head.trimStart().startsWith('#EXTM3U');
+
+    /**
+     * 已讀到但還沒送出的 chunk。
+     *
+     * 速度檢查可能會多讀一個 chunk（為了重新估算），
+     * 那個 chunk 不能丟掉 —— 要在串流時一併送出。
+     */
+    const pendingChunks: Uint8Array[] = [];
 
     /**
      * ⏱️ **上游速度檢查**（在送出任何 body 之前）。
@@ -445,12 +462,60 @@ export async function GET(
       Number.isFinite(upstreamTotalBytes) &&
       upstreamTotalBytes > 0
     ) {
-      // 第一個 chunk 的下載速度（bytes/ms）
-      const elapsedMs = Math.max(1, Date.now() - startedAt);
-      const bytesPerMs = firstChunk.byteLength / elapsedMs;
-      // 估算整個 segment 下載完還要多久
-      const projectedMs =
-        bytesPerMs > 0 ? upstreamTotalBytes / bytesPerMs : Infinity;
+      /**
+       * 估算整個 segment 下載完要多久。
+       *
+       * ## ⚠️ 單靠「第一個 chunk」估算是不準的
+       *
+       * 兩個原因：
+       *   1. **第一個 chunk 的到齊時間包含連線建立**
+       *      （DNS 查詢 + TCP 握手 + TLS 交握，通常 100–300ms），
+       *      這段時間沒有任何頻寬被使用，卻被算進「下載速度」。
+       *   2. **上游速度是爆發式的** —— 實測同一個 5.23 MB segment：
+       *      有時 196ms 就下載完（有時 123 秒）。
+       *      第一個 chunk 的大小也會波動（實測 1199B ~ 14159B），
+       *      用單一 chunk 外推會得到 wildly 不準的結果。
+       *
+       * ## 解法：兩段式判斷
+       *
+       *   1. 先用第一個 chunk 估算。**夠快就直接放行**（不增加延遲）。
+       *   2. 只有在估算「可能太慢」時，才**讀第二個 chunk** 重新估算 ——
+       *      這時連線已建立，量到的才是真實頻寬。
+       *
+       * 只有兩次估算都超過門檻才放棄上游。
+       */
+      const estimateWith = (bytes: number, ms: number): number => {
+        const bpm = bytes / Math.max(1, ms);
+        return bpm > 0 ? upstreamTotalBytes / bpm : Infinity;
+      };
+
+      // 第一次估算：用「headers 到達 → 第一個 chunk 到達」的時間。
+      // 這樣連線建立的時間被排除在外（fetch 回應時 headers 就已到）。
+      const chunk1Ms = Math.max(1, Date.now() - headersAt);
+      let projectedMs = estimateWith(firstChunk.byteLength, chunk1Ms);
+
+      if (projectedMs > MAX_PROJECTED_TRANSFER_MS) {
+        // 可能太慢 → 讀第二個 chunk，用「已建立的連線」重新量一次真實頻寬
+        const second = await Promise.race([
+          reader.read(),
+          new Promise<null>((resolve) => setTimeout(() => resolve(null), 3000)),
+        ]);
+
+        if (second && 'value' in second && second.value) {
+          const chunk2 = second.value;
+          // 累積：兩個 chunk 的總位元組 ÷ 從 headers 到第二個 chunk 的時間
+          const chunk2Ms = Math.max(1, Date.now() - headersAt);
+          projectedMs = estimateWith(
+            firstChunk.byteLength + chunk2.byteLength,
+            chunk2Ms,
+          );
+          // 第二個 chunk 也要一起送出去（不能丟掉）
+          pendingChunks.push(chunk2);
+        } else {
+          // 讀不到第二個 chunk（上游沒給更多資料）→ 維持第一次估算
+          projectedMs = Infinity;
+        }
+      }
 
       if (projectedMs > MAX_PROJECTED_TRANSFER_MS) {
         // 放棄上游（取消讀取，避免佔住頻寬）
@@ -664,6 +729,10 @@ export async function GET(
         // 先送出判斷型別時已經讀到的第一塊
         if (firstChunk.byteLength > 0) {
           controller.enqueue(firstChunk);
+        }
+        // 再送出速度檢查時多讀的那幾塊（不能丟掉，否則內容會缺一段）
+        for (const c of pendingChunks) {
+          controller.enqueue(c);
         }
         try {
           // eslint-disable-next-line no-constant-condition

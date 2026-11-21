@@ -1,36 +1,40 @@
 #!/usr/bin/env node
 /**
- * test-proxy-truncation.mjs — 驗證代理是否會把 segment 截斷
+ * test-proxy-truncation.mjs — 驗證代理是否回傳「被截斷的 segment」
  *
- * ## 問題現象
+ * ## 背景（2026-11-21 線上實測）
  *
- * 2026-11-21 線上實測發現：透過代理取得的 segment 都在**約 30.4 秒**後
- * 就結束，且只有 1.2–1.8 MB（完整 segment 應為 5.4 MB）。
- * 而**直接**向上游抓同一個 segment 完全正常。
+ * 央視來源的 segment 高達 5.4 MB，而 Netlify edge 到該來源的實測速度
+ * 只有 38–100 KB/s → 單一個 segment 需要 90–140 秒。
  *
- * 懷疑對象：Netlify Functions 的執行時間上限（30 秒）。
- * 代理把上游的串流「串流出去」，function 必須存活到整個 segment 傳完 ——
- * 上游慢（50–200 KB/s）時，5.4 MB 需要 27–110 秒，遠遠超過上限，
- * function 被強制中斷 → 用戶拿到**被截斷的 segment**。
+ * 但 Netlify 會在 **約 30.4 秒**切斷 function 的回應。
+ * 結果：客戶端拿到 `HTTP 200` + **被截斷的 segment**（只到 1.2–1.7 MB），
+ * 而且因為回應帶著 `Cache-Control: public, max-age=300`，
+ * **被截斷的內容會被 CDN 快取 5 分鐘**，散播給所有使用者。
  *
- * 更糟的是回應帶 `Cache-Control: public, max-age=300`：
- * **被截斷的內容會被 CDN 快取 5 分鐘**，所有使用者都拿到壞的 segment。
+ * ## 為什麼不能用「直接抓上游」來比對
  *
- * ## 本測試做三件事
+ * 代理回應的目標網址是**簽章過的**（`/api/proxy/<base64url(target)>?sig=...`），
+ * 直接把上游網址塞進代理路徑會被 403（不在允許清單、也沒有簽章）。
  *
- *   [1] 直接抓上游 segment → 取得完整長度與位元組
- *   [2] 透過代理抓**同一個** segment → 取得代理給的長度與位元組
- *   [3] 比對兩者
+ * 所以正確的作法是：
+ *   1. 走代理拿 manifest → 取出**代理改寫後**的 segment 網址
+ *   2. 把那個網址的 base64url path 段解碼 → 還原成上游網址
+ *   3. 直接抓上游 → 取得完整長度（Content-Range / Content-Length）
+ *   4. 走代理抓同一個 segment → 取得代理實際送出的位元組數
+ *   5. 比對
  *
- * 判定：
- *   · 代理位元組 < 上游位元組 → **代理截斷**（function 被中斷）
- *   · 兩者相同 → 代理沒截斷
+ * ## 判定
+ *
+ *   · 代理位元組 < 上游總長 → **代理截斷了**（且會被 CDN 快取）
+ *   · 兩者相同 → 代理沒有截斷
  *
  * 用法：node scripts/test-proxy-truncation.mjs [--base https://taiwan-live-tv.netlify.app]
  */
 
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { readFileSync } from 'node:fs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -45,12 +49,12 @@ const UA =
 
 const encodeTarget = (t) => Buffer.from(t, 'utf8').toString('base64url');
 
-/** 讀完整個回應主體，回報位元組數與耗時 */
-async function readAll(res, capMs = 180_000) {
+/** 讀完整個回應主體 */
+async function readAll(res, capMs = 120_000) {
   const t0 = Date.now();
   let n = 0;
   const reader = res.body?.getReader();
-  if (!reader) return { bytes: 0, ms: 0, aborted: false };
+  if (!reader) return { bytes: 0, ms: 0, truncated: false };
   try {
     while (true) {
       const { done, value } = await reader.read();
@@ -58,108 +62,135 @@ async function readAll(res, capMs = 180_000) {
       n += value.length;
       if (Date.now() - t0 > capMs) {
         await reader.cancel().catch(() => {});
-        return { bytes: n, ms: Date.now() - t0, aborted: true };
+        return { bytes: n, ms: Date.now() - t0, truncated: true };
       }
     }
   } catch (e) {
-    return { bytes: n, ms: Date.now() - t0, aborted: true, error: e.message };
+    return { bytes: n, ms: Date.now() - t0, truncated: true, error: e.message };
   }
-  return { bytes: n, ms: Date.now() - t0, aborted: false };
+  return { bytes: n, ms: Date.now() - t0, truncated: false };
 }
 
-/** 取一個上游來源 + 它第一個 segment 的絕對網址 */
-async function firstSegment(upstream) {
-  const res = await fetch(upstream, {
-    headers: { 'User-Agent': UA },
-    signal: AbortSignal.timeout(20_000),
-  });
-  const text = await res.text();
-  if (!text.trimStart().startsWith('#EXTM3U')) {
-    throw new Error('manifest 不是 m3u8');
+/** 從代理網址還原上游網址（base64url path 段） */
+function upstreamOf(proxyUrl) {
+  const m = proxyUrl.match(/\/api\/proxy\/([^/?]+)/);
+  if (!m) return null;
+  try {
+    return Buffer.from(m[1], 'base64url').toString('utf8');
+  } catch {
+    return null;
   }
-  const segs = text
-    .split('\n')
-    .map((l) => l.trim())
-    .filter((l) => l && !l.startsWith('#'));
-  if (!segs.length) throw new Error('manifest 無 segment');
-  return new URL(segs[0], upstream).href;
 }
-
-/** 候選上游（挑 segment 較大、較容易觸發截斷的來源） */
-const CANDIDATES = [
-  {
-    name: '央視-1 綜合',
-    upstream:
-      'http://121.19.134.149:808/tsfile/live/0001_1.m3u8?key=txiptv&playlive=1&authid=0',
-  },
-  {
-    name: '央視-7 國防軍事',
-    upstream:
-      'http://121.19.134.149:808/tsfile/live/0007_1.m3u8?key=txiptv&playlive=1&authid=0',
-  },
-];
 
 async function main() {
-  console.log('═'.repeat(70));
-  console.log('驗證：代理是否截斷 segment（Netlify Function 執行時間上限）');
-  console.log('═'.repeat(70));
+  console.log('═'.repeat(72));
+  console.log('驗證：代理是否回傳被截斷的 segment（且被 CDN 快取）');
+  console.log('═'.repeat(72));
   console.log(`測試站點：${BASE}\n`);
+
+  const catalog = JSON.parse(
+    readFileSync(join(ROOT, 'shared', 'channels.json'), 'utf8'),
+  );
+
+  // 挑「segment 大、來自慢速 host」的頻道 —— 這些最容易被截斷
+  const candidates = catalog.channels
+    .filter((c) => c.stream_url && !c.embed_url)
+    .filter((c) => {
+      try {
+        return ['121.19.134.149:808', '222.134.245.16:9901'].includes(
+          new URL(c.stream_url).host,
+        );
+      } catch {
+        return false;
+      }
+    })
+    .slice(0, 3);
 
   let anyTruncated = false;
 
-  for (const cand of CANDIDATES) {
-    console.log(`▶ ${cand.name}`);
-    const segUrl = await firstSegment(cand.upstream);
-    console.log(`  上游 segment：${segUrl.slice(0, 100)}`);
+  for (const ch of candidates) {
+    console.log(`▶ ${ch.channel_name} (${ch.channel_id})`);
 
-    // ── [1] 直接抓上游 ──
-    console.log('  [1] 直接抓上游 segment…');
-    const directRes = await fetch(segUrl, {
+    // ── 1. 走代理拿 manifest ──
+    const manifestUrl = `${BASE}/api/proxy/${encodeTarget(ch.stream_url)}`;
+    const mres = await fetch(manifestUrl, {
       headers: { 'User-Agent': UA },
-      signal: AbortSignal.timeout(180_000),
+      signal: AbortSignal.timeout(30_000),
     });
-    const direct = await readAll(directRes);
+    const mtext = await mres.text();
+    if (mres.status !== 200) {
+      console.log(`  manifest HTTP ${mres.status} —— 略過\n`);
+      continue;
+    }
+
+    // ── 2. 取出代理改寫後的 segment 網址 ──
+    const proxiedSegment = mtext
+      .split('\n')
+      .map((l) => l.trim())
+      .filter((l) => l && !l.startsWith('#') && l.includes('/api/proxy'))[0];
+    if (!proxiedSegment) {
+      console.log('  manifest 沒有 segment —— 略過\n');
+      continue;
+    }
+    const proxiedSegUrl = new URL(proxiedSegment, BASE).href;
+    const upstreamSegUrl = upstreamOf(proxiedSegUrl);
+    if (!upstreamSegUrl) {
+      console.log('  無法還原上游網址 —— 略過\n');
+      continue;
+    }
+
+    // ── 3. 直接抓上游 → 完整長度 ──
+    const hres = await fetch(upstreamSegUrl, {
+      headers: { 'User-Agent': UA, Range: 'bytes=0-' },
+      signal: AbortSignal.timeout(30_000),
+    });
+    const cr = hres.headers.get('content-range');
+    const total = cr
+      ? Number(cr.split('/')[1])
+      : Number(hres.headers.get('content-length'));
+    await hres.body?.cancel();
+    console.log(`  上游 segment 總長：${total} bytes`);
+
+    // ── 4. 走代理抓同一個 segment ──
+    //
+    // ⚠️ **必須帶 `Range: bytes=0-`**，與 hls.js 的行為一致。
+    //
+    // 實測：央視來源的 host（`121.19.134.149:808`）在**沒有 Range 標頭**時
+    // 會回 404 + 163 bytes 的 HTML 錯誤頁；只有帶 Range 才回真正的 segment。
+    // hls.js 對 segment 一律送 Range，所以測試也必須帶，
+    // 否則量到的不是「播放器實際走的路徑」。
+    const t0 = Date.now();
+    const pres = await fetch(proxiedSegUrl, {
+      headers: { 'User-Agent': UA, Range: 'bytes=0-' },
+      signal: AbortSignal.timeout(120_000),
+    });
+    const via = await readAll(pres);
+    const cc = pres.headers.get('cache-control') || '';
+    const age = pres.headers.get('age');
     console.log(
-      `      HTTP ${directRes.status}  bytes=${direct.bytes}  ` +
-        `耗時=${direct.ms}ms  平均=${Math.round(direct.bytes / (direct.ms / 1000))} B/s` +
-        `${direct.aborted ? '  ⚠ 中途被砍斷' : ''}`,
+      `  代理回應：HTTP ${pres.status}  bytes=${via.bytes}/${total}  ` +
+        `(${total ? ((via.bytes / total) * 100).toFixed(1) : '?'}%)  ` +
+        `耗時=${via.ms}ms`,
+    );
+    console.log(
+      `  Cache-Control: ${cc}   Age: ${age ?? '（無）'}   ` +
+        `content-length: ${pres.headers.get('content-length') ?? '（無）'}`,
     );
 
-    // ── [2] 透過代理抓同一個 segment ──
-    // 代理的 segment 網址是「上游 manifest 經代理改寫後」產生的簽章網址，
-    // 目標網址就是上游 segment 本身 → 兩邊比的是同一份內容。
-    console.log('  [2] 透過代理抓同一個 segment…');
-    const proxiedTarget = `${BASE}/api/proxy/${encodeTarget(segUrl)}`;
-    const proxyRes = await fetch(proxiedTarget, {
-      headers: { 'User-Agent': UA },
-      signal: AbortSignal.timeout(180_000),
-    });
-    const viaProxy = await readAll(proxyRes);
-    console.log(
-      `      HTTP ${proxyRes.status}  bytes=${viaProxy.bytes}  ` +
-        `耗時=${viaProxy.ms}ms  平均=${Math.round(viaProxy.bytes / (viaProxy.ms / 1000))} B/s` +
-        `${viaProxy.aborted ? '  ⚠ 中途被砍斷' : ''}`,
-    );
-    console.log(
-      `      Cache-Control: ${proxyRes.headers.get('cache-control') ?? '（無）'}` +
-        `  Age: ${proxyRes.headers.get('age') ?? '（無）'}`,
-    );
-
-    // ── [3] 比對 ──
-    const ratio = direct.bytes ? viaProxy.bytes / direct.bytes : 0;
-    const truncated = direct.bytes > 0 && viaProxy.bytes < direct.bytes;
+    // ── 5. 判定 ──
+    const truncated = total > 0 && via.bytes < total;
     if (truncated) anyTruncated = true;
     console.log(
-      `  判定：${truncated ? '✗ 代理截斷了 segment' : '✓ 代理沒有截斷'} ` +
-        `（代理拿到 ${(ratio * 100).toFixed(1)}% 的內容）\n`,
+      `  判定：${truncated ? '✗ 代理回傳了被截斷的 segment' : '✓ 代理回傳完整 segment'}` +
+        `${truncated && /max-age=[1-9]/.test(cc) ? '（且會被 CDN 快取！）' : ''}\n`,
     );
   }
 
-  console.log('═'.repeat(70));
+  console.log('═'.repeat(72));
   console.log(
-    `結果：${anyTruncated ? '✗ 代理會截斷 segment（使用者拿到壞的影片，且被 CDN 快取 5 分鐘）' : '✓ 代理沒有截斷'}`,
+    `結果：${anyTruncated ? '✗ 代理會回傳被截斷的 segment' : '✓ 代理沒有回傳被截斷的 segment'}`,
   );
-  console.log('═'.repeat(70));
+  console.log('═'.repeat(72));
   process.exit(anyTruncated ? 1 : 0);
 }
 

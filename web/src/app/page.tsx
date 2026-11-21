@@ -129,7 +129,7 @@ export default function Home() {
   }
 
   return (
-    <main className={styles.page}>
+    <main className={`${styles.page} ${drawerOpen ? styles.pageDrawerOpen : ''}`}>
       <header className={styles.header}>
         <div className={styles.brandBlock}>
           <h1 className={styles.title}>台灣電視直播</h1>
@@ -249,8 +249,12 @@ export default function Home() {
         aria-label="頻道選擇"
         aria-hidden={!drawerOpen}
       >
+        {/* 拖曳把手 —— 視覺提示這是可滑動的抽屜（手機上特別有用） */}
+        <div className={styles.drawerGrip} aria-hidden="true" />
+
         <div className={styles.drawerHead}>
           <h2 className={styles.drawerTitle}>
+            <span aria-hidden="true">📺</span>
             {browser.viewMode === 'favorites'
               ? '我的最愛'
               : browser.viewMode === 'recent'
@@ -269,53 +273,11 @@ export default function Home() {
         </div>
 
         <div className={styles.drawerBody}>
-          {/* 檢視模式 */}
-          <nav className={styles.viewTabs} aria-label="檢視模式">
-            {(
-              [
-                ['all', '全部頻道'],
-                ['favorites', '我的最愛'],
-                ['recent', '最近觀看'],
-              ] as [ViewMode, string][]
-            ).map(([mode, label]) => (
-              <button
-                key={mode}
-                type="button"
-                className={`${styles.tab} ${browser.viewMode === mode ? styles.tabActive : ''}`}
-                onClick={() => browser.setViewMode(mode)}
-                aria-pressed={browser.viewMode === mode}
-              >
-                {label}
-              </button>
-            ))}
-          </nav>
-
-          {/* 分類 */}
-          <nav className={styles.categoryBar} aria-label="頻道分類">
-            <button
-              type="button"
-              className={`${styles.categoryChip} ${
-                browser.categoryFilter === ALL_CATEGORY ? styles.categoryChipActive : ''
-              }`}
-              onClick={() => browser.setCategoryFilter(ALL_CATEGORY)}
-            >
-              全部
-            </button>
-            {catalog.categories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                className={`${styles.categoryChip} ${
-                  browser.categoryFilter === cat.id ? styles.categoryChipActive : ''
-                }`}
-                onClick={() => browser.setCategoryFilter(cat.id as CategoryFilter)}
-              >
-                {cat.name}
-              </button>
-            ))}
-          </nav>
-
-          {/* 搜尋（抽屜內另有一個，觀看時不佔版面） */}
+          {/*
+           * 搜尋 —— 放在最上面且 sticky，捲動時不會消失。
+           * （頁首也有一個搜尋框，但那個在抽屜關閉時才看得到，
+           *   抽屜內這個才是選頻道時真正會用的。）
+           */}
           <div className={styles.drawerSearch}>
             <label htmlFor="drawer-channel-search" className={styles.srOnly}>
               搜尋頻道
@@ -330,6 +292,47 @@ export default function Home() {
             />
           </div>
 
+          {/* 檢視模式 —— 可橫向捾動的 chip 列 */}
+          <nav className={styles.drawerTabs} aria-label="檢視模式">
+            {(
+              [
+                ['all', '全部頻道'],
+                ['favorites', '我的最愛'],
+                ['recent', '最近觀看'],
+              ] as [ViewMode, string][]
+            ).map(([mode, label]) => (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => browser.setViewMode(mode)}
+                aria-pressed={browser.viewMode === mode}
+              >
+                {label}
+              </button>
+            ))}
+          </nav>
+
+          {/* 分類 —— 也是可橫向捾動的 chip 列 */}
+          <nav className={styles.drawerChips} aria-label="頻道分類">
+            <button
+              type="button"
+              onClick={() => browser.setCategoryFilter(ALL_CATEGORY)}
+              aria-pressed={browser.categoryFilter === ALL_CATEGORY}
+            >
+              全部
+            </button>
+            {catalog.categories.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => browser.setCategoryFilter(cat.id as CategoryFilter)}
+                aria-pressed={browser.categoryFilter === cat.id}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </nav>
+
           {browser.visibleChannels.length === 0 ? (
             <p className={styles.drawerEmpty}>{emptyMessage(browser.viewMode, browser.query)}</p>
           ) : (
@@ -338,32 +341,37 @@ export default function Home() {
                 <li key={channel.channel_id}>
                   <button
                     type="button"
-                    className={`${styles.channelCard} ${
-                      selected?.channel_id === channel.channel_id ? styles.channelCardActive : ''
+                    className={`${styles.drawerCard} ${
+                      selected?.channel_id === channel.channel_id ? styles.drawerCardActive : ''
                     }`}
                     onClick={() => handleSelect(channel)}
                     aria-pressed={selected?.channel_id === channel.channel_id}
                   >
-                    <span className={styles.cardLogoWrap}>
+                    {/*
+                     * 台標放在固定尺寸的框裡。
+                     * 各頻道台標大小差異極大（20×20 到 300×80），
+                     * 沒有固定框的話台標會溢出卡片、排版整個歪掉。
+                     */}
+                    <span className={styles.drawerLogoWrap}>
                       {channel.logo ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={channel.logo}
                           alt=""
-                          className={styles.cardLogo}
+                          className={styles.drawerLogo}
                           loading="lazy"
                           onError={(e) => {
                             (e.currentTarget as HTMLImageElement).style.display = 'none';
                           }}
                         />
                       ) : (
-                        <span className={styles.cardPlaceholder}>
+                        <span className={styles.drawerLogoPlaceholder}>
                           {channel.channel_name.slice(0, 1)}
                         </span>
                       )}
                     </span>
-                    <span className={styles.cardName}>{channel.channel_name}</span>
-                    <span className={styles.cardCategory}>
+                    <span className={styles.drawerCardName}>{channel.channel_name}</span>
+                    <span className={styles.drawerCardCategory}>
                       {catalog.categories.find((c) => c.id === channel.category)?.name ??
                         channel.category}
                     </span>

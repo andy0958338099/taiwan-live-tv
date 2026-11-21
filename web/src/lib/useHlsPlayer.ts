@@ -585,7 +585,31 @@ export function useHlsPlayer(channel: Channel | null) {
       hls.on(
         Hls.Events.ERROR,
         (_event: string, data: { fatal: boolean; type: string; details: string }) => {
-          if (!data.fatal) return;
+          /**
+           * ⚠️ 不能只處理 `fatal: true`。
+           *
+           * hls.js 對 **fragment 層級**的錯誤一律給 `fatal: false`
+           * （見 hls.js 原始碼：`details: ErrorDetails.FRAG_LOAD_ERROR, fatal: false`），
+           * 它自己會重試同一個 fragment 而**不會**通知上層。
+           *
+           * 結果：代理回 502（來源太慢/失效）時，
+           * hls.js 只是安靜地重試，**從不換來源** ——
+           * 使用者只會看到「連線中…」一直轉圈。
+           *
+           * 所以這裡對「已知是來源問題」的錯誤details 主動接管，
+           * 不管 fatal 與否，直接觸發 failover 換備援。
+           *
+           * 保留 `fatal` 判斷是為了：hls.js 自己正在處理的錯誤
+           * （例如它已決定要 recoverMediaError）不要重複觸發。
+           */
+          const isSourceLevelFailure =
+            data.type === Hls.ErrorTypes.NETWORK_ERROR &&
+            (data.details === Hls.ErrorDetails.FRAG_LOAD_ERROR ||
+              data.details === Hls.ErrorDetails.FRAG_LOAD_TIMEOUT ||
+              data.details === Hls.ErrorDetails.LEVEL_LOAD_ERROR ||
+              data.details === Hls.ErrorDetails.LEVEL_LOAD_TIMEOUT);
+
+          if (!data.fatal && !isSourceLevelFailure) return;
 
           /**
            * ⚠️ 必須用 `handleFailureRef.current`，不能直接用 `handleFailure`。
@@ -638,6 +662,16 @@ export function useHlsPlayer(channel: Channel | null) {
                   target,
                   url,
                   '串流片段載入失敗：來源供應過慢或已中斷',
+                );
+              } else if (
+                data.details === Hls.ErrorDetails.LEVEL_LOAD_ERROR ||
+                data.details === Hls.ErrorDetails.LEVEL_LOAD_TIMEOUT
+              ) {
+                // 階層（level）載入失敗 —— master manifest 裡的子清單
+                void fail(
+                  target,
+                  url,
+                  '串流清單載入失敗：來源供應過慢或已中斷',
                 );
               } else {
                 void fail(
