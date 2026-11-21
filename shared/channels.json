@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-20T22:41:04.325Z",
+  "updated_at": "2026-11-21T00:55:16.180Z",
   "categories": [
     {
       "id": "news",
@@ -808,16 +808,6 @@
             "url": "http://61.136.172.236:9901/tsfile/live/0001_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0001_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0001_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
           }
         ]
       }
@@ -829,7 +819,7 @@
       "category": "finance",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV2.webp",
-      "stream_url": "http://101.66.194.88:9901/tsfile/live/0002_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/0002_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "央視-2 財經（經 itvlist 聚合源 轉載）",
       "source_website": "https://bit.ly/itvlist",
@@ -924,11 +914,6 @@
           },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0003_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0003_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -1051,16 +1036,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0005_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0005_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://8.137.121.66:20241/641886683",
             "source": "褲佬 清單",
             "cors": false
@@ -1169,11 +1144,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0006_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://8.137.121.66:20241/624878396",
             "source": "褲佬 清單",
             "cors": false
@@ -1233,11 +1203,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0007_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://8.137.121.66:20241/673168121",
             "source": "褲佬 清單",
             "cors": false
@@ -1277,17 +1242,7 @@
         "original_name": "央視-8 劇集",
         "backup_urls": [
           {
-            "url": "http://101.66.199.96:9901/tsfile/live/0008_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://218.13.170.98:9901/tsfile/live/0008_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0008_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -1346,21 +1301,6 @@
         "original_name": "央視-9 紀錄",
         "backup_urls": [
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0009_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0009_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0009_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0009_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -1410,22 +1350,7 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0010_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0010_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0010_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0010_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -1474,16 +1399,6 @@
         "original_name": "央視-11 戲曲",
         "backup_urls": [
           {
-            "url": "http://101.66.194.88:9901/tsfile/live/0011_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0011_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0011_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -1503,7 +1418,7 @@
       "category": "general",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV12.webp",
-      "stream_url": "http://101.66.199.96:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://61.136.172.236:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "央視-12 社會與法（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
@@ -1529,11 +1444,6 @@
         "backup_urls": [
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0012_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -1587,11 +1497,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.88:9901/tsfile/live/0013_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://8.137.121.66:20241/608807423",
             "source": "褲佬 清單",
             "cors": false
@@ -1641,21 +1546,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0014_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0014_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0014_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://8.137.121.66:20241/624878440",
             "source": "褲佬 清單",
             "cors": false
@@ -1675,7 +1565,7 @@
       "category": "entertainment",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/CCTV15.webp",
-      "stream_url": "http://101.66.199.181:9901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://59.39.89.130:60901/tsfile/live/0015_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "央視-15 音樂（經 itvlist 聚合源 轉載）",
       "source_website": "https://bit.ly/itvlist",
@@ -2010,11 +1900,6 @@
         "original_name": "北京衛視",
         "backup_urls": [
           {
-            "url": "http://101.66.199.96:9901/tsfile/live/0016_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://121.19.134.149:808/tsfile/live/1015_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -2133,21 +2018,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0017_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0017_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0017_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://120.198.95.220:9901/tsfile/live/1046_1.m3u8?key=txiptv&playlive=1&down=1",
             "source": "itvlist 聚合源",
             "cors": false
@@ -2217,17 +2087,7 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0018_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://222.134.245.16:9901/tsfile/live/0107_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0018_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -2336,21 +2196,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.88:9901/tsfile/live/0124_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0124_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0124_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://101.35.240.114:88/live.php?id=浙江卫视",
             "source": "原主來源（已失效）",
             "cors": false
@@ -2405,21 +2250,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.96:9901/tsfile/live/0019_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0019_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0019_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0125_2.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -2468,16 +2298,6 @@
         "source_label": "褲佬 清單",
         "original_name": "湖北衛視",
         "backup_urls": [
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0132_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0132_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://222.134.245.16:9901/tsfile/live/0132_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -2543,16 +2363,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0125_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0125_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://101.35.240.114:88/live.php?id=广东卫视",
             "source": "suxuang 聚合源",
             "cors": false
@@ -2577,7 +2387,7 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/广西卫视.webp",
-      "stream_url": "http://101.66.199.181:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "廣西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
@@ -2601,11 +2411,6 @@
         "source_label": "褲佬 清單",
         "original_name": "廣西衛視",
         "backup_urls": [
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://222.134.245.16:9901/tsfile/live/0113_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
@@ -2666,22 +2471,7 @@
         "original_name": "黑龍江衛視",
         "backup_urls": [
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0143_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0143_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://121.19.134.149:808/tsfile/live/1020_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0143_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -2805,26 +2595,6 @@
           },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0142_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0142_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0142_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0142_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0142_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -2957,27 +2727,7 @@
         "original_name": "四川衛視",
         "backup_urls": [
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://61.136.172.236:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0123_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3020,16 +2770,6 @@
         "source_label": "褲佬 清單",
         "original_name": "河南衛視",
         "backup_urls": [
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0139_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0139_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
           {
             "url": "http://120.198.95.220:9901/tsfile/live/1055_1.m3u8?key=txiptv&playlive=1&down=1",
             "source": "itvlist 聚合源",
@@ -3085,27 +2825,12 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://222.134.245.16:9901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://218.13.170.98:9901/tsfile/live/1015_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0137_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3160,21 +2885,6 @@
           },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0120_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3238,16 +2948,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.96:9901/tsfile/live/0138_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0138_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://101.35.240.114:88/live.php?id=江西卫视",
             "source": "suxuang 聚合源",
             "cors": false
@@ -3297,17 +2997,7 @@
         "original_name": "遼寧衛視",
         "backup_urls": [
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://61.136.172.236:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0121_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3371,21 +3061,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0130_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0130_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0130_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "https://yshipin.pages.dev/play/ahws",
             "source": "原主來源（已失效）",
             "cors": false
@@ -3445,21 +3120,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0117_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0117_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0117_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://218.13.170.98:9901/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -3510,21 +3170,6 @@
         "backup_urls": [
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0131_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0131_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.181:9901/tsfile/live/0131_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0131_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3647,21 +3292,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0116_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0116_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0116_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://59.39.89.130:60901/tsfile/live/0125_19.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -3686,7 +3316,7 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/陕西卫视.webp",
-      "stream_url": "http://101.66.194.29:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://218.13.170.98:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "陝西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
@@ -3716,11 +3346,6 @@
             "cors": false
           },
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://218.13.170.98:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -3737,11 +3362,6 @@
           },
           {
             "url": "http://36.136.38.87:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0136_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3903,11 +3523,6 @@
         "original_name": "雲南衛視",
         "backup_urls": [
           {
-            "url": "http://101.66.199.181:9901/tsfile/live/0119_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://120.198.95.220:9901/tsfile/live/1056_1.m3u8?key=txiptv&playlive=1&down=1",
             "source": "itvlist 聚合源",
             "cors": false
@@ -3919,16 +3534,6 @@
           },
           {
             "url": "http://36.136.38.87:9901/tsfile/live/0119_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.88:9901/tsfile/live/0119_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.194.29:9901/tsfile/live/0119_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3947,7 +3552,7 @@
       "category": "local",
       "channel_number": null,
       "logo": "https://iptv.yang-1989.xyz/logo/山西卫视.webp",
-      "stream_url": "http://101.66.199.181:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
+      "stream_url": "http://222.134.245.16:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
       "stream_type": "hls",
       "source_name": "山西衛視（經 褲佬 清單 轉載）",
       "source_website": "https://iptv.445569.xyz/live.m3u",
@@ -3972,11 +3577,6 @@
         "original_name": "山西衛視",
         "backup_urls": [
           {
-            "url": "http://101.66.194.29:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
             "url": "http://222.134.245.16:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
@@ -3988,11 +3588,6 @@
           },
           {
             "url": "http://59.39.89.130:60901/tsfile/live/0125_20.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://101.66.199.96:9901/tsfile/live/0118_1.m3u8?key=txiptv&playlive=0&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
