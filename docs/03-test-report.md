@@ -1137,5 +1137,123 @@ stallTimerRef.current = setTimeout(() => {
 | embed 型頻道播放驗證 | ✅ 通過（10/10，涵蓋 11% 的頻道） |
 | 卡頓時自動換源 | ✅ 通過（修正前是死碼；修正後卡頓 25 秒 / 逾時 60 秒自動改用備援） |
 | segment 網址不被覆寫（max-age=300 安全性） | ✅ 通過（位元組層級比對，0 個頻道有覆寫風險） |
+| **備援來源指向同一個頻道** | ✅ 通過（名稱層 26 案例 + URL 層 16 備援 0 錯配，見 §11） |
 | **真實電視盒實測** | ⏳ **待設備** |
 | **全部 90 個頻道的逐一播放驗證** | ✅ 通過（deep probe：80/80 可播；死 host 已清理，殘留引用 0） |
+
+## 11. 備援來源指向別的頻道（2026-11-21 修正）
+
+### 11.1 症狀
+
+線上截圖顯示播放器疊層寫著：
+
+> 連線中…（已切換至備援來源 **3/7**）
+
+但畫面台標是 **LTV 龍華日韓台**，而 UI 的頻道名稱仍是 **龍華電視**。
+
+**使用者看到的是錯誤的頻道內容**，而 UI 完全沒有警告。
+這違反「不得將無效串流假裝成正常播放」的原則。
+
+### 11.2 根因
+
+`scripts/import-playlists.mjs` 的 `matchChannel` 用 `clean.includes(key)`
+模糊比對頻道名：
+
+| 清單中的名稱 | 應該匹配 | 實際匹配到 | 結果 |
+|---|---|---|---|
+| 龍華電視 | 龍華電視 | 龍華電視 ✓ | — |
+| 龍華偶像台 | （不該匹配） | 龍華電視 | ✗ 錯配 |
+| 龍華日韓台 | （不該匹配） | 龍華電視 | ✗ 錯配 |
+| 龍華戲劇台 | （不該匹配） | 龍華電視 | ✗ 錯配 |
+| 龍華洋片台 | （不該匹配） | 龍華電視 | ✗ 錯配 |
+| 龍華卡通台 | （不該匹配） | 龍華電視 | ✗ 錯配 |
+
+`includes` 命中「龍華」後就把**整條 M3U 條目**收進該頻道的備援清單，
+於是同家族的 5 個其他頻道全部成了「龍華電視」的備援。
+
+同樣的問題也影響 TVB翡翠台、TVB系、HOY TV、天映。
+
+### 11.3 修法：兩層防護
+
+**第 1 層 —— 名稱層**（`scripts/lib/channel-match.mjs`）
+
+比對關鍵字之後的「尾巴」，命中兄弟頻道標記就拒絕：
+
+- 明確標記：經典 / 新加坡 / 日韓 / 偶像 / 戲劇 / 電影 / 卡通 / 動漫 / 資訊 / 財經 / 國際
+- 刻意**不**放的：「台」（公視台是同一個頻道）、「字幕」「4K」（同頻道的合法版本）
+- 「新聞」兩可（東森 ETTV 本身就是新聞台），交給 URL 層判定
+
+關鍵字分級 —— exact > suffix > prefix > contains：
+
+```
+「TVB翡翠台」→ 翡翠台（suffix），不是 TVB（prefix）
+```
+
+**第 2 層 —— URL 層**（`scripts/lib/channel-identity.mjs`）**權威**
+
+解析每個來源的 **(命名空間, 代碼)**，與主來源比對：
+
+| URL 形式 | 解析結果 | 需網路？ |
+|---|---|---|
+| `cdn.qd.je/163189/lhjd` | `163189/lhjd` | 否 |
+| `cdn3.indevs.in/stream/live/tvb/fct/` | `tvb/fct` | 否 |
+| `r.jdshipin.com/qClQf` | 抓 manifest 追 segment | 是 |
+
+代碼只在來源站自己的命名空間內有意義，所以必須比對整組，
+不能只比代碼（不同站可能撞碼）。
+
+### 11.4 資料修正
+
+移除 5 個頻道的 **24 個錯配備援**：
+
+| 頻道 | 移除 | 保留 |
+|---|---|---|
+| 龍華電視 | 5（lhox / lhrh / lhxj / lhyp / lhkt） | 1 |
+| TVB翡翠台 | 3（hlt / jade / hlfct） | 2 |
+| TVB系 | 7 | 1 |
+| HOY TV | 5（hoy / hoy78 / hoy76） | 0 |
+| 天映 | 4（typd / ccm2 / jtyh / typd2） | 1 |
+
+**同碼的鏡像備援完整保留** —— 例如 `cdn6.cc.cd/163189/fct` 與
+`cdn.qd.je/163189/fct` 都是 TVB翡翠台，是合法的 failover 目標。
+
+### 11.5 驗證結果
+
+```
+$ node scripts/test-channel-matching.mjs
+  ✅ PASS — 全部 26 個案例都正確
+
+$ node scripts/test-backup-same-channel.mjs
+  檢查備援：16 個
+  離線跳過：2 個
+  錯配：0 個
+  ✅ PASS — 所有備援都指向同一個頻道
+
+$ node scripts/verify-affected-playback.mjs
+  ✓ 龍華電視    第 1 個來源可用
+  ✓ TVB翡翠台   第 1 個來源可用
+  ✓ HOY TV     第 1 個來源可用
+  ✓ 天映       第 1 個來源可用
+  ✓ 台視       第 1 個來源可用
+  通過 5 / 失敗 0
+```
+
+離線的 2 個備援被跳過而非判失敗 —— 那是**來源波動**不是**資料錯誤**，
+兩者必須分開看待。
+
+### 11.6 順帶修正
+
+`scripts/verify-affected-playback.mjs` 最初沒處理 manifest 裡的**相對路徑**
+segment（台視的是 `m3u8/ttvnews.m3u8`），誤判台視失效。
+主探測腳本 `probe-live-sources.mjs` 原本就有正確處理
+（`new URL(segLines[0], url)`），只有新腳本漏了。
+
+### 11.7 防範工具
+
+| 腳本 | 用途 |
+|---|---|
+| `scripts/test-channel-matching.mjs` | 名稱層回歸測試（26 案例） |
+| `scripts/test-backup-same-channel.mjs` | URL 層回歸測試 |
+| `scripts/fix-wrong-backups.mjs` | 清理錯配備援（可重複執行） |
+| `scripts/dump-m3u-matches.mjs` | 傾印真實 M3U 的配對結果供人工檢查 |
+| `scripts/verify-affected-playback.mjs` | 確認受影響頻道仍可播放 |
