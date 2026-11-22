@@ -1,0 +1,685 @@
+{
+  "probed_at": "2026-11-22T02:39:15.777Z",
+  "sources": [
+    {
+      "id": "catbox-jipin",
+      "label": "極品/黃金",
+      "url": "https://files.catbox.moe/id0n84.txt",
+      "ok": true,
+      "status": 200,
+      "total": 0,
+      "tw": 0,
+      "cn": 0,
+      "sample": []
+    },
+    {
+      "id": "catbox-miaokai",
+      "label": "秒開",
+      "url": "https://files.catbox.moe/zyat7k.m3u",
+      "ok": true,
+      "status": 200,
+      "total": 87,
+      "tw": 24,
+      "cn": 0,
+      "sample": [
+        {
+          "name": "中天新闻",
+          "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv009",
+          "attrs": "#EXTINF:-1 tvg-id=\"4gtv-4gtv009\" tvg-name=\"中天新闻\" tvg-logo=\"https://logo.doube.eu.org/中天新闻.png\" group-title=\"新闻\",中天新闻"
+        },
+        {
+          "name": "TVBS新闻",
+          "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv072",
+          "attrs": "#EXTINF:-1 tvg-id=\"4gtv-4gtv072\" tvg-name=\"TVBS新闻\" tvg-logo=\"https://logo.doube.eu.org/TVBS新闻.png\" group-title=\"新闻\",TVBS新闻"
+        },
+        {
+          "name": "非凡新闻",
+          "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv010",
+          "attrs": "#EXTINF:-1 tvg-id=\"4gtv-4gtv010\" tvg-name=\"非凡新闻\" tvg-logo=\"https://logo.doube.eu.org/非凡新闻.png\" group-title=\"新闻\",非凡新闻"
+        },
+        {
+          "name": "寰宇新闻台",
+          "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn14",
+          "attrs": "#EXTINF:-1 tvg-id=\"litv-longturn14\" tvg-name=\"寰宇新闻台\" tvg-logo=\"https://logo.doube.eu.org/寰宇新闻台.png\" group-title=\"新闻\",寰宇新闻台"
+        },
+        {
+          "name": "寰宇新闻台湾台",
+          "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv156",
+          "attrs": "#EXTINF:-1 tvg-id=\"4gtv-4gtv156\" tvg-name=\"寰宇新闻台湾台\" tvg-logo=\"https://logo.doube.eu.org/寰宇新闻台湾台.png\" group-title=\"新闻\",寰宇新闻台湾台"
+        },
+        {
+          "name": "非凡商业",
+          "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv048",
+          "attrs": "#EXTINF:-1 tvg-id=\"4gtv-4gtv048\" tvg-name=\"非凡商业\" tvg-logo=\"https://logo.doube.eu.org/非凡商业.png\" group-title=\"财经\",非凡商业"
+        }
+      ]
+    },
+    {
+      "id": "catbox-judy",
+      "label": "Judy",
+      "url": "https://files.catbox.moe/25aoli.txt",
+      "ok": true,
+      "status": 200,
+      "total": 0,
+      "tw": 0,
+      "cn": 0,
+      "sample": []
+    },
+    {
+      "id": "catbox-laji",
+      "label": "垃圾",
+      "url": "https://files.catbox.moe/1mj29e.m3u",
+      "ok": true,
+      "status": 200,
+      "total": 7299,
+      "tw": 13,
+      "cn": 42,
+      "sample": [
+        {
+          "name": "DAZN Darts x Pluto TV",
+          "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/64b67f0424ade50008a3be17/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=1b1d3ca3-4b81-11ef-a8ac-e146e4e7be02&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=172fcc6d-73c3-48c9-86a8-04885a2af742",
+          "attrs": "#EXTINF:-1 tvg-id=\"\" tvg-logo=\"\" group-title=\"Austria\",DAZN Darts x Pluto TV"
+        },
+        {
+          "name": "DAZN Heldinnen x Pluto TV",
+          "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/64afe50c5dc16600087f3227/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=1b1d3ca5-4b81-11ef-a8ac-e146e4e7be02&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=69be0114-52dc-4eed-b6e7-c907f1b51e64",
+          "attrs": "#EXTINF:-1 tvg-id=\"\" tvg-logo=\"\" group-title=\"Austria\",DAZN Heldinnen x Pluto TV"
+        },
+        {
+          "name": "Trace Urban",
+          "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-traceurban-samsungnz/playlist.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"TraceUrban.fr\" tvg-logo=\"https://i.imgur.com/xRJDVR3.png\" group-title=\"France\",Trace Urban"
+        },
+        {
+          "name": "Trace Sports Stars",
+          "url": "https://trace-sportstars-samsungnz.amagi.tv/playlist.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"TraceSportStars.fr\" tvg-logo=\"https://i.imgur.com/FabFP5A.png\" group-title=\"France\",Trace Sports Stars"
+        },
+        {
+          "name": "SET Televisión Canal 26.1 (720p) [Not 24/7]",
+          "url": "http://189.240.210.28:1935/envivo/puecom/playlist.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"XHPBZCTDT1.mx\" tvg-logo=\"https://i.imgur.com/dbJKErB.png\" group-title=\"Mexico\",SET Televisión Canal 26.1 (720p) [Not 24/7]"
+        },
+        {
+          "name": "SET Televisión Canal 26.2 (720p) [Not 24/7]",
+          "url": "http://189.240.210.28:1935/live/setpuebla/playlist.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"XHPBZCTDT2.mx\" tvg-logo=\"https://i.imgur.com/dbJKErB.png\" group-title=\"Mexico\",SET Televisión Canal 26.2 (720p) [Not 24/7]"
+        }
+      ]
+    },
+    {
+      "id": "xiaofeng",
+      "label": "曉峰",
+      "url": "http://晓峰.azip.dpdns.org:5008/?type=m3u",
+      "ok": false,
+      "status": 0,
+      "error": "ENOTFOUND",
+      "total": 0,
+      "tw": 0,
+      "cn": 0
+    },
+    {
+      "id": "guovin",
+      "label": "咪咪 Guovin/iptv-api",
+      "url": "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.m3u",
+      "ok": true,
+      "status": 200,
+      "total": 1616,
+      "tw": 8,
+      "cn": 104,
+      "sample": [
+        {
+          "name": "TVBS亚洲",
+          "url": "http://38.64.72.148:80/hls/modn/list/4005/playlist.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"TVBS亚洲\" tvg-name=\"TVBS亚洲\" tvg-logo=\"https://www.xn--rgv465a.top/tvlogo/TVBS亚洲.png\" group-title=\"🌊港·澳·台\",TVBS亚洲"
+        },
+        {
+          "name": "TVBS亚洲",
+          "url": "http://38.64.72.148/hls/modn/list/4005/chunklist0.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"TVBS亚洲\" tvg-name=\"TVBS亚洲\" tvg-logo=\"https://www.xn--rgv465a.top/tvlogo/TVBS亚洲.png\" group-title=\"🌊港·澳·台\",TVBS亚洲"
+        },
+        {
+          "name": "三立台湾",
+          "url": "https://hls-gateway.vpstv.net/streams/477050.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"三立台湾台\" tvg-name=\"三立台湾\" tvg-logo=\"https://www.xn--rgv465a.top/tvlogo/三立台湾.png\" group-title=\"🌊港·澳·台\",三立台湾"
+        },
+        {
+          "name": "三立新闻",
+          "url": "https://stream1.freetv.fun/san-li-xin-wen-4.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"三立新闻\" tvg-name=\"三立新闻\" tvg-logo=\"https://www.xn--rgv465a.top/tvlogo/三立新闻.png\" group-title=\"🌊港·澳·台\",三立新闻"
+        },
+        {
+          "name": "三立新闻",
+          "url": "https://hls-gateway.vpstv.net/streams/492922.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"三立新闻\" tvg-name=\"三立新闻\" tvg-logo=\"https://www.xn--rgv465a.top/tvlogo/三立新闻.png\" group-title=\"🌊港·澳·台\",三立新闻"
+        },
+        {
+          "name": "三立新闻",
+          "url": "https://stream1.freetv.fun/san-li-xin-wen-3.m3u8",
+          "attrs": "#EXTINF:-1 tvg-id=\"三立新闻\" tvg-name=\"三立新闻\" tvg-logo=\"https://www.xn--rgv465a.top/tvlogo/三立新闻.png\" group-title=\"🌊港·澳·台\",三立新闻"
+        }
+      ]
+    },
+    {
+      "id": "gather",
+      "label": "Gather",
+      "url": "https://tv.iill.top/m3u/Gather",
+      "ok": false,
+      "status": 0,
+      "error": "UNABLE_TO_GET_ISSUER_CERT_LOCALLY",
+      "total": 0,
+      "tw": 0,
+      "cn": 0
+    },
+    {
+      "id": "yuanbao",
+      "label": "緣寶",
+      "url": "https://chuxinya.top/f/DRGJH3/绿影流年.txt",
+      "ok": true,
+      "status": 200,
+      "total": 0,
+      "tw": 0,
+      "cn": 0,
+      "sample": []
+    },
+    {
+      "id": "koyeb-sub",
+      "label": "Koyeb sub 代理",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub",
+      "ok": false,
+      "status": 401,
+      "total": 0,
+      "tw": 0,
+      "cn": 0
+    }
+  ],
+  "epg": {
+    "ok": false,
+    "error": "fetch failed"
+  },
+  "probe": [
+    {
+      "name": "中天新闻",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv009",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "TVBS新闻",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv072",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "非凡新闻",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv010",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "寰宇新闻台",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn14",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "寰宇新闻台湾台",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv156",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "非凡商业",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv048",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "TVBS",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv073",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "中天亚洲",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv109",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "客家电视台",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv043",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "TVBS欢乐台",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv068",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "TVBS精采台",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv067",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "八大综艺",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv039",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "八大精彩",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv034",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯魅力",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn04",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯高球1",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn05",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯高球2",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn06",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯运动1",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn07",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯运动2",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn08",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯网球1",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn09",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯无限1",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn10",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "博斯无限2",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-longturn13",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "TraceUrban",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=4gtv-4gtv082",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "好消息1",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-ftv16",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "好消息2",
+      "url": "http://breezy-audrie-zspace-7524863c.koyeb.app/sub?token=leifeng&id=litv-ftv17",
+      "ok": false,
+      "reason": "ENOTFOUND",
+      "isLive": true,
+      "byteKind": null,
+      "manifestKind": "media",
+      "source": "catbox-miaokai",
+      "sourceLabel": "秒開"
+    },
+    {
+      "name": "DAZN Darts x Pluto TV",
+      "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/64b67f0424ade50008a3be17/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=1b1d3ca3-4b81-11ef-a8ac-e146e4e7be02&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=172fcc6d-73c3-48c9-86a8-04885a2af742",
+      "ok": false,
+      "reason": "位元組不明(unknown)",
+      "isLive": true,
+      "byteKind": "unknown",
+      "manifestKind": "media",
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "DAZN Heldinnen x Pluto TV",
+      "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/64afe50c5dc16600087f3227/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=1b1d3ca5-4b81-11ef-a8ac-e146e4e7be02&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=69be0114-52dc-4eed-b6e7-c907f1b51e64",
+      "ok": false,
+      "reason": "位元組不明(unknown)",
+      "isLive": true,
+      "byteKind": "unknown",
+      "manifestKind": "media",
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "Trace Urban",
+      "url": "https://cdn-apse1-prod.tsv2.amagi.tv/linear/amg01076-lightningintern-traceurban-samsungnz/playlist.m3u8",
+      "ok": true,
+      "reason": "直播 OK",
+      "isLive": true,
+      "byteKind": "mpegts",
+      "manifestKind": "media",
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "Trace Sports Stars",
+      "url": "https://trace-sportstars-samsungnz.amagi.tv/playlist.m3u8",
+      "ok": true,
+      "reason": "直播 OK",
+      "isLive": true,
+      "byteKind": "mpegts",
+      "manifestKind": "media",
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "SET Televisión Canal 26.1 (720p) [Not 24/7]",
+      "url": "http://189.240.210.28:1935/envivo/puecom/playlist.m3u8",
+      "ok": false,
+      "reason": "HTTP 404",
+      "isLive": null,
+      "byteKind": null,
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "SET Televisión Canal 26.2 (720p) [Not 24/7]",
+      "url": "http://189.240.210.28:1935/live/setpuebla/playlist.m3u8",
+      "ok": false,
+      "reason": "HTTP 404",
+      "isLive": null,
+      "byteKind": null,
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "DAZN Darts x Pluto TV",
+      "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/64b67f0424ade50008a3be17/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=bc83a562-4b91-11ef-8a44-83c5e90e038f&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=8196e267-fdcf-4f05-bb8e-8f1ec0e504ea",
+      "ok": false,
+      "reason": "位元組不明(unknown)",
+      "isLive": true,
+      "byteKind": "unknown",
+      "manifestKind": "media",
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "DAZN Heldinnen x Pluto TV",
+      "url": "http://cfd-v4-service-channel-stitcher-use1-1.prd.pluto.tv/stitch/hls/channel/64afe50c5dc16600087f3227/master.m3u8?appName=web&appVersion=unknown&clientTime=0&deviceDNT=0&deviceId=bc83a564-4b91-11ef-8a44-83c5e90e038f&deviceMake=Chrome&deviceModel=web&deviceType=web&deviceVersion=unknown&includeExtendedEvents=false&serverSideAds=false&sid=7df37b22-f6f1-45dd-9620-5945bfeea73a",
+      "ok": false,
+      "reason": "位元組不明(unknown)",
+      "isLive": true,
+      "byteKind": "unknown",
+      "manifestKind": "media",
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "SET TV 1 (1080p)",
+      "url": "https://5dcab9aed5331.streamlock.net/SET1/livestream/playlist.m3u8",
+      "ok": false,
+      "reason": "CERT_HAS_EXPIRED",
+      "isLive": null,
+      "byteKind": null,
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "SET TV 2 (1080p)",
+      "url": "https://5dcabf026b188.streamlock.net/SET22/livestream/playlist.m3u8",
+      "ok": false,
+      "reason": "CERT_HAS_EXPIRED",
+      "isLive": null,
+      "byteKind": null,
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "SET TV 1 (1080p)",
+      "url": "https://5dcab9aed5331.streamlock.net/SET1/livestream/playlist.m3u8",
+      "ok": false,
+      "reason": "CERT_HAS_EXPIRED",
+      "isLive": null,
+      "byteKind": null,
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "SET TV 2 (1080p)",
+      "url": "https://5dcabf026b188.streamlock.net/SET22/livestream/playlist.m3u8",
+      "ok": false,
+      "reason": "CERT_HAS_EXPIRED",
+      "isLive": null,
+      "byteKind": null,
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "Taiwan Plus TV (1080p)",
+      "url": "https://bcovlive-a.akamaihd.net/rce33d845cb9e42dfa302c7ac345f7858/ap-northeast-1/6282251407001/playlist.m3u8",
+      "ok": false,
+      "reason": "HTTP 400",
+      "isLive": null,
+      "byteKind": null,
+      "source": "catbox-laji",
+      "sourceLabel": "垃圾"
+    },
+    {
+      "name": "TVBS亚洲",
+      "url": "http://38.64.72.148:80/hls/modn/list/4005/playlist.m3u8",
+      "ok": true,
+      "reason": "直播 OK",
+      "isLive": true,
+      "byteKind": "mpegts",
+      "manifestKind": "media",
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    },
+    {
+      "name": "TVBS亚洲",
+      "url": "http://38.64.72.148/hls/modn/list/4005/chunklist0.m3u8",
+      "ok": true,
+      "reason": "直播 OK",
+      "isLive": true,
+      "byteKind": "mpegts",
+      "manifestKind": "media",
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    },
+    {
+      "name": "三立台湾",
+      "url": "https://hls-gateway.vpstv.net/streams/477050.m3u8",
+      "ok": false,
+      "reason": "HTTP 403",
+      "isLive": null,
+      "byteKind": null,
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    },
+    {
+      "name": "三立新闻",
+      "url": "https://stream1.freetv.fun/san-li-xin-wen-4.m3u8",
+      "ok": false,
+      "reason": "timeout",
+      "isLive": null,
+      "byteKind": null,
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    },
+    {
+      "name": "三立新闻",
+      "url": "https://hls-gateway.vpstv.net/streams/492922.m3u8",
+      "ok": false,
+      "reason": "HTTP 403",
+      "isLive": null,
+      "byteKind": null,
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    },
+    {
+      "name": "三立新闻",
+      "url": "https://stream1.freetv.fun/san-li-xin-wen-3.m3u8",
+      "ok": false,
+      "reason": "timeout",
+      "isLive": null,
+      "byteKind": null,
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    },
+    {
+      "name": "三立新闻",
+      "url": "https://stream1.freetv.fun/san-li-xin-wen-5.ctv",
+      "ok": false,
+      "reason": "timeout",
+      "isLive": null,
+      "byteKind": null,
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    },
+    {
+      "name": "三立新闻",
+      "url": "https://raw.githubusercontent.com/ChiSheng9/iptv/master/TV32.m3u8",
+      "ok": false,
+      "reason": "位元組不明(unknown)",
+      "isLive": true,
+      "byteKind": "unknown",
+      "manifestKind": "media",
+      "source": "guovin",
+      "sourceLabel": "咪咪 Guovin/iptv-api"
+    }
+  ]
+}
