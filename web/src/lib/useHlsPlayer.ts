@@ -882,6 +882,19 @@ export function useHlsPlayer(channel: Channel | null) {
                 );
                 try {
                   instance.recoverMediaError();
+                  /**
+                   * recover 之後 hls.js 會重新建立 buffer 並重抓分片，
+                   * 但媒體元素可能停在暫停狀態（尤其曾經緩衝過幾秒）。
+                   * 這裡補一次 play()，避免使用者看到「點擊開始播放」
+                   * 卻不知道為什麼剛才有畫面突然停住。
+                   */
+                  setTimeout(() => {
+                    if (video.paused && hasPlayedRef.current) {
+                      void video.play().catch(() => {
+                        // 仍被自動播放政策擋住時，交給 UI 的點擊提示處理
+                      });
+                    }
+                  }, 400);
                   break;
                 } catch (recoverError) {
                   console.warn(

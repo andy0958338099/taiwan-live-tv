@@ -281,3 +281,47 @@ hls.js 不會選音訊-only variant → 對使用者無影響。
 部署後 curl 驗 `/`、`/channels.json`、`/privacy` 皆 200。
 
 
+### 輪次 3 — 2026-11-22 19:55 CST（線上真實播放體檢後修正）
+
+**觸發原因**：這一輪不是清單巡檢，而是「用瀏覽器真的點下去播」的體檢。
+背景任務 `scripts/test-playback-local.mjs` 對台灣 25 個 HLS 頻道做線上實播，
+結果 **24/25 成功**，唯一失敗是 `國會頻道 1 台`；`國會頻道 2 台` 雖回報 ✓ 但帶 `err=3`。
+
+**根因（比「來源失效」更麻煩）**
+
+1. 兩台的來源、代理都正常：
+   manifest 200 且 `#EXT-X-MEDIA-SEQUENCE` 持續滾動、分片 `Range 0-2047` 206/0x47、
+   完整分片 610,436 bytes、**3247 個 TS 包 0 個同步位元組錯誤**、
+   PMT 為標準 `0x1B`（H.264）+ `0x0F`（AAC）。
+2. 瀏覽器端卻在緩衝到約 10 秒後拋
+   `hls.js 錯誤：type=mediaError details=bufferAppendError fatal=true`
+   → 直接判定「媒體解碼錯誤，此串流編碼格式可能不受支援」。
+3. 追到代理層：有一次代理對同一個分片只送出 **531,976 bytes**（上游完整 559,488），
+   回應是 chunked 沒有 Content-Length → 瀏覽器不會報錯，
+   hls.js 把**殘缺分片**送進 SourceBuffer → `bufferAppendError`。
+   即「靜默截斷」讓播放器拿到壞資料，比 502 更難察覺。
+
+**修正（三處，全部已上線）**
+
+| 位置 | 修正 |
+| --- | --- |
+| `web/src/app/api/proxy/[target]/route.ts` | 串流結束時比對「實際送出位元組 vs 上游宣稱長度」，不足則以 `controller.error` 結束串流（讓 hls.js 走 fragment 重試，而不是拿殘缺資料去解碼） |
+| `web/src/lib/useHlsPlayer.ts` | `mediaError` 不再一次判死：`bufferAppendError` / 其他媒體錯誤先 `recoverMediaError()` 重試（上限 2 次），失敗才換源；恢復後補一次 `play()`，避免停在「點擊開始播放」 |
+| `shared/channels.json` | `國會頻道 1 台` 改用**立法院官方 YouTube 直播**（官網 `parliamentarytv.org.tw` 首頁嵌入的 `x6XVbD7Ln78`，已驗證 `isLiveNow=true`、embed 200），原 HLS 源退為備註 |
+
+**移除**：`國會頻道 2 台`（`61.58.60.230:9319/live/124.m3u8`）
+—— HLS 分片偶發殘缺、每分鐘仍會撞 `bufferAppendError`；
+官網提供的另一個 YouTube 直播 `TZ4Nf7ZwfTw` **禁止嵌入**（embed 實測 `錯誤 153`），
+無法提供穩定的網頁版播放。寧缺勿濫，先下架。頻道數 **96 → 95**。
+
+**驗證**
+
+- `npx tsc --noEmit` 通過、`npm run build` 通過
+- 線上實點：`國會頻道 1 台` 顯示立法院議事直播畫面（「正在直播」）
+- `curl /channels.json` 確認 95 個頻道、`tw-legislature-1` 為 `embed` 類型
+
+**部署狀態**：commit `6828f61` 之後的手動觸發建置（Netlify 仍未自動觸發，
+已用 `POST /api/v1/sites/<id>/builds` 並確認 `state=ready`、`commit_ref` 為本次提交）。
+
+
+

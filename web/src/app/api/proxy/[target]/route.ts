@@ -946,22 +946,69 @@ export async function GET(
     const contentLength = upstream.headers.get('content-length');
     if (contentLength) headers.set('Content-Length', contentLength);
 
+    /**
+     * 上游聲稱的完整位元組數（僅在「從頭開始」的回應才可信）。
+     *
+     * ## 為什麼需要這個數字
+     *
+     * 實測（2026-11-22，國會頻道）：透過代理抓同一個 live segment，
+     * 上游完整大小 559,488 bytes，但代理只送出 531,976 bytes 就結束回應。
+     * 因為回應是 chunked（沒有 Content-Length），瀏覽器不會報錯，
+     * hls.js 直接把**殘缺的分片** append 到 SourceBuffer，
+     * 結果拋 `bufferAppendError`（fatal）→ 整個頻道被判死。
+     *
+     * 這種「靜默截斷」比明確 502 更糟：播放器不知道資料不完整，
+     * 還會把壞分片當成正常資料重試。
+     *
+     * 因此：若上游給了完整長度，串流結束時**比對實際送出位元組**，
+     * 不足就讓串流以錯誤結束（`controller.error`），
+     * 讓 hls.js 走 fragment 錯誤路徑重試，而不是拿壞資料去解碼。
+     */
+    const declaredTotalBytes = (() => {
+      if (!startsAtBeginning) return 0;
+      const cl = Number(upstream.headers.get('content-length') ?? '');
+      if (Number.isFinite(cl) && cl > 0) return cl;
+      if (rangeCoversWhole && rangeMatch) {
+        const total = Number(rangeMatch[3]);
+        if (Number.isFinite(total) && total > 0) return total;
+      }
+      return 0;
+    })();
+
     const stream = new ReadableStream<Uint8Array>({
       async start(controller) {
+        let sentBytes = 0;
+        const enqueue = (chunk: Uint8Array) => {
+          sentBytes += chunk.byteLength;
+          controller.enqueue(chunk);
+        };
         // 先送出判斷型別時已經讀到的第一塊
         if (firstChunk.byteLength > 0) {
-          controller.enqueue(firstChunk);
+          enqueue(firstChunk);
         }
         // 再送出速度檢查時多讀的那幾塊（不能丟掉，否則內容會缺一段）
         for (const c of pendingChunks) {
-          controller.enqueue(c);
+          enqueue(c);
         }
         try {
           // eslint-disable-next-line no-constant-condition
           while (true) {
             const next = await reader.read();
             if (next.done) break;
-            controller.enqueue(next.value);
+            enqueue(next.value);
+          }
+          if (declaredTotalBytes > 0 && sentBytes < declaredTotalBytes) {
+            console.warn(
+              `[代理] 上游內容不完整（送出 ${sentBytes} / 應為 ` +
+                `${declaredTotalBytes} bytes）→ 以錯誤結束串流，讓播放器重試：` +
+                `${target.slice(0, 90)}`,
+            );
+            controller.error(
+              new Error(
+                `上游內容不完整（${sentBytes}/${declaredTotalBytes} bytes）`,
+              ),
+            );
+            return;
           }
           controller.close();
         } catch (e) {

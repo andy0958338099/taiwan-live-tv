@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-22T11:46:24.748Z",
+  "updated_at": "2026-11-22T11:52:04.791Z",
   "categories": [
     {
       "id": "news",
@@ -4536,8 +4536,8 @@
       "source_website": "https://www.parliamentarytv.org.tw/",
       "authorization_status": "public_official",
       "is_active": true,
-      "last_checked": "2026-11-22T11:46:09.000Z",
-      "description": "國會議事轉播頻道 1。2026-11-22 第 2 輪新增。segment 首位 0x47（MPEG-TS），來源回傳 Access-Control-Allow-Origin: *。",
+      "last_checked": "2026-11-22T11:51:53.000Z",
+      "description": "立法院議事轉播（國會頻道１）。使用官方網站嵌入的 YouTube 直播，畫面為院會及委員會實況。",
       "tags": [
         "台灣",
         "國會",
@@ -4558,40 +4558,6 @@
         "backup_urls": []
       },
       "embed_url": "https://www.youtube.com/embed/x6XVbD7Ln78?rel=0&autoplay=1&mute=1&enablejsapi=1"
-    },
-    {
-      "channel_id": "tw-legislature-2",
-      "channel_name": "國會頻道 2 台",
-      "name_en": "Legislature Channel 2",
-      "category": "public",
-      "channel_number": null,
-      "logo": null,
-      "stream_url": "http://61.58.60.230:9319/live/124.m3u8",
-      "stream_type": "hls",
-      "source_name": "國會頻道 2 台（經 IPTV 清單轉載）",
-      "source_website": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-22T06:37:01.313Z",
-      "description": "國會議事轉播頻道 2。2026-11-22 第 2 輪新增。segment 首位 0x47（MPEG-TS），來源回傳 Access-Control-Allow-Origin: *。",
-      "tags": [
-        "台灣",
-        "國會",
-        "立法院",
-        "公共",
-        "iptv"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "身分證據取自同一份上游清單（peakzheng1112/iptv2025 第 47–48 行）的名稱↔網址配對：「國會頻道2台」↔`61.58.60.230:9319/live/124.m3u8`。",
-      "playlist_source": {
-        "provider": "iptv2025",
-        "provider_label": "IPTV 公開清單",
-        "provider_url": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
-        "raw_channel_name": "國會頻道2台",
-        "backup_urls": []
-      }
     }
   ]
 }
