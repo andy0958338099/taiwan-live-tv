@@ -206,6 +206,16 @@ export function useHlsPlayer(channel: Channel | null) {
   /** 目前播放中的來源網址 ref */
   const activeUrlRef = useRef<string | null>(null);
   /**
+   * 連續 fragment 載入失敗的次數。
+   *
+   * 用來區分「這個來源真的死了」與「上游負載平衡造成的偶發 miss」。
+   *
+   * 實測（2026-11-22）：某些上游在多個後端實例間負載平衡，
+   * 各自有獨立的 segment 序號 → manifest 與 segment 落到不同實例時
+   * 會拿到 404，機率約 25%。單次失敗不代表來源失效。
+   */
+  const fragErrorStreakRef = useRef(0);
+  /**
    * 待處理的使用者手勢旗標。
    *
    * 問題：頻道切換是透過 `setSelected()` → React 渲染 → useEffect 觸發
@@ -389,6 +399,8 @@ export function useHlsPlayer(channel: Channel | null) {
       activeUrlRef.current = url;
       // 新來源 → 尚未播放過畫面，卡頓 watchdog 先不啟動
       hasPlayedRef.current = false;
+      // 換源 → fragment 錯誤連續次數歸零，新來源有全新的容忍度
+      fragErrorStreakRef.current = 0;
       // 換源 → 重新嘗試自動播放，先前的「等待使用者點擊」狀態不再適用
       needsUserGestureRef.current = false;
 
@@ -694,6 +706,43 @@ export function useHlsPlayer(channel: Channel | null) {
            * 保留 `fatal` 判斷是為了：hls.js 自己正在處理的錯誤
            * （例如它已決定要 recoverMediaError）不要重複觸發。
            */
+          /**
+           * ⭐ **不能因為單一 fragment 失敗就換來源。**
+           *
+           * 實測（2026-11-22）：有些上游在多個後端實例間負載平衡，
+           * 各自有獨立的 segment 序號（同一頻道的 manifest 序號會是
+           * 6806 / 47017 / 39731 三種）。manifest 與 segment 請求落到
+           * 不同實例時，該 segment 就不存在 → **HTTP 404**，
+           * 機率約 25%。
+           *
+           * 若照舊「第一個 FRAG_LOAD_ERROR 就換來源」，
+           * 這個**本身沒壞**的頻道會在開播幾秒後就被棄用 →
+           * 使用者看到的是「這個台播不出來」。
+           *
+           * 所以：**連續 N 個 fragment 錯誤才換來源。**
+           * 單次失敗交給 hls.js 自己重試（它本來就會重試同一個 fragment）。
+           */
+          const consecutiveFragErrors =
+            data.type === Hls.ErrorTypes.NETWORK_ERROR &&
+            (data.details === Hls.ErrorDetails.FRAG_LOAD_ERROR ||
+             data.details === Hls.ErrorDetails.FRAG_LOAD_TIMEOUT);
+
+          if (consecutiveFragErrors) {
+            fragErrorStreakRef.current += 1;
+            if (fragErrorStreakRef.current < FRAG_ERROR_TOLERANCE) {
+              // 還沒到門檻 → 讓 hls.js 自己重試，不要換來源
+              console.warn(
+                `[播放器] fragment 錯誤 ${fragErrorStreakRef.current}/${FRAG_ERROR_TOLERANCE}，` +
+                  `暫不換來源（hls.js 會自行重試）`,
+              );
+              return;
+            }
+            // 連續太多次 → 這個來源真的不行了，交給 failover
+            fragErrorStreakRef.current = 0;
+          } else {
+            fragErrorStreakRef.current = 0;
+          }
+
           const isSourceLevelFailure =
             data.type === Hls.ErrorTypes.NETWORK_ERROR &&
             (data.details === Hls.ErrorDetails.FRAG_LOAD_ERROR ||
@@ -1304,6 +1353,17 @@ export function useHlsPlayer(channel: Channel | null) {
  * 又不會讓使用者無限等待（超過後會自動改用備援來源）。
  */
 const LOAD_TIMEOUT_MS = 60_000;
+
+/**
+ * 連續幾個 fragment 失敗才判定「這個來源真的不行」而切換備援。
+ *
+ * 理由：有些上游在多個後端實例間負載平衡，各自維護獨立的 segment 序號。
+ * manifest 與 segment 請求落到不同實例時就會拿到 404（實測機率約 25%）。
+ * 若第一個失敗就換來源，這些**本身沒壞**的頻道會在開播幾秒後被棄用。
+ *
+ * 門檻設 4：連續 4 個 fragment 都失敗，實務上不可能只是運氣差。
+ */
+const FRAG_ERROR_TOLERANCE = 4;
 
 /**
  * 卡頓 watchdog 逾時。

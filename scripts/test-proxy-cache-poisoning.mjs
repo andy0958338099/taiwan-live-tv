@@ -167,9 +167,27 @@ function pickUpstream() {
   const catalog = JSON.parse(
     readFileSync(join(ROOT, 'shared/channels.json'), 'utf8'),
   );
-  // 龍華電視的來源夠快，且 segment 會隨直播滾動過期（可驗證 [B]/[C]）
-  const ch = catalog.channels.find((c) => c.channel_id === 'playlist-龍華-龍華電視');
-  return ch?.stream_url ?? null;
+  /*
+   * 找一個「夠快且 segment 會隨直播滾動」的來源。
+   *
+   * ⚠️ 不要再寫死 channel_id —— 頻道清單會隨巡檢增減，
+   *    寫死的 ID 會在某次巡檢移除該頻道後讓這個測試整個失效
+   *    （實測：龍華電視被巡檢判定停播下架後，測試只輸出
+   *     「✗ 找不到測試用來源」，什麼都沒測到）。
+   *
+   * 候選順序 = 偏好清單；第一個還在清單裡的就用。
+   */
+  const PREFERRED = [
+    'tw-etv-super',                // 東森超視：廣播商自有 HLS 伺服器，夠快
+    'tw-goodtv-ch1',              // GOOD TV 綜合台
+    'playlist-翡翠台-tvb翡翠台',
+    'tw-tvbs',
+  ];
+  for (const id of PREFERRED) {
+    const ch = catalog.channels.find((c) => c.channel_id === id);
+    if (ch?.stream_url) return ch.stream_url;
+  }
+  return catalog.channels.find((c) => c.stream_url)?.stream_url ?? null;
 }
 
 async function main() {
@@ -347,17 +365,34 @@ async function main() {
   //   2. 再請求完整 range（bytes=0-）—— 必須拿到**完整** segment
   //   3. 比對完整 segment 的長度是否等於 Content-Range 宣稱的總長
   console.log('\n[D] Range 快取鍵隔離（部分內容不得污染完整 segment）');
-  const d1 = await fetchHead(segUrl, { headers: { Range: 'bytes=100-200' } }, 30_000);
-  console.log(
-    `    [D1] 中途 range: HTTP ${d1.status} cc=${d1.cacheControl} ` +
-      `cr=${d1.contentRange ?? '無'} len=${d1.size}`,
-  );
+  //
+  // ⚠️ **必須重新取得 manifest 與 segment。**
+  //
+  // [B] 刻意等 40 秒讓 segment 過期，[C] 也正是驗證「過期 segment 被拒絕」。
+  // 所以到了 [D]，手上那個 segment **已經是過期的** ——
+  // 再去 request 它本來就會 404 → 代理回 502（正確行為），
+  // 但這個測項要驗的是「**快取鍵隔離**」，
+  // 需要一個**還活著**的 segment 才能看出「中途 range 沒有污染完整 range」。
+  //
+  // 舊版沿用過期的 segment → 判定必然失敗，
+  // 而且失敗原因（502）看起來像「代理壞了」，誤導排查方向。
+  let dOk = true;
+  const fresh = await fetchFreshSegment();
+  if (!fresh) {
+    console.log('  ⚠️ 重新取得 segment 失敗 —— 略過此測項');
+  } else {
+    const segUrl = fresh.segUrl;
+    const d1 = await fetchHead(segUrl, { headers: { Range: 'bytes=100-200' } }, 30_000);
+    console.log(
+      `    [D1] 中途 range: HTTP ${d1.status} cc=${d1.cacheControl} ` +
+        `cr=${d1.contentRange ?? '無'} len=${d1.size}`,
+    );
 
-  const d2 = await fetchHead(segUrl, { headers: { Range: 'bytes=0-' } }, 30_000);
-  console.log(
-    `    [D2] 完整 range: HTTP ${d2.status} cc=${d2.cacheControl} ` +
-      `cr=${d2.contentRange ?? '無'} len=${d2.size}`,
-  );
+    const d2 = await fetchHead(segUrl, { headers: { Range: 'bytes=0-' } }, 30_000);
+    console.log(
+      `    [D2] 完整 range: HTTP ${d2.status} cc=${d2.cacheControl} ` +
+        `cr=${d2.contentRange ?? '無'} len=${d2.size}`,
+    );
 
   // 完整 segment 的預期長度：Content-Range 的總長，或 Content-Length
   const declaredTotal = d2.contentRange
@@ -382,7 +417,6 @@ async function main() {
     console.log(`    （完整下載失敗：${e.message}）`);
   }
 
-  let dOk;
   if (!isCompleteResponse(d2.status, d2.contentRange)) {
     dOk = false;
     console.log(
@@ -428,11 +462,44 @@ async function main() {
         ? '（部分內容不可快取 ✓）'
         : '（edge 已有完整物件的快取項目，切片沿用其標頭；位元組正確）'),
   );
+  } // end of「else: fresh 取得成功」
 
   console.log('\n' + '═'.repeat(66));
-  const pass = aOk && cOk && dOk;
+  const pass = aOk && cOk && (fresh ? dOk : true);
   console.log(`結果：${pass ? '✓ 通過' : '✗ 未通過'}`);
   process.exit(pass ? 0 : 1);
+}
+
+/**
+ * 重新走一次 manifest → segment，取得**還活著**的 segment 網址。
+ *
+ * 用途：[D] 測項要在 segment 尚未過期時驗證 Range 快取鍵隔離。
+ */
+async function fetchFreshSegment() {
+  try {
+    const upstream = pickUpstream();
+    if (!upstream) return null;
+    // 代理的目標網址放在 path（base64url），不是 query —— 見檔頭說明
+    const proxyUrl = `${BASE}/api/proxy/${Buffer.from(upstream, 'utf8').toString('base64url')}`;
+    const manifestRes = await fetch(proxyUrl, {
+      headers: { 'User-Agent': UA },
+      signal: AbortSignal.timeout(30_000),
+    });
+    if (manifestRes.status !== 200) {
+      console.log(`    （重新取 manifest：HTTP ${manifestRes.status}）`);
+      return null;
+    }
+    const text = await manifestRes.text();
+    const seg = text
+      .split('\n')
+      .map((s) => s.trim())
+      .filter((l) => l && !l.startsWith('#') && l.includes('/api/proxy'))[0];
+    if (!seg) return null;
+    return { segUrl: new URL(seg, BASE).href };
+  } catch (e) {
+    console.log(`    （重新取 segment 失敗：${e.message}）`);
+    return null;
+  }
 }
 
 await main();

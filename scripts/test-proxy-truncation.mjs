@@ -178,6 +178,24 @@ async function main() {
     );
 
     // ── 5. 判定 ──
+    //
+    // ⚠️ **502 是「正確行為」，不是截斷。**
+    //
+    // 502 = 代理**主動拒絕**了太慢的來源（回應沒有 body、Cache-Control: no-store）。
+    // 這比「回傳被截斷的 segment 然後被 CDN 快取 5 分鐘」好得多 ——
+    // 後者會讓所有使用者拿到壞內容。
+    //
+    // 實測央視來源本來就要 45–140 秒下載（平台 30 秒就會切斷），
+    // 所以代理回 502 正是設計要達成的效果。
+    //
+    // 舊版把 502 誤判成「回傳了被截斷的 segment」→ 測試誤報。
+    if (pres.status === 502) {
+      console.log(
+        '  判定：✓ 代理主動拒絕了過慢的來源（502、不快取、沒有壞內容進入 CDN）\n',
+      );
+      continue;
+    }
+
     const truncated = total > 0 && via.bytes < total;
     if (truncated) anyTruncated = true;
     console.log(

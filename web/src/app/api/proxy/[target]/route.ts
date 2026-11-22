@@ -399,16 +399,76 @@ export async function GET(
     //
     // 有了 timeout：上游太慢時 function 會自己先放棄，
     // 走下面的「回 502 + 不快取」路徑 → 壞內容不會進入 CDN。
-    const upstream = await fetch(target, {
-      headers: {
-        'User-Agent': UA,
-        Accept: '*/*',
-        ...(rangeHeader ? { Range: rangeHeader } : {}),
-      },
-      redirect: 'follow',
-      cache: 'no-store',
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
-    });
+    //
+    // ─────────────────────────────────────────────────────────────
+    // ⭐ **上游會隨機回 404，重試是必要的**
+    //
+    // 實測（2026-11-22，中廣 IPTV 轉載來源）：
+    //   同一個頻道的 manifest 連抓四次，序號是 6806 / 47017 / 39731 / 6809
+    //   —— **上游在多個後端實例間負載平衡，各自有獨立的 segment 序號**。
+    //   manifest 來自後端 A（序號 6806），segment 請求卻被路由到後端 B
+    //   → 該 segment 在 B 上不存在 → **HTTP 404**。
+    //
+    // 實測每個 segment 的 404 率約 25%（4 輪測試：4/4、3/4、4/4）。
+    // 對使用者來說就是「影片一直卡頓、偶爾全黑」——
+    // 而且客戶端 hls.js 遇到 FRAG_LOAD_ERROR 會直接換來源，
+    // 於是這個**本身沒壞**的頻道被誤判死亡、直接棄用。
+    //
+    // 解法：在代理端重試。
+    //   代理是唯一同時知道「manifest 剛剛回什麼」與「segment 現在是什麼」
+    //   的地方，重試成本低，而且**所有**頻道都受惠。
+    //   每次重試重新連線上游 → 有機會被路由到同一個後端 → 成功。
+    const MAX_UPSTREAM_ATTEMPTS = 3;
+    const RETRY_BASE_DELAY_MS = 350;
+
+    let upstream: Response | null = null;
+    let lastStatus = 0;
+
+    for (let attempt = 1; attempt <= MAX_UPSTREAM_ATTEMPTS; attempt++) {
+      const res = await fetch(target, {
+        headers: {
+          'User-Agent': UA,
+          Accept: '*/*',
+          ...(rangeHeader ? { Range: rangeHeader } : {}),
+        },
+        redirect: 'follow',
+        cache: 'no-store',
+        signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+      });
+      lastStatus = res.status;
+
+      // 200 / 206 → 成功
+      if (res.ok || res.status === 206) {
+        upstream = res;
+        break;
+      }
+
+      // 404 → 上游負載平衡造成的隨機 miss，重試有意義
+      // 5xx → 上游暫時故障，重試也有意義
+      // 其他（403 等）→ 重試沒用，直接放棄
+      const retryable = res.status === 404 || res.status === 502 ||
+                        res.status === 503 || res.status === 504;
+      if (!retryable || attempt === MAX_UPSTREAM_ATTEMPTS) {
+        upstream = res;
+        break;
+      }
+
+      // 把回應體丟掉，避免連線沒關
+      try { await res.arrayBuffer(); } catch { /* 忽略 */ }
+
+      console.warn(
+        `[proxy] 上游 HTTP ${res.status}（第 ${attempt}/${MAX_UPSTREAM_ATTEMPTS} 次），` +
+          `${RETRY_BASE_DELAY_MS * attempt}ms 後重試：${target.slice(0, 90)}`,
+      );
+      await new Promise((r) => setTimeout(r, RETRY_BASE_DELAY_MS * attempt));
+    }
+
+    if (!upstream) {
+      return NextResponse.json(
+        { error: `來源回應 HTTP ${lastStatus}` },
+        { status: 502 },
+      );
+    }
 
     if (!upstream.ok && upstream.status !== 206) {
       return NextResponse.json(
@@ -493,6 +553,15 @@ export async function GET(
       ? Number(upstreamLengthHeader)
       : null;
 
+    /**
+     * 取樣用的變數。
+     *
+     * 宣告在 `if` 外面 —— 邊界情況的「延長取樣再估算」需要用到它們。
+     */
+    let firstChunkAt = Date.now();
+    let sampleBytes = 0;
+    let windowMs = 0;
+
     if (
       !isManifest &&
       upstreamTotalBytes !== null &&
@@ -539,12 +608,12 @@ export async function GET(
          * 第一個 chunk 的到達時間 —— 量測窗口的起點。
          * 這之後收到的位元組才對應到「真實頻寬」。
          */
-        const firstChunkAt = Date.now();
+        firstChunkAt = Date.now();
 
         /** 量測窗口內收到的位元組總數（含第一個 chunk） */
-        let sampleBytes = firstChunk.byteLength;
+        sampleBytes = firstChunk.byteLength;
         /** 量測窗口的真實經過時間 */
-        let windowMs = 0;
+        windowMs = 0;
 
         // 累積樣本，直到位元組數足夠或時間到上限
         while (
@@ -591,6 +660,60 @@ export async function GET(
        * 用累積取樣估算一樣會超標 → 一樣會被放棄。
        * 所以這個修法**只移除誤判，不放過真正慢的來源**。
        */
+      /**
+       * ⭐ **邊界情況要延長取樣再判一次**（2026-11-22 實測）
+       *
+       * 有些上游是**突發型**的：開頭慢、之後爆發。
+       *
+       * 實測（央視台球來源 `142.54.178.42:88`）：
+       *   取樣窗口 843ms 內只收到 124KB → 算成 147 KB/s
+       *   → 預估整段 3.48MB 要 22,810ms → 超過 22 秒門檻 → 回 502
+       *   但**真實下載只要 1291ms**（後續以 2.5 MB/s 的速度爆發送出）
+       *
+       * 也就是說：800ms 的取樣剛好落在「慢速階段」，
+       * 用它外推整段會**低估速率 20 倍** → 誤殺一個 1.3 秒就能下載完的來源。
+       *
+       * 修法：**只在「 borderline」時**（預估值介於門檻與門檻 3 倍之間）
+       * 延長取樣到 3 秒再估算一次。
+       *   · 健康來源 → 第一次估算就通過，不受影響、零額外延遲
+       *   · 突發型來源 → 多等一下就會量到真實速率 → 放行
+       *   · 真正慢的來源 → 延長取樣後仍然超標 → 一樣被放棄
+       */
+      const MAX_PROJECTED_RECHECK_MS = MAX_PROJECTED_TRANSFER_MS * 3;
+      const SAMPLE_EXTEND_MAX_WAIT_MS = 3_000;
+
+      if (
+        projectedMs > MAX_PROJECTED_TRANSFER_MS &&
+        projectedMs < MAX_PROJECTED_RECHECK_MS
+      ) {
+        console.warn(
+          `[代理] 預估 ${Math.round(projectedMs)}ms 接近門檻，延長取樣到 ` +
+            `${SAMPLE_EXTEND_MAX_WAIT_MS}ms 重新估算…`,
+        );
+        const extendUntil = firstChunkAt + SAMPLE_EXTEND_MAX_WAIT_MS;
+        while (Date.now() < extendUntil) {
+          const remainingWait = extendUntil - Date.now();
+          const next = await Promise.race([
+            reader.read(),
+            new Promise<null>((resolve) => setTimeout(() => resolve(null), remainingWait)),
+          ]);
+          if (!next || !('value' in next) || !next.value) break;
+          sampleBytes += next.value.byteLength;
+          pendingChunks.push(next.value);
+        }
+        windowMs = Math.max(1, Date.now() - firstChunkAt);
+        projectedMs = estimateSegmentTransferMs({
+          totalBytes: upstreamTotalBytes,
+          sampleBytes,
+          windowMs,
+          ttfbMs: firstChunkAt - headersAt,
+        });
+        console.warn(
+          `[代理] 延長取樣後：${(sampleBytes / 1024).toFixed(0)}KB / ${windowMs}ms ` +
+            `→ 預估 ${Math.round(projectedMs)}ms`,
+        );
+      }
+
       if (projectedMs > MAX_PROJECTED_TRANSFER_MS) {
         // 放棄上游（取消讀取，避免佔住頻寬）
         await reader.cancel().catch(() => {});
