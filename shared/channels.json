@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-22T06:22:27.896Z",
+  "updated_at": "2026-11-22T06:37:33.259Z",
   "categories": [
     {
       "id": "news",
@@ -1861,14 +1861,14 @@
       "category": "local",
       "channel_number": 123,
       "logo": "https://iptv.yang-1989.xyz/logo/东方卫视.webp",
-      "stream_url": "http://bp-resource-dfl.bestv.cn/155/3/video.m3u8",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1026_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "東方衛視（經 suxuang 聚合源 轉載）",
       "source_website": "https://bit.ly/suxuang-v4",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "東方衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
+      "last_checked": "2026-11-22T06:37:01.313Z",
+      "description": "東方衛視 — 中國大陸頻道。2026-11-22 第 2 輪換源：舊來源 bp-resource-dfl.bestv.cn 直連與代理路徑同時失效（HTTP 0／代理 502 fetch failed），改用 itvlist 上游清單中「东方卫视」↔`121.19.134.149:808/tsfile/live/1026_1.m3u8` 的配對。",
       "tags": [
         "中國",
         "大陸",
@@ -1876,24 +1876,25 @@
         "suxuang"
       ],
       "region": "中國",
-      "cors_enabled": true,
+      "cors_enabled": false,
       "http_user_agent": "aliplayer",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。身分證據取自同一份上游清單（https://bit.ly/itvlist 第 364–365 行）的名稱↔網址配對；代碼為 host-namespaced（121.19.134.33:808 + 1026_1 = 卡酷动画，非東方衛視）。",
       "playlist_source": {
-        "source_id": "suxuang",
-        "source_label": "suxuang 聚合源",
-        "original_name": "東方衛視",
+        "provider": "itvlist",
+        "provider_label": "itvlist 聚合源",
+        "provider_url": "https://bit.ly/itvlist",
+        "raw_channel_name": "东方卫视",
         "backup_urls": [
+          {
+            "url": "http://bp-resource-dfl.bestv.cn/155/3/video.m3u8",
+            "source": "原主來源（2026-11-22 直連與代理路徑皆失效）",
+            "cors": true
+          },
           {
             "url": "https://yshipin.pages.dev/play/dfws",
             "source": "褲佬 清單",
             "cors": true
-          },
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1026_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
           },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0107_1.m3u8?key=txiptv&playlive=1&authid=0",
@@ -1903,21 +1904,6 @@
           {
             "url": "http://222.134.245.16:9901/tsfile/live/0107_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://120.198.95.220:9901/tsfile/live/1047_1.m3u8?key=txiptv&playlive=1&down=1",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://8.137.121.66:20241/651632648",
-            "source": "褲佬 清單",
-            "cors": false
-          },
-          {
-            "url": "http://bp-resource-dfl.bestv.cn/148/3/video.m3u8",
-            "source": "原主來源（已失效）",
             "cors": false
           }
         ]
@@ -4466,6 +4452,142 @@
         "provider_label": "Guovin/iptv-api（GitHub 公開清單）",
         "provider_url": "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.m3u",
         "raw_channel_name": "央視台球",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-ftv-news",
+      "channel_name": "民視新聞台",
+      "name_en": "FTV News",
+      "category": "news",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/p108I5g.png",
+      "stream_url": "http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8",
+      "stream_type": "hls",
+      "source_name": "民視新聞台（經 IPTV 清單轉載）",
+      "source_website": "https://github.com/reysc/M3U8/blob/master/live2024.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-22T06:37:01.313Z",
+      "description": "民視新聞台。2026-11-22 第 2 輪新增：HLS 來源取代原本只有 embed 的狀態。segment 首位 0x47（MPEG-TS），來源回傳 Access-Control-Allow-Origin: *。",
+      "tags": [
+        "台灣",
+        "民視",
+        "FTV",
+        "新聞",
+        "iptv"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "身分證據取自同一份上游清單（reysc/M3U8 live2024.m3u 第 924–925 行）的名稱↔網址配對：「民视新闻」↔`38.64.72.148/hls/modn/list/4012/chunklist0.m3u8`。",
+      "playlist_source": {
+        "provider": "reysc/M3U8",
+        "provider_label": "IPTV 公開清單",
+        "provider_url": "https://github.com/reysc/M3U8/blob/master/live2024.m3u",
+        "raw_channel_name": "民视新闻",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-ttv-news",
+      "channel_name": "台視新聞台",
+      "name_en": "TTV News",
+      "category": "news",
+      "channel_number": null,
+      "logo": "https://i.imgur.com/V1EVtRm.png",
+      "stream_url": "http://38.64.72.148/hls/modn/list/4013/chunklist0.m3u8",
+      "stream_type": "hls",
+      "source_name": "台視新聞台（經 IPTV 清單轉載）",
+      "source_website": "https://github.com/reysc/M3U8/blob/master/live2024.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-22T06:37:01.313Z",
+      "description": "台視新聞台。2026-11-22 第 2 輪新增：HLS 來源。segment 首位 0x47（MPEG-TS），來源回傳 Access-Control-Allow-Origin: *。",
+      "tags": [
+        "台灣",
+        "台視",
+        "TTV",
+        "新聞",
+        "iptv"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "身分證據取自同一份上游清單（reysc/M3U8 live2024.m3u 第 930–931 行）的名稱↔網址配對：「台视新闻」↔`38.64.72.148/hls/modn/list/4013/chunklist0.m3u8`。",
+      "playlist_source": {
+        "provider": "reysc/M3U8",
+        "provider_label": "IPTV 公開清單",
+        "provider_url": "https://github.com/reysc/M3U8/blob/master/live2024.m3u",
+        "raw_channel_name": "台视新闻",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-legislature-1",
+      "channel_name": "國會頻道 1 台",
+      "name_en": "Legislature Channel 1",
+      "category": "public",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "http://61.58.60.230:9319/live/123.m3u8",
+      "stream_type": "hls",
+      "source_name": "國會頻道 1 台（經 IPTV 清單轉載）",
+      "source_website": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-22T06:37:01.313Z",
+      "description": "國會議事轉播頻道 1。2026-11-22 第 2 輪新增。segment 首位 0x47（MPEG-TS），來源回傳 Access-Control-Allow-Origin: *。",
+      "tags": [
+        "台灣",
+        "國會",
+        "立法院",
+        "公共",
+        "iptv"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "身分證據取自同一份上游清單（peakzheng1112/iptv2025 第 45–46 行）的名稱↔網址配對：「國會頻道1台」↔`61.58.60.230:9319/live/123.m3u8`。",
+      "playlist_source": {
+        "provider": "iptv2025",
+        "provider_label": "IPTV 公開清單",
+        "provider_url": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
+        "raw_channel_name": "國會頻道1台",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "tw-legislature-2",
+      "channel_name": "國會頻道 2 台",
+      "name_en": "Legislature Channel 2",
+      "category": "public",
+      "channel_number": null,
+      "logo": null,
+      "stream_url": "http://61.58.60.230:9319/live/124.m3u8",
+      "stream_type": "hls",
+      "source_name": "國會頻道 2 台（經 IPTV 清單轉載）",
+      "source_website": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-22T06:37:01.313Z",
+      "description": "國會議事轉播頻道 2。2026-11-22 第 2 輪新增。segment 首位 0x47（MPEG-TS），來源回傳 Access-Control-Allow-Origin: *。",
+      "tags": [
+        "台灣",
+        "國會",
+        "立法院",
+        "公共",
+        "iptv"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "身分證據取自同一份上游清單（peakzheng1112/iptv2025 第 47–48 行）的名稱↔網址配對：「國會頻道2台」↔`61.58.60.230:9319/live/124.m3u8`。",
+      "playlist_source": {
+        "provider": "iptv2025",
+        "provider_label": "IPTV 公開清單",
+        "provider_url": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
+        "raw_channel_name": "國會頻道2台",
         "backup_urls": []
       }
     }

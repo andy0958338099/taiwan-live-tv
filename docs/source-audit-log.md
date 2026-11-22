@@ -164,4 +164,120 @@ HTTP 200 不算可播。每個來源都要逐層驗：
 **部署狀態**：已 commit + push 至 main，Netlify 自動部署。
 部署後 curl 驗 `/`、`/channels.json`、`/privacy` 皆 200。
 
+### 輪次 2 — 2026-11-22 14:00 CST
+
+**巡檢範圍**：92 個頻道（83 個 HLS + 9 個官方 embed）。
+判定工具：**本輪新增的 `scripts/audit-all-user-path.mjs`**（見下方「本輪最重要發現」）。
+
+**巡檢結果：可播 83、不失效 0**（HLS 部分）
+（83 個 HLS 主來源全部通過使用者路徑驗證；含 4 個本輪新增、1 個本輪換源後復驗）
+
+#### ⭐ 本輪最重要發現：第 1 輪的巡檢工具本身有系統性假陰性
+
+第 1 輪的 `scripts/audit-all-via-proxy.mjs` 報「5 個頻道失效」，
+但**逐一複驗後發現 4 個是誤判**。根因有兩個，都不是來源的問題：
+
+**陷阱 1：判定路徑錯了 —— 代理不是所有頻道都會走**
+
+`web/src/lib/useHlsPlayer.ts` 的 `needsProxy()` 決定要不要走代理：
+
+```ts
+export function needsProxy(channel: Channel): boolean {
+  if (channel.cors_enabled === false) return true;
+  if (!channel.stream_url) return false;
+  if (channel.stream_url.startsWith('http://')) return true;  // 混合內容
+  return false;
+}
+```
+
+所以 `cors_enabled: true` **且 https** 的頻道，**瀏覽器是直連的，不走代理**。
+第 1 輪卻對全部頻道都走代理驗證 → 等於用「使用者不會走的路徑」下結論。
+
+實測 **TVBS**：
+
+| 路徑 | 結果 |
+|---|---|
+| 代理（Netlify egress） | HTTP 502「來源回應 HTTP 403」（CloudFront 擋 Netlify 的 IP） |
+| **直連（使用者實際路徑）** | master/child/segment 全部 HTTP 200/206、CORS `Access-Control-Allow-Origin: *`、segment 首位 `0x47`（MPEG-TS）、序號 235121839→235121840 前進 |
+
+→ **TVBS 一直可播**，第 1 輪的「失效」是代理路徑的假陰性。
+（註：`curl -I`（HEAD）看不到 CORS 標頭，S3/CloudFront 只在 GET 回；
+必須用 GET + `Origin` 標頭驗證，否則會誤判 `cors_enabled` 錯誤。）
+
+**陷阱 2：只取清單的最後一行當 segment 候選 → 拿到被截斷的網址**
+
+代理收到帶 `Range` 的請求時，上游只回前 2048 bytes → manifest 被截成 2KB
+→ 清單的最後一行是**被截斷的** segment 網址 → 簽章是斷的 → 代理回 502。
+
+實測（代理路徑）：
+
+| 頻道 | 第 1 輪結果 | 複驗（每個 variant × 多個 segment 位置） | 真相 |
+|---|---|---|---|
+| 廣東體育台 | 第 2 層 HTTP 502 | child[0] seq=73054834，seg[0/5/8/9] 全部 HTTP 206 + 0x47 | 可播 |
+| 廣東珠江台 | 第 2 層 HTTP 502 | child[0] seq=1750414704，seg[0/5/8/9] 全部 HTTP 206 + 0x47 | 可播 |
+| CGNTV 中文台 | 第 2 層 HTTP 502 | variant 0–3 全部 4/4 通過；**只有 variant 4 上游整組 404** | 可播 |
+| 真善美電視 | 第 2 層 HTTP 502 | child[0] seq=31531，seg[0/100/198/199] 全部 HTTP 206 + 0x47 | 可播 |
+
+→ 4 個都是假陰性。**master manifest 也必須試每一個 variant**：
+CGNTV 的 5 個 variant 中，第 5 個（音訊-only，`BANDWIDTH=211612` 無 RESOLUTION）
+上游整組 404（直連也是 404，不是代理問題），但 variant 1–4 完全正常，
+hls.js 不會選音訊-only variant → 對使用者無影響。
+
+**陷阱 3：沒有重試** —— 上游多後端負載平衡會隨機回 404/502
+（江西衛視、山西衛視本輪一度被判失敗，複驗 4/4 全部 206 + 0x47）。
+
+**本輪新增工具**
+
+| 檔案 | 用途 |
+|---|---|
+| `scripts/audit-all-user-path.mjs` | ⭐ **主巡檢工具**：依 `cors_enabled` + 協定決定走直連或代理（與 `needsProxy()` 對齊）；每個 variant 都試；每個 child 取多個 segment 位置；每個 segment 有重試；`--seq` 做停播檢查 |
+| `scripts/audit-all-robust.mjs` | 同上但固定走代理路徑（用於診斷「代理壞但來源活著」的情況） |
+| `scripts/apply-round2.mjs` | 本輪處置（可重播，附實測依據與身分證據出處） |
+
+**處置一：換源（1 個）**
+
+| 頻道 | 舊來源 → 新來源 | 實測依據 |
+|---|---|---|
+| 東方衛視 | `bp-resource-dfl.bestv.cn/155/3/video.m3u8` → `121.19.134.149:808/tsfile/live/1026_1.m3u8?key=txiptv&playlive=1&authid=0` | 舊來源 DNS 解析到 117.163.54.6/8/9 但 TCP 連線失敗：直連 HTTP 0、代理 502「fetch failed」→ 真死。新來源 segment 4/4 HTTP 206 + 0x47；序號 26075922→26075923→26075925 前進 |
+
+身分證據（**同一份上游清單** itvlist `https://bit.ly/itvlist` 第 364–365 行）：
+「东方卫视」↔`http://121.19.134.149:808/tsfile/live/1026_1.m3u8`。
+⚠️ 代碼是 host-namespaced：`121.19.134.33:808` + `1026_1` 是「卡酷动画」，
+不是東方衛視 → 必須比對 **(host, code) 整組**。
+
+**處置二：新增（4 個）**
+
+| 頻道 | 來源網址 | 身分證據（同一份上游清單） | 實測 |
+|---|---|---|---|
+| 民視新聞台 | `http://38.64.72.148/hls/modn/list/4012/chunklist0.m3u8` | reysc/M3U8 `live2024.m3u` 第 924–925 行「民视新闻」 | seg 4/4 206 + 0x47；CORS `*`；seq 11178 |
+| 台視新聞台 | `http://38.64.72.148/hls/modn/list/4013/chunklist0.m3u8` | reysc/M3U8 `live2024.m3u` 第 930–931 行「台视新闻」 | seg 4/4 206 + 0x47；CORS `*` |
+| 國會頻道 1 台 | `http://61.58.60.230:9319/live/123.m3u8` | peakzheng1112/iptv2025 第 45–46 行「國會頻道1台」 | seg 4/4 206 + 0x47；CORS `*`；seq 80536 |
+| 國會頻道 2 台 | `http://61.58.60.230:9319/live/124.m3u8` | peakzheng1112/iptv2025 第 47–48 行「國會頻道2台」 | seg 4/4 206 + 0x47；CORS `*`；seq 3208 |
+
+授權狀態全部 `user_provided`（第三方 IPTV 清單轉載，非廣播商官方 CDN），
+`source_name` + `source_website` 均已標註。**台灣優先**。
+
+**本輪驗證過的死路（不要重試）**
+
+- `74.91.26.218:82/live/*.m3u8`（cts/ctv/ctsnews/ctvnews/ftvnews/pts…）
+  —— **轉址目標不穩定**：同一個網址會輪替到不同頻道
+  （實測 `ctvnews` 有時轉到 `mkt.m3u8`＝民視、有時轉到 `ctv.m3u8`＝中視）。
+  → **身分不可驗證，絕對不可使用**（重演第 1 輪「龍華日韓台當成龍華電視」的坑）
+- `66.165.240.154:808/live/*`（三立新聞 slxw01 / 中天新聞 ztylt01 / 台視新聞 tyxltsxw3）—— 連線失敗
+- `hls127.freeott.top:8080/Da_Vinci_Learning/video.m3u8`（華視新聞）—— HTTP 522
+- `aajtaklive.vgcdn.net/.../vglive-sk-848805/master.m3u8`（民視台灣台）—— HTTP 404
+- `live.streamingfast.net/osmflivech{3,5,12}.m3u8`（GOOD TV CH3/5/12）—— child 404
+- `streamipcfapp.akamaized.net/.../key_b1500.m3u8`（台視原住民族）—— HTTP 403
+- `h5cul1yar48um3t.wcetv.com/hls/titv.m3u8`（台視原住民族）—— HTTP 404
+- `111.59.139.85:11888/tsfile/live/{1217,1220,1222}_1.m3u8`（公視3/SJTV/東亞）—— 連線失敗
+- `74.91.26.218:82/live/ctvnews.m3u8` / `ctsnews.m3u8` —— 轉址到已失效的 `142.54.179.26:81`（HTTP 404）
+- `iptv-org/iptv` 的 `streams/tw.m3u` —— **已 404**（清單改版），
+  正確做法是用 API：`https://iptv-org.github.io/api/channels.json` + `streams.json` 交叉比對
+- `58ad68d0b6c8d.streamlock.net/ios/-Ctsnews—0832/playlist.m3u8` —— 連線失敗
+- `t.freetv.fun/live/*.m3u8`、`stream1.freetv.fun/*` —— 連線失敗 / HTTP 522
+- `live.italkdd.com/cds160/hls/channel00{5,6}/*.m3u8` —— HTTP 404
+
+**部署狀態**：已 commit + push 至 main，Netlify 自動部署。
+部署後 curl 驗 `/`、`/channels.json`、`/privacy` 皆 200。
+
 
