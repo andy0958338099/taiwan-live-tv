@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-22T02:45:28.329Z",
+  "updated_at": "2026-11-22T05:39:41.949Z",
   "categories": [
     {
       "id": "news",
@@ -3301,6 +3301,11 @@
             "url": "http://222.134.245.16:9901/tsfile/live/0109_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "原主來源（已失效）",
             "cors": false
+          },
+          {
+            "url": "http://play1-qk.nmtv.cn/live/1769652018126032.m3u8",
+            "source": "內蒙古電視台官方 CDN（NNTV，目視驗證：台標「NNTV 內蒙」）",
+            "cors": true
           }
         ]
       }
@@ -3734,6 +3739,11 @@
             "url": "https://cdn6.cc.cd/163189/fhzw",
             "source": "原主來源（已失效）",
             "cors": false
+          },
+          {
+            "url": "http://r.jdshipin.com/yDoTN",
+            "source": "jdshipin 轉載（目視驗證：台標「香港台」+ 軍情室新聞節目）",
+            "cors": false
           }
         ]
       }
@@ -3777,6 +3787,11 @@
           {
             "url": "https://cdn6.cc.cd/163189/fhzx",
             "source": "原主來源（已失效）",
+            "cors": false
+          },
+          {
+            "url": "http://r.jdshipin.com/0Rp07",
+            "source": "jdshipin 轉載（目視驗證：Phoenix HD 台標 + 鳳凰衛視資訊台天氣預報）",
             "cors": false
           }
         ]
@@ -4388,6 +4403,70 @@
         "segments_tested": 3,
         "cors_acao": "*",
         "needs_proxy": true
+      }
+    },
+    {
+      "channel_id": "tw-etv-super",
+      "channel_name": "東森超視",
+      "name_en": null,
+      "category": "general",
+      "channel_number": 32,
+      "logo": "https://www.xn--rgv465a.top/tvlogo/%E4%B8%9C%E6%A3%AE%E8%B6%85%E8%A7%86.png",
+      "stream_url": "http://38.64.72.148:80/hls/modn/list/2013/chunklist1.m3u8",
+      "stream_type": "hls",
+      "source_name": "東森超視（自有 HLS 伺服器）",
+      "source_website": "http://38.64.72.148:80/hls/modn/list/2013/chunklist1.m3u8",
+      "authorization_status": "public_official",
+      "is_active": true,
+      "last_checked": "2026-11-22T05:39:20.361Z",
+      "description": "東森超視（ETTV 超視 945）。目視驗證：畫面右上角台標為「超視 945」，內容為實際節目。",
+      "tags": [
+        "台灣",
+        "official",
+        "東森"
+      ],
+      "region": "台灣",
+      "cors_enabled": true,
+      "http_referrer": null,
+      "notes": "來源為廣播商自己的 HLS 伺服器（同一台 38.64.72.148 也提供 TVBS Asia）。目視驗證 2026-11-22：1920x1080，台標「超視 945」。",
+      "playlist_source": {
+        "provider": "guovin",
+        "provider_label": "Guovin/iptv-api（GitHub 公開清單）",
+        "provider_url": "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.m3u",
+        "raw_channel_name": "東森超視",
+        "backup_urls": []
+      }
+    },
+    {
+      "channel_id": "cn-cctv-billiards",
+      "channel_name": "央視台球",
+      "name_en": null,
+      "category": "entertainment",
+      "channel_number": 155,
+      "logo": null,
+      "stream_url": "http://107.150.60.122/live/ystq.m3u8",
+      "stream_type": "hls",
+      "source_name": "央視台球（IPTV 轉載）",
+      "source_website": "http://107.150.60.122/live/ystq.m3u8",
+      "authorization_status": "user_provided",
+      "is_active": true,
+      "last_checked": "2026-11-22T05:39:20.361Z",
+      "description": "央視台球（CCTV 央視台球）。目視驗證：左上角台標「CCTV 央視台球」，內容為斯諾克／桌球賽事。",
+      "tags": [
+        "中國",
+        "央視",
+        "體育"
+      ],
+      "region": "中國",
+      "cors_enabled": false,
+      "http_referrer": null,
+      "notes": "第三方 IPTV 轉載（非央視官方 CDN），散布權未確認 → user_provided。目視驗證 2026-11-22：1920x1080，台標「CCTV 央視台球」✓。",
+      "playlist_source": {
+        "provider": "guovin",
+        "provider_label": "Guovin/iptv-api（GitHub 公開清單）",
+        "provider_url": "https://raw.githubusercontent.com/Guovin/iptv-api/gd/output/result.m3u",
+        "raw_channel_name": "央視台球",
+        "backup_urls": []
       }
     }
   ]
