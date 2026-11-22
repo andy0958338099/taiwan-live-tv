@@ -36,14 +36,14 @@ const CONC = parseInt(arg('conc', '8'), 10);
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36';
 
-async function get(url, ms = 20000) {
+async function get(url, ms = 20000, extraHeaders = {}) {
   const c = new AbortController();
   const t = setTimeout(() => c.abort(), ms);
   try {
     const res = await fetch(url, {
-      headers: { 'User-Agent': UA },
-      signal: c.signal,
+      headers: { 'User-Agent': UA, ...extraHeaders },
       redirect: 'follow',
+      signal: c.signal,
     });
     return res;
   } finally {
@@ -186,7 +186,18 @@ async function verify(url) {
     const t0 = Date.now();
     let sres;
     try {
-      sres = await get(cand, 30000);
+      // ⭐ **只抓前 2KB**（2026-11-22 第 4 輪修正）
+      //
+      // 原本是「完整下載 segment」，30 秒逾時 → 判失敗。
+      // 實測（天映 `120.198.95.220:9901`）：
+      //   · 完整下載 → **30 秒 AbortError（逾時）** → 誤判「已停播」
+      //   · `Range: bytes=0-2047` → 206、2048 bytes、首位 `0x47`（MPEG-TS）、**9 秒**
+      //
+      // 這也是 2026-11-22 固定驗證口徑的第 4 條
+      //（「取第一個 segment，用 `Range: bytes=0-2047` 抓前 2KB」）。
+      // 完整下載還會觸發代理的 `projected_ms` 保護（見 route.ts 的註解），
+      // 造成「代理保護」被誤認為「來源失效」。
+      sres = await get(cand, 30000, { Range: 'bytes=0-2047' });
     } catch (e) {
       const reason =
         e.name === 'AbortError'
@@ -198,7 +209,7 @@ async function verify(url) {
       continue;
     }
     segMs = Date.now() - t0;
-    if (!sres.ok) {
+    if (!sres.ok && sres.status !== 206) {
       lastReason = `segment HTTP ${sres.status}`;
       continue;
     }

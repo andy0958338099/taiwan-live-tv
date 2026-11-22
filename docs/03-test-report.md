@@ -1974,3 +1974,50 @@ litv 播放器在自動播放被擋時顯示「▶ 播放」卡片等待點擊�
 ⚠️ 測試腳本踩到的坑：**已經在播的播放器不能點** ——
    點擊 YouTube 影片會「暫停」。所以量測必須在點擊之前做，
    只有「沒在播」時才點。
+
+---
+
+## 15. Android TV APK 建置與驗證（2026-11-22）
+
+### 15.1 產出
+
+`dist/taiwan-live-tv-1.0.0-20261122-debug.apk`（9.1 MB，debug key 已簽名，可直接側載）
+
+新增 `scripts/build-apk.sh` 一次完成：同步頻道資料 → 建置 → 複製到 `dist/`（檔名帶版本與日期）。
+
+### 15.2 為什麼需要這支腳本
+
+這台 Mac 的 JDK（Temurin 17）裝在 `~/.local/toolchains/`，**沒有註冊到 macOS 的
+JDK 清單**，所以 `/usr/libexec/java_home` 找不到、直接跑 `./gradlew` 會得到：
+
+    The operation couldn't be completed. Unable to locate a Java Runtime.
+
+腳本把 `JAVA_HOME` / `ANDROID_HOME` / `PATH` 一次設好。
+
+踩到的坑：macOS 內建 `/bin/bash` 是 **3.2**（不支援 `${VAR^}`），
+且 BSD `sed` **不支援 `\U`** → 首字母大寫改用 `cut` + `tr`（兩邊都通用）。
+
+### 15.3 APK 驗證結果
+
+| 項目 | 結果 |
+|---|---|
+| package | `com.taiwanlivetv` versionName 1.0.0 / targetSdk 36 |
+| **leanback-launchable-activity** | ✅ 有 → **Android TV launcher 可顯示並啟動** |
+| 權限 | INTERNET、ACCESS_NETWORK_STATE、WAKE_LOCK（最小化） |
+| 原生函式庫 | **0 個**（`mergeDebugNativeLibs NO-SOURCE`） |
+| APK 內頻道數 | 94（與 Web 版 `shared/channels.json` 一致） |
+
+### 15.4 ⭐ 不需要問「CPU 架構」
+
+Media3 / ExoPlayer 是純 Java/Kotlin，APK 裡**沒有任何原生函式庫**，
+所以同一個 APK 可以直接裝在 **arm64-v8a / armeabi-v7a / x86_64** 任何機器上，
+不需要分架構打包，也不需要 `abiFilters` 或 `splits`。
+
+→ 這消除了原本「要先知道電視盒 CPU 架構才能打包」的阻礙。
+
+### 15.5 尚未完成
+
+**沒有在實機上安裝與測試** —— 仍然需要：
+- 電視盒型號與 Android 版本（確認 minSdk 23 覆蓋率與 TV launcher 行為）
+- ADB 連線（或手動側載）
+- 遙控器方向鍵／返回鍵的實機測試（DPAD 焦點、返回離開播放器）
