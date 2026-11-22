@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-22T06:37:33.259Z",
+  "updated_at": "2026-11-22T11:46:24.748Z",
   "categories": [
     {
       "id": "news",
@@ -4530,32 +4530,34 @@
       "category": "public",
       "channel_number": null,
       "logo": null,
-      "stream_url": "http://61.58.60.230:9319/live/123.m3u8",
-      "stream_type": "hls",
-      "source_name": "國會頻道 1 台（經 IPTV 清單轉載）",
-      "source_website": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
-      "authorization_status": "user_provided",
+      "stream_url": "",
+      "stream_type": "embed",
+      "source_name": "國會頻道（立法院官方 YouTube 直播）",
+      "source_website": "https://www.parliamentarytv.org.tw/",
+      "authorization_status": "public_official",
       "is_active": true,
-      "last_checked": "2026-11-22T06:37:01.313Z",
+      "last_checked": "2026-11-22T11:46:09.000Z",
       "description": "國會議事轉播頻道 1。2026-11-22 第 2 輪新增。segment 首位 0x47（MPEG-TS），來源回傳 Access-Control-Allow-Origin: *。",
       "tags": [
         "台灣",
         "國會",
         "立法院",
         "公共",
-        "iptv"
+        "iptv",
+        "youtube-embed"
       ],
       "region": "台灣",
       "cors_enabled": true,
       "http_referrer": null,
-      "notes": "身分證據取自同一份上游清單（peakzheng1112/iptv2025 第 45–46 行）的名稱↔網址配對：「國會頻道1台」↔`61.58.60.230:9319/live/123.m3u8`。",
+      "notes": "官方網站 https://www.parliamentarytv.org.tw/ 首頁嵌入的 YouTube 直播（頻道 id x6XVbD7Ln78，已驗證 isLiveNow=true）。原 HLS 來源 http://61.58.60.230:9319/live/123.m3u8 分片偶發殘缺，瀏覽器端會拋 bufferAppendError 而無法播放，故改用官方直播。",
       "playlist_source": {
         "provider": "iptv2025",
         "provider_label": "IPTV 公開清單",
         "provider_url": "https://github.com/peakzheng1112/iptv2025/blob/main/iptv.m3u",
         "raw_channel_name": "國會頻道1台",
         "backup_urls": []
-      }
+      },
+      "embed_url": "https://www.youtube.com/embed/x6XVbD7Ln78?rel=0&autoplay=1&mute=1&enablejsapi=1"
     },
     {
       "channel_id": "tw-legislature-2",

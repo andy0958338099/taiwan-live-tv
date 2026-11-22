@@ -216,6 +216,17 @@ export function useHlsPlayer(channel: Channel | null) {
    */
   const fragErrorStreakRef = useRef(0);
   /**
+   * 媒體層錯誤（bufferAppendError / bufferStalledError）已嘗試恢復的次數。
+   *
+   * 為什麼需要：某些來源（實測國會頻道 1、2 台）的分片偶發殘缺，
+   * hls.js 在把不完整的分片 append 到 SourceBuffer 時會拋 fatal
+   * `bufferAppendError`。這種錯誤**不是編碼格式問題**，
+   * 直接換源等於把一個「重試一次就能播」的頻道判死。
+   * 因此先讓 hls.js 自己 recover（重建 buffer、丟掉壞分片），
+   * 連續失敗超過容忍度才真的判定失敗並換源。
+   */
+  const mediaRecoverRef = useRef(0);
+  /**
    * 待處理的使用者手勢旗標。
    *
    * 問題：頻道切換是透過 `setSelected()` → React 渲染 → useEffect 觸發
@@ -401,6 +412,8 @@ export function useHlsPlayer(channel: Channel | null) {
       hasPlayedRef.current = false;
       // 換源 → fragment 錯誤連續次數歸零，新來源有全新的容忍度
       fragErrorStreakRef.current = 0;
+      // 換源 → 媒體層恢復次數歸零
+      mediaRecoverRef.current = 0;
       // 換源 → 重新嘗試自動播放，先前的「等待使用者點擊」狀態不再適用
       needsUserGestureRef.current = false;
 
@@ -849,13 +862,43 @@ export function useHlsPlayer(channel: Channel | null) {
               }
               break;
 
-            case Hls.ErrorTypes.MEDIA_ERROR:
+            case Hls.ErrorTypes.MEDIA_ERROR: {
+              /**
+               * 媒體層錯誤分成兩種，處理方式必須不同：
+               *
+               * · bufferAppendError / bufferStalledError：分片殘缺或緩衝區異常
+               *   → **可恢復**，recover 後 hls.js 會丟掉壞分片並重新抓，
+               *     實測來源只是偶發殘缺時一次 recover 就能繼續播
+               * · 其他（音訊／視訊編碼不支援）：換 audio codec 再試一次，
+               *   仍失敗才視為真的不支援
+               */
+              const instance = hlsRef.current;
+              const maxRecover = MEDIA_RECOVER_LIMIT;
+              if (instance && mediaRecoverRef.current < maxRecover) {
+                mediaRecoverRef.current += 1;
+                console.info(
+                  `[播放器] 「${target.channel_name}」媒體層錯誤（${data.details}），` +
+                    `嘗試恢復 ${mediaRecoverRef.current}/${maxRecover}`,
+                );
+                try {
+                  instance.recoverMediaError();
+                  break;
+                } catch (recoverError) {
+                  console.warn(
+                    `[播放器] 「${target.channel_name}」恢復失敗，改判定為播放失敗`,
+                    recoverError,
+                  );
+                }
+              }
               void fail(
                 target,
                 url,
-                '媒體解碼錯誤：此串流的編碼格式可能不受支援',
+                data.details === Hls.ErrorDetails.BUFFER_APPEND_ERROR
+                  ? '此來源的分片資料不完整（多次重試仍無法解碼）'
+                  : '媒體解碼錯誤：此串流的編碼格式可能不受支援',
               );
               break;
+            }
 
             default:
               void fail(target, url, `播放失敗（${data.details || data.type}）`);
@@ -1364,6 +1407,15 @@ const LOAD_TIMEOUT_MS = 60_000;
  * 門檻設 4：連續 4 個 fragment 都失敗，實務上不可能只是運氣差。
  */
 const FRAG_ERROR_TOLERANCE = 4;
+
+/**
+ * 媒體層錯誤的自動恢復上限。
+ *
+ * 來源分片偶發殘缺時，hls.js 的 recoverMediaError 會丟掉壞分片並重新抓取，
+ * 通常一次就恢復。上限 2 次：足以吸收偶發殘缺，
+ * 又不會在來源真的壞掉時讓使用者長時間看到轉圈。
+ */
+const MEDIA_RECOVER_LIMIT = 2;
 
 /**
  * 卡頓 watchdog 逾時。
