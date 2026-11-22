@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-21T22:11:42.833Z",
+  "updated_at": "2026-11-22T02:45:28.329Z",
   "categories": [
     {
       "id": "news",
@@ -60,50 +60,6 @@
     }
   ],
   "channels": [
-    {
-      "channel_id": "playlist-龍華-龍華電視",
-      "channel_name": "龍華電視",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": 1,
-      "logo": "https://iptv.yang-1989.xyz/logo/龍華經典台.webp",
-      "stream_url": "https://cdn.qd.je/163189/lhjd",
-      "stream_type": "hls",
-      "source_name": "龍華電視（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "由 IPTV 播放清單取得之「龍華經典台」。備援來源 6 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang",
-        "yang",
-        "yang",
-        "yang",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": false,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：龍華經典台。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "龍華經典台",
-        "backup_urls": [
-          {
-            "url": "https://8.fast.hidns.vip/163189/lhjd",
-            "source": "原主來源（已失效）",
-            "cors": false
-          }
-        ]
-      }
-    },
     {
       "channel_id": "playlist-翡翠台-tvb翡翠台",
       "channel_name": "TVB翡翠台",
@@ -196,45 +152,6 @@
       }
     },
     {
-      "channel_id": "playlist-Now-now-tv",
-      "channel_name": "Now TV",
-      "name_en": null,
-      "category": "general",
-      "channel_number": 4,
-      "logo": "https://iptv.yang-1989.xyz/logo/Now新聞台.webp",
-      "stream_url": "https://cdn.qd.je/163189/now",
-      "stream_type": "hls",
-      "source_name": "Now TV（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "由 IPTV 播放清單取得之「Now新聞台」。備援來源 1 個。",
-      "tags": [
-        "台灣",
-        "iptv",
-        "yang",
-        "yang"
-      ],
-      "region": "台灣",
-      "cors_enabled": false,
-      "http_referrer": null,
-      "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：Now新聞台。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "Now新聞台",
-        "backup_urls": [
-          {
-            "url": "https://fast.hidns.vip/163189/now",
-            "source": "原主來源（已失效）",
-            "cors": false
-          }
-        ]
-      }
-    },
-    {
       "channel_id": "playlist-HOY-hoy-tv",
       "channel_name": "HOY TV",
       "name_en": null,
@@ -318,14 +235,14 @@
       "category": "general",
       "channel_number": 7,
       "logo": "https://gitee.com/mytv-android/myTVlogo/raw/main/img/天映.png",
-      "stream_url": "https://cdn.qd.je/163189/ccm",
+      "stream_url": "http://120.198.95.220:9901/tsfile/live/1043_1.m3u8?key=txiptv&playlive=1&down=1",
       "stream_type": "hls",
-      "source_name": "天映（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "source_name": "天映（經 itvlist 聚合源 轉載）",
+      "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "由 IPTV 播放清單取得之「天映經典「新加坡」」。備援來源 6 個。",
+      "last_checked": "2026-11-22T02:26:20.978Z",
+      "description": "天映（itvlist 聚合源）。已驗證序號持續前進（2034426→2034434）、segment 為 MPEG-TS。",
       "tags": [
         "台灣",
         "iptv",
@@ -342,11 +259,16 @@
       "http_referrer": null,
       "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：天映經典「新加坡」。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
       "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "天映經典「新加坡」",
+        "provider": "itvlist",
+        "provider_label": "itvlist 聚合源",
+        "provider_url": "https://bit.ly/itvlist",
+        "raw_channel_name": "天映",
         "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/ccm",
+            "source": "原主來源（已停播：序號停在 703，上游名「天映經典『新加坡』」）",
+            "cors": false
+          },
           {
             "url": "https://10.fast.hidns.vip/163189/ccm/video/index.php",
             "source": "原主來源（已失效）",
@@ -595,14 +517,14 @@
       "category": "education",
       "channel_number": 16,
       "logo": "https://gitee.com/suxuang/TVlogo/raw/main/img/Daai1.png",
-      "stream_url": "",
-      "stream_type": "embed",
-      "source_name": "大愛電視（官方頁以 YouTube 播放器嵌入）",
-      "source_website": "https://m.daai.tv/v3/live",
+      "stream_url": "https://pull.daaiplus.com/live-DAAIPLUS/live-DAAIPLUS_HD.m3u8",
+      "stream_type": "hls",
+      "source_name": "大愛電視官方 DAAI+ CDN",
+      "source_website": "https://www.daaiplus.com/",
       "authorization_status": "public_official",
       "is_active": true,
-      "last_checked": "2026-11-19T13:15:17.503Z",
-      "description": "大愛電視全球直播。官方頁面即以 YouTube iframe 呈現。",
+      "last_checked": "2026-11-22T02:26:20.978Z",
+      "description": "大愛電視全球直播（官方 DAAI+ HLS，CORS * → Web 版免代理）。",
       "tags": [
         "大愛",
         "教育",
@@ -611,8 +533,7 @@
       "region": "台灣",
       "cors_enabled": true,
       "http_referrer": null,
-      "notes": "playableInEmbed=true。另有台灣專用 ID（oV_i3Hsl_zg），大愛 HLS manifest 另有 referer 白名單限制。 | 已加 enablejsapi=1 以便播放中下達取消靜音指令。",
-      "embed_url": "https://www.youtube.com/embed/MIqUplvSRWA?rel=0&autoplay=1&mute=1&enablejsapi=1"
+      "notes": "來源為大愛官方 CDN pull.daaiplus.com（daaiplus.com 標題「DAAI+ | Streaming Application」）。實測：mpegts、HTTP 206、序號持續前進。取代原 YouTube embed（embed 僅能看不能播 HLS，且無 24/7 保證）。"
     },
     {
       "channel_id": "globalnews-taiwan",
@@ -2009,13 +1930,13 @@
       "category": "local",
       "channel_number": 124,
       "logo": "https://iptv.yang-1989.xyz/logo/浙江卫视.webp",
-      "stream_url": "http://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8",
+      "stream_url": "http://121.19.134.149:808/tsfile/live/1011_1.m3u8?key=txiptv&playlive=1&authid=0",
       "stream_type": "hls",
       "source_name": "浙江衛視（經 Kimentanm APTV 測試源 轉載）",
       "source_website": "https://bit.ly/iptv-aptv",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
+      "last_checked": "2026-11-22T02:26:20.978Z",
       "description": "浙江衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
       "tags": [
         "中國",
@@ -2033,6 +1954,11 @@
         "source_label": "Kimentanm APTV 測試源",
         "original_name": "浙江衛視",
         "backup_urls": [
+          {
+            "url": "http://ali-m-l.cztv.com/channels/lantian/channel001/1080p.m3u8",
+            "source": "原主來源（已停播：序號停在 359977910）",
+            "cors": true
+          },
           {
             "url": "http://101.35.240.114:88/live.php?id=浙江卫视4K",
             "source": "Kimentanm APTV 測試源",
@@ -2080,11 +2006,6 @@
           },
           {
             "url": "http://61.136.172.236:9901/tsfile/live/0124_1.m3u8?key=txiptv&playlive=1&authid=0",
-            "source": "itvlist 聚合源",
-            "cors": false
-          },
-          {
-            "url": "http://121.19.134.149:808/tsfile/live/1011_1.m3u8?key=txiptv&playlive=1&authid=0",
             "source": "itvlist 聚合源",
             "cors": false
           },
@@ -3661,14 +3582,14 @@
       "category": "general",
       "channel_number": 152,
       "logo": null,
-      "stream_url": "http://php.jdshipin.com/TVOD/iptv.php?id=fhzw",
+      "stream_url": "http://120.198.95.220:9901/tsfile/live/1036_1.m3u8?key=txiptv&playlive=1&down=1",
       "stream_type": "hls",
-      "source_name": "鳳凰衛視（經 suxuang 聚合源 轉載）",
-      "source_website": "https://bit.ly/suxuang-v4",
+      "source_name": "鳳凰衛視（經 itvlist 聚合源 轉載）",
+      "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "鳳凰衛視 — 中國大陸頻道，來源為使用者提供的 IPTV 清單轉載",
+      "last_checked": "2026-11-22T02:45:22.511Z",
+      "description": "鳳凰衛視（itvlist 聚合源）。原來源 php.jdshipin.com?id=fhzw 實際上游即 fhzw，已停播（序號停在 3315441），改用可播的同頻道來源。",
       "tags": [
         "中國",
         "大陸",
@@ -3683,7 +3604,18 @@
       "playlist_source": {
         "source_id": "suxuang",
         "source_label": "suxuang 聚合源",
-        "original_name": "鳳凰衛視"
+        "original_name": "鳳凰衛視",
+        "backup_urls": [
+          {
+            "url": "http://php.jdshipin.com/TVOD/iptv.php?id=fhzw",
+            "source": "原主來源（已停播：序號停滯、segment 雜湊不變）",
+            "cors": false
+          }
+        ],
+        "provider": "itvlist",
+        "provider_label": "itvlist 聚合源",
+        "provider_url": "https://bit.ly/itvlist",
+        "raw_channel_name": "凤凰中文"
       }
     },
     {
@@ -3763,59 +3695,20 @@
       }
     },
     {
-      "channel_id": "cn-fhhk",
-      "channel_name": "鳳凰衛視香港台",
-      "name_en": null,
-      "category": "general",
-      "channel_number": 155,
-      "logo": "https://iptv.yang-1989.xyz/logo/凤凰香港台.webp",
-      "stream_url": "https://cdn.qd.je/163189/fhhk",
-      "stream_type": "hls",
-      "source_name": "鳳凰衛視香港台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "鳳凰衛視香港台 — 中國香港頻道，來源為使用者提供的 IPTV 清單轉載",
-      "tags": [
-        "中國",
-        "iptv",
-        "yang"
-      ],
-      "region": "中國香港",
-      "cors_enabled": false,
-      "http_user_agent": null,
-      "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
-      "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV 清單",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "凤凰香港台",
-        "backup_urls": [
-          {
-            "url": "https://cdn6.cc.cd/163189/fhhk",
-            "source": "原主來源（已失效）",
-            "cors": false
-          }
-        ]
-      }
-    },
-    {
       "channel_id": "cn-fhzw",
       "channel_name": "鳳凰衛視中文台",
       "name_en": null,
       "category": "general",
       "channel_number": 156,
       "logo": "https://iptv.yang-1989.xyz/logo/凤凰中文台.webp",
-      "stream_url": "https://cdn.qd.je/163189/fhzw",
+      "stream_url": "http://120.198.95.220:9901/tsfile/live/1036_1.m3u8?key=txiptv&playlive=1&down=1",
       "stream_type": "hls",
-      "source_name": "鳳凰衛視中文台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "source_name": "鳳凰衛視中文台（經 itvlist 聚合源 轉載）",
+      "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "鳳凰衛視中文台 — 中國香港頻道，來源為使用者提供的 IPTV 清單轉載",
+      "last_checked": "2026-11-22T02:45:22.511Z",
+      "description": "鳳凰衛視中文台（itvlist 聚合源）。已驗證序號持續前進（2035045→2035050）、segment 為 MPEG-TS。",
       "tags": [
         "中國",
         "iptv",
@@ -3827,11 +3720,16 @@
       "http_referrer": null,
       "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
       "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV 清單",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "凤凰中文台",
+        "provider": "itvlist",
+        "provider_label": "itvlist 聚合源",
+        "provider_url": "https://bit.ly/itvlist",
+        "raw_channel_name": "凤凰中文",
         "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/fhzw",
+            "source": "原主來源（已停播：序號停滯、segment 雜湊不變）",
+            "cors": false
+          },
           {
             "url": "https://cdn6.cc.cd/163189/fhzw",
             "source": "原主來源（已失效）",
@@ -3847,14 +3745,14 @@
       "category": "news",
       "channel_number": 157,
       "logo": "https://iptv.yang-1989.xyz/logo/凤凰资讯台.webp",
-      "stream_url": "https://cdn.qd.je/163189/fhzx",
+      "stream_url": "http://120.198.95.220:9901/tsfile/live/1037_1.m3u8?key=txiptv&playlive=1&down=1",
       "stream_type": "hls",
-      "source_name": "鳳凰衛視資訊台（經 YanG IPTV 清單轉載）",
-      "source_website": "https://iptv.yang-1989.xyz/playlist.m3u",
+      "source_name": "鳳凰衛視資訊台（經 itvlist 聚合源 轉載）",
+      "source_website": "https://bit.ly/itvlist",
       "authorization_status": "user_provided",
       "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "鳳凰衛視資訊台 — 中國香港頻道，來源為使用者提供的 IPTV 清單轉載",
+      "last_checked": "2026-11-22T02:45:22.511Z",
+      "description": "鳳凰衛視資訊台（itvlist 聚合源）。已驗證序號持續前進（2035050→2035055）、segment 為 MPEG-TS。",
       "tags": [
         "中國",
         "iptv",
@@ -3866,11 +3764,16 @@
       "http_referrer": null,
       "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
       "playlist_source": {
-        "provider": "yang",
-        "provider_label": "YanG IPTV 清單",
-        "provider_url": "https://iptv.yang-1989.xyz/playlist.m3u",
-        "raw_channel_name": "凤凰资讯台",
+        "provider": "itvlist",
+        "provider_label": "itvlist 聚合源",
+        "provider_url": "https://bit.ly/itvlist",
+        "raw_channel_name": "凤凰资讯",
         "backup_urls": [
+          {
+            "url": "https://cdn.qd.je/163189/fhzx",
+            "source": "原主來源（已停播：序號停滯、segment 雜湊不變）",
+            "cors": false
+          },
           {
             "url": "https://cdn6.cc.cd/163189/fhzx",
             "source": "原主來源（已失效）",
@@ -4484,76 +4387,6 @@
         "avg_segment_ms": 530,
         "segments_tested": 3,
         "cors_acao": "*",
-        "needs_proxy": true
-      }
-    },
-    {
-      "channel_id": "tvapp-tw",
-      "channel_name": "天映頻道",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": 32,
-      "logo": "https://iptv.yang-1989.xyz/logo/天映頻道.webp",
-      "stream_url": "https://cdn.qd.je/163189/typd2",
-      "stream_type": "hls",
-      "cors_enabled": false,
-      "source_name": "TVAPP 直播源彙整（JackTV 等 1 個來源交叉提供）",
-      "source_website": "https://github.com/youhunwl/TVAPP#直播源-",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "天映頻道｜來源為 TVAPP 專案整理的直播源（娛樂台）。該頻道在 1 個獨立來源中都有提供，經深度驗證確認為持續更新的真直播。",
-      "region": "台灣",
-      "tags": [
-        "tvapp",
-        "台灣",
-        "entertainment"
-      ],
-      "verification": {
-        "verified_at": "2026-11-21T11:34:31.551Z",
-        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
-        "target_duration": 10,
-        "avg_segment_mb": 4.92,
-        "avg_segment_ms": 1057,
-        "source_count": 1,
-        "sources": [
-          "JackTV"
-        ],
-        "needs_proxy": true
-      }
-    },
-    {
-      "channel_id": "tvapp-tw-2",
-      "channel_name": "天映經典",
-      "name_en": null,
-      "category": "entertainment",
-      "channel_number": 33,
-      "logo": "https://iptv.yang-1989.xyz/logo/天映經典頻道.webp",
-      "stream_url": "https://cdn.qd.je/163189/ccm2",
-      "stream_type": "hls",
-      "cors_enabled": false,
-      "source_name": "TVAPP 直播源彙整（JackTV 等 1 個來源交叉提供）",
-      "source_website": "https://github.com/youhunwl/TVAPP#直播源-",
-      "authorization_status": "user_provided",
-      "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "天映經典｜來源為 TVAPP 專案整理的直播源（娛樂台）。該頻道在 1 個獨立來源中都有提供，經深度驗證確認為持續更新的真直播。",
-      "region": "台灣",
-      "tags": [
-        "tvapp",
-        "台灣",
-        "entertainment"
-      ],
-      "verification": {
-        "verified_at": "2026-11-21T11:34:31.551Z",
-        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
-        "target_duration": 10,
-        "avg_segment_mb": 1.4,
-        "avg_segment_ms": 681,
-        "source_count": 1,
-        "sources": [
-          "JackTV"
-        ],
         "needs_proxy": true
       }
     }
