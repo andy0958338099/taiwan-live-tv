@@ -1908,3 +1908,69 @@ LITV-GO 能跑是因為它架在一個已解鎖的環境。
 ⚠️ **合法性提醒**：這是「IPTV 解鎖」取得的一般付費頻道串流，
 **不是**明確允許公開散布的來源。若要上線只能標 `user_provided`，
 且必須先確認散布權 —— 不能因為「技術上能拿到」就當成可公開散布。
+
+---
+
+## 14. embed（官方嵌入播放器）頻道的真實驗證（2026-11-22）
+
+### 14.1 發現的問題：embed 頻道從來沒有被驗證過
+
+`test-playback-local.mjs` 只量主文件裡的 `<video>`，但 embed 型頻道的播放器
+在**跨網域 iframe** 裡 —— 主文件根本沒有 `<video>` 元素。
+測試報告裡看到的「embed 頻道播放成功 1280x720」其實量到的是**前一個頻道留下的元素**。
+
+### 14.2 新增驗證工具
+
+`scripts/test-embed-audio.mjs` —— 用 **browser 層級的 `Target.getTargets`**
+找出播放器 iframe 的 OOPIF target，attach 進去後直接讀 iframe 裡的 `<video>`：
+`muted` / `volume` / `currentTime` / `readyState` / `videoWidth` / `videoHeight`。
+CDP 是瀏覽器層級權限，不受同源政策限制 → 讀到的是**真實**的靜音狀態。
+
+踩過的坑（都不可靠）：
+- 頁面 session 的 `Runtime.executionContextCreated` → headless 的 site isolation
+  行為不一致，收不到 iframe 的 context
+- `Target.setAutoAttach` → 拿不到 OOPIF session
+- `new YT.Player(iframe)` → 不會接管既有 iframe，`onReady` 永遠不觸發
+
+### 14.3 實測結果（線上正式站，10 個 embed 頻道）
+
+| 類型 | 頻道 | 結果 |
+|---|---|---|
+| YouTube | 金馬獎 63、華視、中天、鏡新聞、中視、寰宇、公視、國會頻道 1 | **8/8 在播且 `muted=false` volume=1** ✓ |
+| litv | 東森 CH51、三立 CH54 | 畫面正常（截圖確認為真實節目）但**靜音中** ✗ |
+
+→ 使用者要求的「點選頻道後不要靜音」在 YouTube embed 上**已經滿足**；
+   截圖中的喇叭圖示只是 YouTube 的一般控制項，不是靜音指示。
+
+### 14.4 litv 靜音：確認無法由程式解除
+
+`scripts/probe-litv-unmute.mjs` 試了 8 種 postMessage 協定
+（`{type:'unmute'}`、`{command:'unmute'}`、`{event:'command',func:'unMute'}`、
+`{type:'setVolume'}`、`{action:'mute',value:false}`…）與 3 個位置的真實滑鼠點擊 ——
+**全部無效**。
+
+原因：litv 播放器為符合自動播放政策一定以靜音啟動，跨網域下父頁拿不到它的 DOM，
+也沒有公開的訊息協定。
+
+→ UI 加上明確提示（`styles.embedHint`），讓使用者知道要點播放器內的喇叭圖示。
+
+### 14.5 移除客家電視台
+
+兩個獨立理由：
+1. **實際不播** —— `embed.4gtv.tv/hakka/hakkatv.html` 載入後畫面全黑，
+   即使真實點擊播放器也沒有任何畫面（currentTime=0、0x0）。
+2. **條款禁止散布** —— 該頻道自己的 notes 寫著
+   「4gTV 服務條款禁止商業轉載，僅限非商業個人使用」，
+   但 `authorization_status` 卻標成 `public_official` —— 標示與實際不符。
+
+頻道總數 96 → 95。
+
+### 14.6 三立 CH54 需要點一下播放器
+
+litv 播放器在自動播放被擋時顯示「▶ 播放」卡片等待點擊。
+實測用 CDP 真實滑鼠事件點一下即開始播（state=1、currentTime=45.09、854x480）。
+真實使用者點一下播放器即可，畫面本身正常。
+
+⚠️ 測試腳本踩到的坑：**已經在播的播放器不能點** ——
+   點擊 YouTube 影片會「暫停」。所以量測必須在點擊之前做，
+   只有「沒在播」時才點。

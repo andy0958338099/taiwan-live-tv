@@ -213,43 +213,6 @@ async function main() {
 
     await sleep(8000);
 
-    // ⭐ 若播放器還沒開始播（litv 會以「點擊播放」卡片等待），
-    //    用 **CDP 真實滑鼠事件** 點一下播放器中央。
-    //    - 必須是真實事件：JS 合成的 click() 不帶 user activation，
-    //      不會啟動媒體播放（Chrome 自動播放政策）。
-    //    - 點進跨網域 iframe 後，iframe 內的播放鈕會真的被觸發，
-    //      同時瀏覽器也允許解除靜音。
-    let clickedPlayer = false;
-    {
-      const before = await page
-        .evaluate(`(() => {
-          const f = [...document.querySelectorAll('iframe')]
-            .find(x => x.src && (x.src.includes('litv') || x.src.includes('4gtv') || x.src.includes('youtube')));
-          if (!f) return null;
-          const r = f.getBoundingClientRect();
-          return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
-        })()`)
-        .catch(() => null);
-      if (before) {
-        await page.call('Input.dispatchMouseEvent', {
-          type: 'mousePressed',
-          x: before.x,
-          y: before.y,
-          button: 'left',
-          clickCount: 1,
-        });
-        await page.call('Input.dispatchMouseEvent', {
-          type: 'mouseReleased',
-          x: before.x,
-          y: before.y,
-          button: 'left',
-          clickCount: 1,
-        });
-        clickedPlayer = true;
-        await sleep(6000);
-      }
-    }
-
     // 截圖（存到 scratch 供目視比對台標與黑畫面）
     const shotPath = join(
       '/Users/andy/.hermes/cache/scratch/embed-verify',
@@ -270,8 +233,17 @@ async function main() {
       return f ? f.src : '';
     })()`);
 
-    let info = null;
 
+    // ⚠️ 用 **browser 層級**的 Target.getTargets 找出播放器 iframe 的 OOPIF target，
+    //    再 attach 進去 —— 這比在頁面 session 裡找 execution context 可靠
+    //    （headless 的 site isolation 行為不一致，頁面 session 常常收不到
+    //    iframe 的 executionContextCreated）。
+    //
+    //    attach 進去之後，Runtime.evaluate 直接讀 iframe 裡的 <video>，
+    //    這是真實的靜音狀態（CDP 是瀏覽器層級權限，不受同源政策限制）。
+    //
+    //    適用於 YouTube、litv、4gTV —— 只要它是獨立 origin 的 iframe。
+    // ═══ 量測播放器 iframe 內的 <video> ═══
     // ⚠️ 用 **browser 層級**的 Target.getTargets 找出播放器 iframe 的 OOPIF target，
     //    再 attach 進去 —— 這比在頁面 session 裡找 execution context 可靠
     //    （headless 的 site isolation 行為不一致，頁面 session 常常收不到
@@ -283,24 +255,24 @@ async function main() {
     //    適用於 YouTube、litv、4gTV —— 只要它是獨立 origin 的 iframe。
     const PLAYER_HOSTS = ['youtube.com', 'youtube-nocookie', 'litv.tv', '4gtv.tv'];
 
-    const targets = await send('Target.getTargets');
-    const playerTarget = targets.targetInfos.find(
-      (t) => t.type === 'iframe' && PLAYER_HOSTS.some((h) => t.url.includes(h)),
-    );
-
-    if (!playerTarget) {
-      // 找不到獨立的 iframe target → 退而求其次，確認 iframe 元素本身有載入
-      const fallback = await page
-        .evaluate(`(() => {
-          const f = [...document.querySelectorAll('iframe')]
-            .find(x => x.src && x.src !== 'about:blank');
-          return f ? { loaded: true, url: f.src, w: f.clientWidth, h: f.clientHeight } : { loaded: false };
-        })()`)
-        .catch(() => ({ loaded: false }));
-      info = fallback.loaded
-        ? { loadedOnly: true, ...fallback }
-        : { err: '播放器 iframe 未載入' };
-    } else {
+    const measure = async () => {
+      const targets = await send('Target.getTargets');
+      const playerTarget = targets.targetInfos.find(
+        (t) => t.type === 'iframe' && PLAYER_HOSTS.some((h) => t.url.includes(h)),
+      );
+      if (!playerTarget) {
+        // 找不到獨立的 iframe target → 退而求其次，確認 iframe 元素本身有載入
+        const fallback = await page
+          .evaluate(`(() => {
+            const f = [...document.querySelectorAll('iframe')]
+              .find(x => x.src && x.src !== 'about:blank');
+            return f ? { loaded: true, url: f.src, w: f.clientWidth, h: f.clientHeight } : { loaded: false };
+          })()`)
+          .catch(() => ({ loaded: false }));
+        return fallback.loaded
+          ? { loadedOnly: true, ...fallback }
+          : { err: '播放器 iframe 未載入' };
+      }
       const { sessionId: pSid } = await send('Target.attachToTarget', {
         targetId: playerTarget.targetId,
         flatten: true,
@@ -356,11 +328,42 @@ async function main() {
         }
         await sleep(700);
       }
-      info =
+      const result =
         inner && !inner.noVideo
           ? { ...inner, state: inner.paused ? 2 : 1, ready: true }
           : { loadedOnly: true, err: 'iframe 內讀不到 video（播放器可能非 <video> 結構）' };
       await send('Target.detachFromTarget', { sessionId: pSid }).catch(() => {});
+      return result;
+    };
+
+    let info = await measure();
+
+    // ⭐ 播放器還沒開始播時（litv 會以「點擊播放」卡片等待），
+    //    用 **CDP 真實滑鼠事件** 點一下播放器中央。
+    //    - 必須是真實事件：JS 合成的 click() 不帶 user activation，
+    //      不會啟動媒體播放（Chrome 自動播放政策）。
+    //    - ⚠️ 已經在播的**不能**點：點擊 YouTube 影片會「暫停」。
+    if (!info?.loadedOnly && info?.ready && info.state !== 1) {
+      const pos = await page
+        .evaluate(`(() => {
+          const f = [...document.querySelectorAll('iframe')]
+            .find(x => x.src && (x.src.includes('litv') || x.src.includes('4gtv') || x.src.includes('youtube')));
+          if (!f) return null;
+          const r = f.getBoundingClientRect();
+          return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        })()`)
+        .catch(() => null);
+      if (pos) {
+        await page.call('Input.dispatchMouseEvent', {
+          type: 'mousePressed', x: pos.x, y: pos.y, button: 'left', clickCount: 1,
+        });
+        await page.call('Input.dispatchMouseEvent', {
+          type: 'mouseReleased', x: pos.x, y: pos.y, button: 'left', clickCount: 1,
+        });
+        console.log('     （播放器尚未開始播 → 已點擊播放器中央）');
+        await sleep(7000);
+        info = await measure();
+      }
     }
 
     if (info?.loadedOnly) {
