@@ -334,3 +334,34 @@
     gap: 6px;
   }
 }
+
+/*
+ * litv 播放器的靜音提示
+ *
+ * 背景：litv（東森／三立）的官方播放器一定以靜音啟動，
+ * 跨網域下父頁無法解除（實測 8 種 postMessage 協定 + 真實點擊皆無效）。
+ * 沒有這個提示，使用者只會看到一片靜音畫面，以為網站壞了。
+ */
+.embedHint {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 3;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(10, 12, 18, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #e8ecf4;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  backdrop-filter: blur(6px);
+}
+
+@media (max-width: 640px) {
+  .embedHint {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+  }
+}

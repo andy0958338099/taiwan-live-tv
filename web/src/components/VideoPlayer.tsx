@@ -140,6 +140,14 @@ export function VideoPlayer({
   };
 
   if (embedUrl) {
+    // litv（東森 CH51／三立 CH54）的播放器是廣播商自己的頁面，
+    // 它為了符合自動播放政策**一定**以靜音啟動，而跨網域下父頁
+    // 無法幫它解除靜音（實測：8 種 postMessage 協定 + 真實點擊都無效）。
+    // YouTube 的播放器則可以解除（useEmbedPlayer 會送 unMute）。
+    //
+    // → litv 頻道要明確告訴使用者怎麼開聲，否則他會以為網站壞了。
+    const isLitv = embedUrl.includes('player.svc.litv.tv');
+
     return (
       <div className={styles.playerShell}>
         <iframe
@@ -152,6 +160,12 @@ export function VideoPlayer({
           allowFullScreen
           referrerPolicy="strict-origin-when-cross-origin"
         />
+        {isLitv && (
+          <p className={styles.embedHint} role="status">
+            此頻道使用廣播商官方播放器，該播放器一律以靜音啟動。
+            請點擊播放器內的喇叭圖示即可開聲。
+          </p>
+        )}
         {/*
          * 官方嵌入播放器「可能失效」提示。
          *

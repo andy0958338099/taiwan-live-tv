@@ -79,6 +79,19 @@ async function verify(url) {
       e.cause?.code === 'ECONNRESET' ? '連線被重置' : (e.name ?? '未知錯誤');
     return { ok: false, reason: `讀取失敗 (${reason})` };
   }
+
+  // ⭐ **redirect 之後的網址才是相對路徑的基準**（2026-11-22 第 4 輪實測）
+  //
+  // 實測（央視台球 `http://107.150.60.122/live/ystq.m3u8`）：
+  //   · 該網址 301 轉址到 `http://142.54.178.42:88/applive/ystq.m3u8?...`（**不同主機**）
+  //   · manifest 裡的 segment 是**相對**路徑 `ystq/0455.ts`
+  //   · 對「原網址」組 → `http://107.150.60.122/live/ystq/0455.ts` → **HTTP 404**
+  //   · 對「redirect 後的網址」組 → `http://142.54.178.42:88/applive/ystq/0455.ts` → **HTTP 200**
+  //
+  // 用 `res.url`（fetch 跟完 redirect 後的最終網址）當基準，
+  // 才與瀏覽器／代理的行為一致 —— 代理的 `rewriteManifest` 也是用
+  // `new URL(raw, manifestUrl)` 且 manifestUrl = `upstream.url`（redirect 後）。
+  const baseUrl = res.url || url;
   /** manifest 本身的長度（用來辨認「轉址入口」vs「真正的串流清單」） */
   const manifestBytes = Buffer.byteLength(text);
   if (!text.trimStart().startsWith('#EXTM3U')) {
@@ -104,7 +117,7 @@ async function verify(url) {
   const pickOrder = [...segs].reverse();
 
   // child manifest？
-  let target = new URL(pickOrder[0], url).href;
+  let target = new URL(pickOrder[0], baseUrl).href;
   // targetduration / child 清單網址 —— 供「停播檢查」使用
   const manifestTdMatch = text.match(/^#EXT-X-TARGETDURATION:(\d+(?:\.\d+)?)/m);
   const manifestTargetduration = manifestTdMatch ? Number(manifestTdMatch[1]) : null;
@@ -140,11 +153,14 @@ async function verify(url) {
     if (csegs.length === 0) return { ok: false, reason: 'child 無 segment' };
     // ⚠️ 必須**在 target 被改寫成 segment 網址之前**記下 child 清單網址
     //    （停播檢查要重新抓的是 child playlist，不是 segment）
-    childPlaylistUrl = target;
+    // ⚠️ 用 `cres.url`（redirect 後的最終網址）—— 見 baseUrl 的說明。
+    childPlaylistUrl = cres.url || target;
     const childTdMatch = ctext.match(/^#EXT-X-TARGETDURATION:(\d+(?:\.\d+)?)/m);
     childTargetduration = childTdMatch ? Number(childTdMatch[1]) : null;
     // child manifest 的 segment 同樣是由舊到新 → 取最新的
-    target = new URL([...csegs].reverse()[0], target).href;
+    // ⚠️ 基準也要用 redirect 後的網址（cres.url），理由同 baseUrl。
+    const childBase = cres.url || target;
+    target = new URL([...csegs].reverse()[0], childBase).href;
   }
 
   // segment 位元組 + 耗時
@@ -158,7 +174,7 @@ async function verify(url) {
     target,
     ...pickOrder
       .slice(1, 4)
-      .map((s) => new URL(s, url).href)
+      .map((s) => new URL(s, baseUrl).href)
       .filter((u) => u !== target),
   ];
 
@@ -250,6 +266,18 @@ async function verify(url) {
  * ⚠️ 只有在**第一次就取得 td** 時才做這個檢查（避免對沒有
  *    MEDIA-SEQUENCE 的來源誤判）。
  *
+ * ## ⭐ 快取陷阱（2026-11-22 第 4 輪實測）
+ *
+ * 這個檢查有兩個會造成**假陽性**（把還在播的判成停播）的陷阱：
+ *
+ * 1. **子清單網址必須是 redirect 後的最終網址**。
+ *    `verify()` 現在會把 `cres.url`（跟完 redirect）存進 `childUrl`。
+ * 2. **CDN 對 media playlist 有 `max-age=5` 的短快取**。
+ *    實測（海峽衛視 `10.fast.hidns.vip/163189/hxws/video/index.php`）：
+ *    兩次取樣只隔 3 秒時讀到**同一份**快取（序號不動 → 誤判停播），
+ *    隔 10.5 秒再取就會拿到新的（序號 15688400 → 15688402 → 前進）。
+ *    → 取樣間隔必須**大於 CDN 的 max-age**，否則會誤判。
+ *
  * @returns { Promise<{frozen: boolean, seq: number|null, detail: string}> }
  */
 async function checkAdvancing(childUrl, td) {
@@ -271,6 +299,14 @@ async function checkAdvancing(childUrl, td) {
   const seq2 = Number(m2[1]);
 
   if (seq2 === seq1) {
+    // ⚠️ 序號相同可能是「CDN 快取同一份清單」，不一定是停播。
+    // 再等一段時間（> CDN 的 max-age）取第三次確認。
+    await new Promise((r) => setTimeout(r, 8000));
+    const third = await get(childUrl).then((r) => (r.ok ? r.text() : null)).catch(() => null);
+    const m3 = third?.match(/^#EXT-X-MEDIA-SEQUENCE:(\d+)/m);
+    if (m3 && Number(m3[1]) !== seq1) {
+      return { frozen: false, seq: Number(m3[1]), detail: '' };
+    }
     return { frozen: true, seq: seq1, detail: `序號停在 ${seq1}（已停播）` };
   }
   return { frozen: false, seq: seq2, detail: '' };
