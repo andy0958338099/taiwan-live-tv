@@ -1845,3 +1845,66 @@ hls.js 的 live 清單輪詢間隔（`computeReloadInterval`）：
   「邊界剛好相接」都算成蓋住。改成只算交集落在視窗內且面積 > 1px。
 - **template literal 被註解破壞**：註解裡寫了反引號包住的 `<`，
   提早結束字串 → 送給 CDP 的表達式被截斷 → "Invalid parameters"。
+
+---
+
+## 13. 評估 SuperTV 舊專案的來源可否借鑑（2026-11-22）
+
+使用者提供先前的 SuperTV 專案（`Downloads/SuperTV-1050可在地播HBO拷貝`），
+內嵌 74 個頻道 + 9 個遠端播放清單，宣稱「影片更完整」。
+逐一深層探測後的結論：
+
+### 13.1 來源現況
+
+| 來源 | 狀態 | 結果 |
+|---|---|---|
+| 內嵌的 74 個（`220.134.196.147:*`） | 主機所有 port **ECONNREFUSED** | 0 可播 |
+| 秒開 / LITV-GO（87 台） | manifest 活的 | segment 指向 `ntd-tgc.cdn.hinet.net` → **DNS NXDOMAIN** → 0 可播 |
+| 垃圾（catbox 1mj29e.m3u，7299 台） | 活 | 掃前 2000 台，610 可播（31%），台灣相關 2 |
+| 咪咪 Guovin/iptv-api gd（1616 台） | 活 | 463 可播（29%），台灣相關 14 |
+| 極品/黃金（id0n84.txt） | 活 | 同一批 220.134.196.147 → 已死 |
+| Judy（25aoli.txt，579 行） | 活 | 中繼主機 `smart.pendy.dpdns.org` 連不上 |
+| 曉峰 / Gather / `epg.iill.top` | DNS 死 / 憑證過期 / 連不上 | — |
+
+**真正新增的台灣頻道只有 2 個**（緯來體育、東森超視），
+中國部分只有黑龍江少兒、黑龍江新聞、央視台球 3 個，其餘都是既有頻道的改名版本。
+
+### 13.2 ⭐ 位元組驗證不足以判定來源可用
+
+`epg.pw` 的多個來源（緯來體育、鳳凰衛視中文台）**通過全部位元組檢查**
+（MPEG-TS 0x47）、manifest 也是活的，**但畫面是 IPTV App 的「NO SIGNAL 佔位畫面」**。
+
+→ 新增 `scripts/verify-channel-visually.mjs`：
+真實瀏覽器播放 → 等到真的有畫面 → 截圖 → 目視比對台標。
+所有匯入都必須通過這關。
+
+### 13.3 讓頻道「好好播出來」的三個修正
+
+| 問題 | 根因 | 修法 |
+|---|---|---|
+| 上游隨機 404 | 上游在多個後端實例間**負載平衡**，各有獨立 segment 序號（同一頻道序號會是 6806 / 47017 / 39731），segment 落到別的實例就不存在，機率約 25% | 代理對 404/502/503/504 重試 3 次 |
+| 突發型來源被誤殺 | 800ms 取樣剛好落在慢速階段（147 KB/s），外推 22.8 秒 > 門檻 22 秒 → 502，但**真實下載只要 1.3 秒**（後續 2.5 MB/s 爆發） | borderline 時延長取樣到 3 秒重新估算 |
+| 單一 fragment 失敗就棄用整個來源 | hls.js 的 `FRAG_LOAD_ERROR` 立刻觸發 failover → 25% 失敗率的健康頻道在開播幾秒後被判定死亡 | 連續 4 個 fragment 錯誤才換來源 |
+
+實測（線上正式站）：**5/5 播放成功**（修前 3/5）
+
+### 13.4 LITV-GO 的 segment DNS 問題（已查明）
+
+`ntd-tgc.cdn.hinet.net` 在 8.8.8.8 / 1.1.1.1 / Google DoH / 阿里 DNS /
+騰訊 DNS / 中華電信 DNS 全部 **NXDOMAIN**。
+
+其他 Hinet 主機（`ntdfreepc-tgc.cdn.hinet.net`、`4gtvfreepc-cds.cdn.hinet.net`…）
+**可以解析但回 HTTP 403**，官方 API `api2.4gtv.tv/Channel/GetChannelUrl3` 同樣 403
+（回傳「合約阻擋」頁）。
+
+→ 這是華電的 **IPTV 解鎖（unlock）** 機制：需要專用 DNS + 來源 IP 白名單。
+LITV-GO 能跑是因為它架在一個已解鎖的環境。
+
+**自架可行性**：`vipsir/litv-go`（Go，Docker Hub v3.1.1）+
+一台**台灣 IP 的 VPS** + 解鎖 DNS，即可提供約 87 個台灣頻道
+（`4gtv-*` 四季、`litv-ftv*` 民視、`litv-longturn*` 東森），
+背後是**廣播商官方 CDN**。
+
+⚠️ **合法性提醒**：這是「IPTV 解鎖」取得的一般付費頻道串流，
+**不是**明確允許公開散布的來源。若要上線只能標 `user_provided`，
+且必須先確認散布權 —— 不能因為「技術上能拿到」就當成可公開散布。
