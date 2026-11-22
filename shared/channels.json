@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-22T11:52:04.791Z",
+  "updated_at": "2026-11-22T12:07:28.810Z",
   "categories": [
     {
       "id": "news",
@@ -84,7 +84,7 @@
         "yang",
         "yang"
       ],
-      "region": "台灣",
+      "region": "中國香港",
       "cors_enabled": false,
       "http_referrer": null,
       "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：翡翠台。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
@@ -133,7 +133,7 @@
         "yang",
         "yang"
       ],
-      "region": "台灣",
+      "region": "中國香港",
       "cors_enabled": false,
       "http_referrer": null,
       "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：TVBJ1。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
@@ -177,7 +177,7 @@
         "kuliao",
         "kuliao"
       ],
-      "region": "台灣",
+      "region": "中國香港",
       "cors_enabled": false,
       "http_referrer": null,
       "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：HOY TV。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
@@ -210,7 +210,7 @@
         "yang",
         "yang"
       ],
-      "region": "台灣",
+      "region": "中國澳門",
       "cors_enabled": false,
       "http_referrer": null,
       "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：澳視澳門。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",
@@ -254,7 +254,7 @@
         "yang",
         "kuliao"
       ],
-      "region": "台灣",
+      "region": "中國香港",
       "cors_enabled": false,
       "http_referrer": null,
       "notes": "轉載自 YanG IPTV（https://iptv.yang-1989.xyz/playlist.m3u）。原始頻道名稱：天映經典「新加坡」。此來源未提供 CORS 標頭，網頁版無法直接播放，僅 Android TV 版可用。",

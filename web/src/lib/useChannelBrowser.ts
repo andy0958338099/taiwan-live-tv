@@ -121,6 +121,34 @@ export function useChannelBrowser(
       });
     }
 
+    /**
+     * 預設瀏覽（`viewMode === 'all'`）時的 **台灣優先排序**。
+     *
+     * 為什麼需要：`channels.json` 的陣列順序是「資料加入的先後」，
+     * 實測首屏前五個是 TVB 翡翠台、TVB 系、HOY TV、澳視、天映
+     * —— 全部是香港／澳門頻道，台灣頻道被擠到後面。
+     *
+     * 使用者的第一訴求是「優先放台灣的」，所以預設清單
+     * 依「台灣 → 其他地區 → 港澳」分層，同層再依頻道號排序。
+     * 「收藏」「最近」兩個檢視維持使用者自己的順序，不重排。
+     */
+    if (viewMode === 'all' && regionFilter === ALL_CATEGORY) {
+      const regionRank = (region?: string | null) => {
+        const r = region?.trim();
+        if (r === '台灣') return 0;
+        if (r === '中國香港' || r === '中國澳門') return 2;
+        return 1;
+      };
+      list = [...list].sort((a, b) => {
+        const rankDiff = regionRank(a.region) - regionRank(b.region);
+        if (rankDiff !== 0) return rankDiff;
+        const na = a.channel_number ?? Number.MAX_SAFE_INTEGER;
+        const nb = b.channel_number ?? Number.MAX_SAFE_INTEGER;
+        if (na !== nb) return na - nb;
+        return a.channel_name.localeCompare(b.channel_name, 'zh-Hant');
+      });
+    }
+
     return list;
   }, [allChannels, viewMode, favorites, recent, categoryFilter, regionFilter, query]);
 
