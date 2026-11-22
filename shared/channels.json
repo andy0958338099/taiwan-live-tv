@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-22T12:25:39.153Z",
+  "updated_at": "2026-11-22T12:27:27.653Z",
   "categories": [
     {
       "id": "news",
@@ -4294,39 +4294,6 @@
         "provider_label": "GitHub 公開清單",
         "provider_url": "https://github.com/limajj2021/taiwan-iptv",
         "raw_channel_name": "GOOD TV 真理台"
-      }
-    },
-    {
-      "channel_id": "iptvorg-ttvnews-tw-sd",
-      "channel_name": "台視",
-      "name_en": "TTV News",
-      "category": "news",
-      "channel_number": 29,
-      "logo": "https://i.imgur.com/AfkK0gv.png",
-      "stream_url": "https://live.wcetv.com/hls/master-ttvnews.m3u8",
-      "stream_type": "hls",
-      "cors_enabled": false,
-      "source_name": "iptv-org 官方台灣清單（官方維護、每日自動更新）",
-      "source_website": "https://iptv-org.github.io/iptv/countries/tw.m3u",
-      "authorization_status": "public_official",
-      "is_active": true,
-      "last_checked": "2026-11-21T17:32:50.004Z",
-      "description": "TTV News｜iptv-org 收錄的台灣直播頻道（新聞台）。來源為 iptv-org 官方維護的台灣頻道清單，GitHub Actions 每日自動更新與修正失效連結。網頁版透過本專案的串流代理播放（來源未提供 CORS 或為 HTTP）。",
-      "region": "台灣",
-      "tags": [
-        "iptv-org",
-        "台灣",
-        "news"
-      ],
-      "verification": {
-        "verified_at": "2026-11-21T10:28:24.772Z",
-        "method": "deep-probe: 3 個連續 segment 位元組驗證 + manifest 滾動檢查",
-        "target_duration": 7,
-        "avg_segment_mb": 1.97,
-        "avg_segment_ms": 1332,
-        "segments_tested": 3,
-        "cors_acao": null,
-        "needs_proxy": true
       }
     },
     {
