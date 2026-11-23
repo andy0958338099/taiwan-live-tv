@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-22T12:55:06.921Z",
+  "updated_at": "2026-11-23T12:52:29.110Z",
   "categories": [
     {
       "id": "news",
@@ -60,36 +60,6 @@
     }
   ],
   "channels": [
-    {
-      "channel_id": "temp-golden-horse-63",
-      "channel_name": "金馬獎 63 直播",
-      "name_en": "Golden Horse Awards 63 LIVE",
-      "category": "entertainment",
-      "channel_number": 1,
-      "logo": null,
-      "stream_url": "",
-      "stream_type": "embed",
-      "source_name": "中天新聞 YouTube 直播（金馬63 現場）",
-      "source_website": "https://www.youtube.com/watch?v=NMoF8wCesbU",
-      "authorization_status": "public_official",
-      "is_active": true,
-      "last_checked": "2026-11-22T12:24:32.000Z",
-      "description": "第 63 屆金馬獎頒獎典禮現場直播（紅毯、得獎感言直擊）。典禮時間 2026-11-22 18:30 起，地點台北流行音樂中心。由中天新聞 YouTube 頻道轉播。",
-      "tags": [
-        "台灣",
-        "金馬獎",
-        "金馬63",
-        "直播",
-        "臨時",
-        "youtube-embed"
-      ],
-      "region": "台灣",
-      "cors_enabled": true,
-      "http_referrer": null,
-      "notes": "臨時直播頻道：僅於 2026-11-22 金馬獎期間有效，活動結束後應移除。來源為中天新聞 YouTube 直播（embed NMoF8wCesbU，已驗證 isLiveNow=true、可嵌入）。典禮官方電視轉播為台視，網路獨家為 MyVideo。",
-      "embed_url": "https://www.youtube.com/embed/NMoF8wCesbU?rel=0&autoplay=1&mute=1&enablejsapi=1",
-      "playlist_source": null
-    },
     {
       "channel_id": "playlist-翡翠台-tvb翡翠台",
       "channel_name": "TVB翡翠台",
