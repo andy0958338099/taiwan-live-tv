@@ -315,6 +315,17 @@ export function useHlsPlayer(channel: Channel | null) {
   /** 使用者是否手動靜音（手動靜音後不再自動取消靜音） */
   const userMutedRef = useRef(false);
   /**
+   * 是否處於「靜音兜底」狀態（有聲自動播放被瀏覽器拒絕後改以靜音播放）。
+   *
+   * 為什麼需要這個旗標：`onPlaying` 裡有一段「播放一開始就自動取消靜音」的邏輯。
+   * 若兜底啟動後它又去嘗試有聲，會被瀏覽器拒絕 → 媒體被暫停 → 再兜底 → 無限循環，
+   * 使用者看到的是「畫面靜止、也沒聲音」。
+   *
+   * 有這個旗標，兜底之後就**不再自動嘗試有聲**，
+   * 直到使用者真的點一下（那時手勢一定有效，見 resumeFromUserGesture）。
+   */
+  const autoMutedRef = useRef(false);
+  /**
    * 是否期望保持「有聲播放」。
    *
    * Chrome 會在媒體變成有聲後非同步地自動暫停它。
@@ -409,6 +420,14 @@ export function useHlsPlayer(channel: Channel | null) {
       teardown();
       setErrorMessage(null);
       setStatus('loading');
+      /*
+       * 新的一次載入 → 重新嘗試有聲播放。
+       *
+       * 靜音兜底是「這一輪」的結論，不該延續到下一個頻道或下一次重試：
+       * 使用者換台、或按重試，都是新的手勢，有機會直接有聲播放。
+       */
+      autoMutedRef.current = false;
+      setAutoMutedNotice(false);
       armWatchdog(target, url);
 
       // 開始計時：顯示已等待秒數，避免「一直轉圈圈」讓人以為當機
@@ -491,6 +510,7 @@ export function useHlsPlayer(channel: Channel | null) {
         void video
           .play()
           .then(() => {
+            autoMutedRef.current = true;
             needsUserGestureRef.current = false;
             setNeedsUserGesture(false);
             setAutoMutedNotice(true);
@@ -1005,19 +1025,12 @@ export function useHlsPlayer(channel: Channel | null) {
     needsUserGestureRef.current = needsUserGesture;
   }, [needsUserGesture]);
 
-  // 「已靜音播放」提示 8 秒後自動消失，不長期擋住畫面
-  useEffect(() => {
-    if (!autoMutedNotice) return;
-    const timer = setTimeout(() => setAutoMutedNotice(false), 8000);
-    return () => clearTimeout(timer);
-  }, [autoMutedNotice]);
-
   /*
-   * 一旦聲音真的開了，就立刻撤掉「已靜音播放」提示。
+   * 「已靜音播放」提示**不自動消失**。
    *
-   * 為什麼需要：靜音兜底啟動後，若後續（例如 playing 事件裡的 unmute 流程）
-   * 成功把 muted 設回 false，提示卻還留在畫面上，
-   * 就變成「明明有聲音，畫面卻說已靜音」的矛盾訊息。
+   * 原本寫 8 秒後淡出，但這樣使用者會遇到「突然沒聲音、也沒有任何說明」。
+   * 只要還沒有聲音，提示就應該留在畫面上（它同時是開啟聲音的按鈕）。
+   * 真正有聲音（muted=false）或使用者點過之後才移除 —— 見下面的 effect。
    */
   useEffect(() => {
     if (!muted) setAutoMutedNotice(false);
@@ -1248,7 +1261,7 @@ export function useHlsPlayer(channel: Channel | null) {
        *   若改成 await 之後才設 muted，中間的 microtask 會讓手勢失效，
        *   Chrome 就會自動暫停媒體（實測會停在 t=10）。
        */
-      if (!userMutedRef.current) {
+      if (!userMutedRef.current && !autoMutedRef.current) {
         const v = videoRef.current;
         if (v) {
           v.muted = false;
@@ -1373,6 +1386,7 @@ export function useHlsPlayer(channel: Channel | null) {
         void el
           .play()
           .then(() => {
+            autoMutedRef.current = true;
             needsUserGestureRef.current = false;
             setNeedsUserGesture(false);
             setAutoMutedNotice(true);
@@ -1425,6 +1439,8 @@ export function useHlsPlayer(channel: Channel | null) {
   const resumeFromUserGesture = useCallback(async () => {
     const video = videoRef.current;
     if (!video) return;
+    // 使用者真的點了一下 → 手勢有效，可以離開靜音兜底狀態
+    autoMutedRef.current = false;
     try {
       // 使用者點擊 = 有使用者手勢 → 可以直接以有聲方式播放
       video.muted = false;
@@ -1432,9 +1448,13 @@ export function useHlsPlayer(channel: Channel | null) {
       await video.play();
       setNeedsUserGesture(false);
       setMuted(false);
+      setAutoMutedNotice(false);
       setStatus('playing');
+      // 若原本因瀏覽器政策被暫停，現在應已恢復 → 清除兜底旗標
+      autoMutedRef.current = false;
     } catch {
       // 仍然失敗，保持提示
+      autoMutedRef.current = true;
     }
   }, []);
 
