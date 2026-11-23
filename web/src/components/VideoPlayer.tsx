@@ -149,7 +149,7 @@ export function VideoPlayer({
     const isLitv = embedUrl.includes('player.svc.litv.tv');
 
     return (
-      <div className={styles.playerShell}>
+      <div className={`${styles.playerShell} ${styles.playerShellEmbed}`}>
         <iframe
           key={`${iframeKey}-${localIframeKey}`}
           ref={handleIframeRef}
