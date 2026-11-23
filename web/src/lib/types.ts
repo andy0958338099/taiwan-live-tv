@@ -64,6 +64,18 @@ export interface Channel {
   tags?: string[];
   region?: string | null;
   cors_enabled?: boolean;
+  /**
+   * 網頁版是否可播（預設 true，只有明確 `false` 才排除）。
+   *
+   * 為什麼需要：有些 HLS 源的單一 TS 分片高達 5.2 MB（時長 6 秒 ≈ 7 Mbps），
+   * 而我們的 `/api/proxy` 出口到該上游實測只有 1.35 Mbps
+   * → 永遠追不上直播，播放 6 秒就卡 25 秒。
+   *
+   * 這種頻道「源是活的」，所以源巡檢不會判死；但網頁版一定播不動。
+   * 標成 `web_playable: false` 讓網頁版不顯示，Android 版仍保留
+   * （Android 直連，不經過代理，不受這個頻寬瓶頸限制）。
+   */
+  web_playable?: boolean;
   http_referrer?: string | null;
   /**
    * 來源要求特定的 User-Agent 才能取得串流。
@@ -122,7 +134,9 @@ export function isPublishable(channel: Channel): boolean {
   return (
     channel.is_active &&
     ALLOWED_AUTHORIZATION.includes(channel.authorization_status) &&
-    hasSource
+    hasSource &&
+    // 網頁版明確標記不可播的（分片過大、代理頻寬追不上）不進入 UI
+    channel.web_playable !== false
   );
 }
 

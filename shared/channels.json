@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "updated_at": "2026-11-23T12:52:29.110Z",
+  "updated_at": "2026-11-23T13:59:19.540Z",
   "categories": [
     {
       "id": "news",
@@ -587,7 +587,7 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
@@ -599,7 +599,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv2",
@@ -680,7 +681,7 @@
       "cors_enabled": false,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -717,7 +718,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv4",
@@ -744,7 +746,7 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.3 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
@@ -776,7 +778,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv5",
@@ -803,7 +806,7 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
@@ -835,7 +838,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv5plus",
@@ -862,7 +866,7 @@
       "cors_enabled": false,
       "http_user_agent": "iPhone",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -884,7 +888,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv6",
@@ -911,7 +916,7 @@
       "cors_enabled": false,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -943,7 +948,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv7",
@@ -970,7 +976,7 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
@@ -997,7 +1003,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv8",
@@ -1024,7 +1031,7 @@
       "cors_enabled": false,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -1056,7 +1063,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv9",
@@ -1083,7 +1091,7 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
@@ -1100,7 +1108,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv10",
@@ -1127,7 +1136,7 @@
       "cors_enabled": false,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -1154,7 +1163,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv11",
@@ -1181,7 +1191,7 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
@@ -1198,7 +1208,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv12",
@@ -1274,7 +1285,7 @@
       "cors_enabled": false,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -1296,7 +1307,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv14",
@@ -1323,7 +1335,7 @@
       "cors_enabled": false,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -1345,7 +1357,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv15",
@@ -1426,12 +1439,13 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
         "original_name": "央視-16 奧林匹克"
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cctv17",
@@ -1681,7 +1695,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 14.9 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -1723,7 +1737,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-gdty",
@@ -1789,7 +1804,7 @@
       "cors_enabled": true,
       "http_user_agent": "aliplayer",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "suxuang",
         "source_label": "suxuang 聚合源",
@@ -1826,7 +1841,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-df",
@@ -1853,7 +1869,7 @@
       "cors_enabled": false,
       "http_user_agent": "aliplayer",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。身分證據取自同一份上游清單（https://bit.ly/itvlist 第 364–365 行）的名稱↔網址配對；代碼為 host-namespaced（121.19.134.33:808 + 1026_1 = 卡酷动画，非東方衛視）。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。身分證據取自同一份上游清單（https://bit.ly/itvlist 第 364–365 行）的名稱↔網址配對；代碼為 host-namespaced（121.19.134.33:808 + 1026_1 = 卡酷动画，非東方衛視）。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "provider": "itvlist",
         "provider_label": "itvlist 聚合源",
@@ -1881,7 +1897,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-zj",
@@ -1908,7 +1925,7 @@
       "cors_enabled": true,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -1975,7 +1992,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-hn",
@@ -2066,7 +2084,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2088,7 +2106,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-gd",
@@ -2115,7 +2134,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2152,7 +2171,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-gx",
@@ -2297,7 +2317,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2329,7 +2349,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-cq",
@@ -2356,7 +2377,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2383,7 +2404,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-sz",
@@ -2410,7 +2432,7 @@
       "cors_enabled": true,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -2467,7 +2489,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-sc",
@@ -2494,7 +2517,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2511,7 +2534,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-ha",
@@ -2538,7 +2562,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2560,7 +2584,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-dn",
@@ -2587,7 +2612,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2614,7 +2639,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-gz",
@@ -2641,7 +2667,7 @@
       "cors_enabled": true,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -2673,7 +2699,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-jx",
@@ -2818,7 +2845,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2840,7 +2867,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-hb",
@@ -2936,7 +2964,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -2958,7 +2986,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-tj",
@@ -2985,7 +3014,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -3027,7 +3056,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-jl",
@@ -3054,7 +3084,7 @@
       "cors_enabled": true,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kuliao",
         "source_label": "褲佬 清單",
@@ -3081,7 +3111,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-sx2",
@@ -3457,7 +3488,7 @@
       "cors_enabled": true,
       "http_user_agent": "AptvPlayer-UA",
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "kimentanm",
         "source_label": "Kimentanm APTV 測試源",
@@ -3489,7 +3520,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-xj",
@@ -3516,7 +3548,7 @@
       "cors_enabled": false,
       "http_user_agent": null,
       "http_referrer": null,
-      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。",
+      "notes": "轉載自第三方 IPTV 清單（非廣播商官方來源），授權狀態為使用者提供。 網頁版不建議：上游分片 5.2 MB／6 秒（約需 7 Mbps），代理實測僅 1.35 Mbps，播放會每 6 秒卡 25 秒；Android 直連可另行評估。",
       "playlist_source": {
         "source_id": "itvlist",
         "source_label": "itvlist 聚合源",
@@ -3538,7 +3570,8 @@
             "cors": false
           }
         ]
-      }
+      },
+      "web_playable": false
     },
     {
       "channel_id": "cn-fh",
