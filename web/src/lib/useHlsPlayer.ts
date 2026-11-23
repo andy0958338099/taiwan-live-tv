@@ -1012,6 +1012,17 @@ export function useHlsPlayer(channel: Channel | null) {
     return () => clearTimeout(timer);
   }, [autoMutedNotice]);
 
+  /*
+   * 一旦聲音真的開了，就立刻撤掉「已靜音播放」提示。
+   *
+   * 為什麼需要：靜音兜底啟動後，若後續（例如 playing 事件裡的 unmute 流程）
+   * 成功把 muted 設回 false，提示卻還留在畫面上，
+   * 就變成「明明有聲音，畫面卻說已靜音」的矛盾訊息。
+   */
+  useEffect(() => {
+    if (!muted) setAutoMutedNotice(false);
+  }, [muted]);
+
   /**
    * 取消靜音。
    *
