@@ -264,6 +264,7 @@ export default function Home() {
           status={player.status}
           errorMessage={player.errorMessage}
           needsUserGesture={player.needsUserGesture}
+          autoMutedNotice={player.autoMutedNotice}
           onRetry={player.retry}
           onUserGesture={player.resumeFromUserGesture}
           channelName={selected?.channel_name ?? ''}

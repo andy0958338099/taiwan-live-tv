@@ -246,6 +246,19 @@ export function useHlsPlayer(channel: Channel | null) {
   const [status, setStatus] = useState<PlayerStatus>('idle');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [needsUserGesture, setNeedsUserGesture] = useState(false);
+
+  /**
+   * 「已靜音播放，點此開啟聲音」提示。
+   *
+   * 為什麼需要：瀏覽器（尤其 Chrome）有時即使在點擊之後，
+   * 仍會拒絕「有聲自動播放」（例如站台的媒體參與度還不夠）。
+   * 原本的行為是退回「點擊開始播放」遮罩 —— 使用者看到的是
+   * 「我點了頻道，結果畫面卡在播放入口」，體驗上等於播不出來。
+   *
+   * 新的分級做法：有聲啟動失敗 → 立刻以**靜音**啟動（瀏覽器一定允許），
+   * 畫面先出來；再顯示這個提示，讓使用者一點就有聲音。
+   */
+  const [autoMutedNotice, setAutoMutedNotice] = useState(false);
   /**
    * 是否正在等待使用者手勢（自動播放被政策擋下）。
    *
@@ -463,8 +476,29 @@ export function useHlsPlayer(channel: Channel | null) {
        *   之後 playing 事件觸發時再確認音量狀態。
        */
       video.play().catch(() => {
-        // 自動播放被拒絕 → 交由 needsUserGesture 提示使用者點擊
-        setNeedsUserGesture(true);
+        /*
+         * 有聲自動播放被拒絕（Chrome 的手勢判定比預期嚴格）。
+         *
+         * 不要停在「點擊開始播放」遮罩：使用者剛點過頻道卡片，
+         * 再要他點一次同一個畫面，多數人的理解是「壞了」。
+         *
+         * 改成靜音自動播放（瀏覽器一定允許）→ 畫面立刻出來，
+         * 同時顯示「已靜音播放，點此開啟聲音」。
+         */
+        video.muted = true;
+        wantUnmutedRef.current = false;
+        setMuted(true);
+        void video
+          .play()
+          .then(() => {
+            needsUserGestureRef.current = false;
+            setNeedsUserGesture(false);
+            setAutoMutedNotice(true);
+          })
+          .catch(() => {
+            // 靜音也不行（極少數環境）→ 才顯示點擊提示
+            setNeedsUserGesture(true);
+          });
       });
 
       // --- 原生 HLS（Safari / iOS）---
@@ -971,6 +1005,13 @@ export function useHlsPlayer(channel: Channel | null) {
     needsUserGestureRef.current = needsUserGesture;
   }, [needsUserGesture]);
 
+  // 「已靜音播放」提示 8 秒後自動消失，不長期擋住畫面
+  useEffect(() => {
+    if (!autoMutedNotice) return;
+    const timer = setTimeout(() => setAutoMutedNotice(false), 8000);
+    return () => clearTimeout(timer);
+  }, [autoMutedNotice]);
+
   /**
    * 取消靜音。
    *
@@ -1046,6 +1087,7 @@ export function useHlsPlayer(channel: Channel | null) {
       await video.play();
       setMuted(false);
       setNeedsUserGesture(false);
+      setAutoMutedNotice(false);
     } catch {
       // 沒有使用者手勢 → Chrome 不允許有聲自動播放 → 退回靜音
       wantUnmutedRef.current = false;
@@ -1385,6 +1427,7 @@ export function useHlsPlayer(channel: Channel | null) {
     status,
     errorMessage,
     needsUserGesture,
+    autoMutedNotice,
     nativeHls,
     retry,
     resumeFromUserGesture,

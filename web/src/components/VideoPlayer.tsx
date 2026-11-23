@@ -10,6 +10,11 @@ interface VideoPlayerProps {
   status: PlayerStatus;
   errorMessage: string | null;
   needsUserGesture: boolean;
+  /**
+   * 是否剛以「靜音」方式自動啟動播放（有聲自動播放被瀏覽器拒絕）。
+   * true 時顯示「點此開啟聲音」，避免使用者以為沒聲音是壞了。
+   */
+  autoMutedNotice?: boolean;
   onRetry: () => void;
   onUserGesture: () => void;
   channelName: string;
@@ -71,6 +76,7 @@ export function VideoPlayer({
   status,
   errorMessage,
   needsUserGesture,
+  autoMutedNotice = false,
   onRetry,
   onUserGesture,
   channelName,
@@ -337,8 +343,17 @@ export function VideoPlayer({
         </div>
       )}
 
-      {needsUserGesture && status !== 'error' && (
-        <div
+      {autoMutedNotice && status !== 'error' && (
+        <button
+          type="button"
+          className={styles.muteNotice}
+          onClick={onUserGesture}
+        >
+          <span aria-hidden="true">🔈</span> 已靜音播放，點此開啟聲音
+        </button>
+      )}
+
+      {needsUserGesture && status !== 'error' && (        <div
           className={styles.playerOverlay}
           ref={overlayRef}
           tabIndex={0}
