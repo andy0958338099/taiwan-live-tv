@@ -374,6 +374,28 @@
   font-size: 0.8125rem;
   line-height: 1.5;
   backdrop-filter: blur(6px);
+  /*
+   * 9 秒後自動淡出。
+   *
+   * 提示條浮在畫面底部，而 litv 播放器的「喇叭圖示」就在那條控制列上
+   * —— 一直蓋著會讓使用者點不到喇叭（也就開不了聲）。
+   * 9 秒足以讀完「點喇叭開聲」，之後把控制列還給使用者。
+   * 純 CSS，不需要 JS 計時器。
+   */
+  animation: embedHintFade 0.5s ease 9s forwards;
+}
+
+@keyframes embedHintFade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .embedHint {
+    animation: none;
+  }
 }
 
 @media (max-width: 640px) {
