@@ -1337,13 +1337,40 @@ export function useHlsPlayer(channel: Channel | null) {
       if (!wantUnmutedRef.current || userMutedRef.current) return;
       const v = videoRef.current;
       if (!v || v.ended) return;
-      v.play().catch(() => {
-        // 沒有使用者手勢 → 退回靜音
+      void v.play().catch(() => {});
+      /*
+       * Chrome 有一個實測得到、但不太直覺的行為：
+       * `play()` 的 Promise **resolve 了，媒體卻仍停在 paused**。
+       * 這是媒體參與度（MEI）不足時的策略結果 —— 沒有手勢的「有聲」播放
+       * 被靜默阻擋，程式端看起來像是「我叫了 play() 但它沒動」。
+       *
+       * 大愛電視（全球）就是這樣壞的：畫面已經有內容、buffer 24 秒、
+       * 但 currentTime 停在 0.1、paused=true，使用者看到的是「卡住」。
+       *
+       * 所以補一次延遲確認：若仍在 paused，就判定有聲播放被擋，
+       * 靜音啟動把畫面播起來，並顯示「點此開啟聲音」。
+       */
+      window.setTimeout(() => {
+        const el = videoRef.current;
+        if (!el || el.ended) return;
+        if (!el.paused) return; // 已經恢復播放 → 不需要處理
+        if (!wantUnmutedRef.current || userMutedRef.current) return;
+
         wantUnmutedRef.current = false;
-        v.muted = true;
+        el.muted = true;
         setMuted(true);
-        setNeedsUserGesture(true);
-      });
+        void el
+          .play()
+          .then(() => {
+            needsUserGestureRef.current = false;
+            setNeedsUserGesture(false);
+            setAutoMutedNotice(true);
+          })
+          .catch(() => {
+            // 靜音也不行 → 才退回「點擊開始播放」
+            setNeedsUserGesture(true);
+          });
+      }, 400);
     };
 
     const onError = () => {
